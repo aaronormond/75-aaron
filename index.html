@@ -1212,9 +1212,10 @@
   }
 
   /* OUTREACH TRACKER */
-  /* Wider on desktop — gives the table more horizontal space; mobile is
-     clamped by viewport so this doesn't affect small screens. */
-  .outreach-app { max-width: 1180px; }
+  /* Sized to leave visible margin on both sides on desktop (matches the
+     visual rhythm of the toolbar card). Mobile viewport clamps this so
+     small screens are unaffected. */
+  .outreach-app { max-width: 1040px; }
   .outreach-loading {
     color: var(--text-3);
     font-size: 11px;
@@ -1736,15 +1737,17 @@
       minmax(110px, 0.65fr)
       minmax(120px, 0.8fr)
       minmax(220px, 2.6fr);
-    gap: 14px;
-    padding: 12px 16px;
+    gap: 16px;
+    /* Per change #2 (this round): roomier rows — more breathing space
+       horizontally and vertically. */
+    padding: 18px 24px;
     align-items: center;
     min-width: 0;
   }
   .outreach-table-header {
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding-top: 14px;
-    padding-bottom: 11px;
+    padding-top: 16px;
+    padding-bottom: 13px;
   }
   .outreach-th {
     font-size: 9px;
@@ -4512,6 +4515,30 @@ document.querySelectorAll('.tab').forEach(btn => {
     }
   }
   async function deleteNoteEditRow(editId){
+    // Per change #3 (this round): before deleting the note edit, revert the
+    // parent history row's `notes` column to the `old_notes` stored on this
+    // edit. That way the activity log and the displayed note stay consistent
+    // — deleting the edit undoes it rather than leaving the post-edit value.
+    let parentHistoryId = null;
+    let oldNotesToRestore = null;
+    noteEditsByHistoryId.forEach(function(arr, historyId){
+      if(parentHistoryId) return;
+      for(const e of arr){
+        if(e.id === editId){
+          parentHistoryId = historyId;
+          oldNotesToRestore = (e.old_notes == null) ? null : e.old_notes;
+          break;
+        }
+      }
+    });
+    if(parentHistoryId){
+      // Use the same update shape as setHistoryNoteInitial so we don't stamp
+      // notes_updated_at (this isn't a fresh edit — it's a revert).
+      const upd = await supabaseClient.from('outreach_status_history')
+        .update({ notes: oldNotesToRestore || null })
+        .eq('id', parentHistoryId);
+      if(upd.error) throw upd.error;
+    }
     const del = await supabaseClient.from('outreach_note_edits')
       .delete().eq('id', editId);
     if(del.error) throw del.error;
@@ -5774,6 +5801,9 @@ document.querySelectorAll('.tab').forEach(btn => {
               if(!confirm('Delete this note edit?')) return;
               try {
                 await deleteNoteEditRow(btn.dataset.editId);
+                // Reload histories too — the parent row's `notes` was just
+                // reverted, and the activity log reads from leadHistories.
+                await loadAllHistories();
                 await loadAllNoteEdits();
                 render();
               } catch(err){ alert('Error: ' + errMsg(err)); }
