@@ -1,0 +1,28 @@
+# Claude / agent state
+.claude/
+
+# macOS
+.DS_Store
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# Node / build artifacts (in case anything's added later)
+node_modules/
+dist/
+build/
+.next/
+
+# Vercel
+.vercel/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
