@@ -2340,6 +2340,19 @@
   }
   .outreach-overlay-card .outreach-status-list { margin-bottom: 14px; }
 
+  /* Add Lead — status dropdown sized to match the form's full-width inputs */
+  .outreach-cnew-lead-status { display: block; width: 100%; }
+  .outreach-cnew-lead-status .outreach-cdrop-trigger {
+    display: flex; width: 100%;
+    padding: 10px 28px 10px 12px;
+    font-size: 13px;
+    box-sizing: border-box;
+  }
+  .outreach-cnew-lead-status .outreach-cdrop-menu {
+    left: 0; right: 0;
+    width: 100%;
+  }
+
   @media (max-width: 800px) {
     .outreach-table-header,
     .outreach-row {
@@ -4047,7 +4060,8 @@ document.querySelectorAll('.tab').forEach(btn => {
   // For create: stage is always 'note' (skips confirmation).
   let pendingNote = null;        // { kind, stage, leadId, leadName, statusLabel?, historyId?, oldStatus?, newStatus? }
   let editingNoteHistoryId = null;
-  let openDropdownId = null;     // 'filter' | 'sort' | 'lead-<id>' | null
+  let newLeadStatus = null;      // selected status label inside the Add Lead overlay
+  let openDropdownId = null;     // 'filter' | 'sort' | 'lead-<id>' | 'add-lead-status' | null
   let currentSort = 'recent-updated';  // 'oldest-added' | 'newest-added' | 'recent-updated' | 'least-updated'
   let activityExpanded = false;
 
@@ -4603,8 +4617,6 @@ document.querySelectorAll('.tab').forEach(btn => {
                 '<button type="button" class="supabase-btn" id="add-lead-btn">' + (showingAddForm ? 'Close' : '+ Add Lead') + '</button>' +
               '</div>' +
             '</div>';
-    if(showingAddForm) html += renderAddForm();
-
     html += renderTableHtml(filtered);
 
     html += renderOverlayHtml();
@@ -4798,12 +4810,40 @@ document.querySelectorAll('.tab').forEach(btn => {
     '</div>';
   }
 
-  function renderAddForm(){
-    const statusOptions = statuses.map(function(s){
-      return '<option value="' + escapeHtml(s.label) + '">' + escapeHtml(s.label) + '</option>';
-    }).join('');
-    return '<div class="supabase-panel outreach-form">' +
-      '<div class="supabase-section-label">add lead</div>' +
+  // Add Lead overlay — rendered as an inner block inside the centered modal
+  // (same scaffold as the status manager / note prompt overlays).
+  function renderAddLeadStatusDropdownHtml(){
+    const isOpen = openDropdownId === 'add-lead-status';
+    const selected = newLeadStatus || (statuses[0] && statuses[0].label) || '';
+    const selectedColor = selected ? statusColor(selected) : '#9aa2af';
+
+    let menu = '';
+    if(isOpen){
+      menu = '<div class="outreach-cdrop-menu">' +
+        statuses.map(function(s){
+          const c = s.color || '#4D89FF';
+          const isSel = s.label === selected;
+          return '<button type="button" class="outreach-cdrop-option' + (isSel ? ' selected' : '') + '" ' +
+            'data-action="new-lead-status-select" data-value="' + escapeHtml(s.label) + '">' +
+            dotSvg(c) + '<span class="outreach-cdrop-option-label">' + escapeHtml(s.label) + '</span>' +
+          '</button>';
+        }).join('') +
+      '</div>';
+    }
+    return '<div class="outreach-cdrop outreach-cnew-lead-status' + (isOpen ? ' open' : '') + '" data-dropdown-id="add-lead-status">' +
+      '<button type="button" class="outreach-cdrop-trigger" data-action="dropdown-toggle" data-dropdown-id="add-lead-status">' +
+        dotSvg(selectedColor) +
+        '<span class="outreach-cdrop-label">' + escapeHtml(selected) + '</span>' +
+        '<span class="outreach-cdrop-chevron">▾</span>' +
+      '</button>' +
+      menu +
+    '</div>';
+  }
+  function renderAddFormInnerHtml(){
+    return '<div class="outreach-overlay-header">' +
+        '<div class="supabase-section-label">add lead</div>' +
+        '<button type="button" class="outreach-collapse-btn" id="add-lead-close" aria-label="Close">✕</button>' +
+      '</div>' +
       '<div class="supabase-input-group">' +
         '<label class="supabase-input-label">Name</label>' +
         '<input type="text" id="lead-name" class="supabase-input" placeholder="full name" autocomplete="off" />' +
@@ -4814,13 +4854,12 @@ document.querySelectorAll('.tab').forEach(btn => {
       '</div>' +
       '<div class="supabase-input-group">' +
         '<label class="supabase-input-label">Status</label>' +
-        '<select id="lead-status" class="supabase-input">' + statusOptions + '</select>' +
+        renderAddLeadStatusDropdownHtml() +
       '</div>' +
       '<div class="outreach-form-actions">' +
         '<button type="button" class="supabase-btn supabase-btn-secondary" id="form-cancel">Cancel</button>' +
         '<button type="button" class="supabase-btn" id="form-save">Save Lead</button>' +
-      '</div>' +
-    '</div>';
+      '</div>';
   }
 
   // SVG icons
@@ -4934,8 +4973,13 @@ document.querySelectorAll('.tab').forEach(btn => {
       '</div>';
     }
     if(showingStatusManager){
-      return '<div class="outreach-overlay outreach-overlay-dismissable" role="dialog" aria-modal="true" data-action="overlay-dismiss">' +
+      return '<div class="outreach-overlay outreach-overlay-dismissable" role="dialog" aria-modal="true" data-action="overlay-dismiss-status">' +
         '<div class="outreach-overlay-card outreach-overlay-card-wide">' + renderStatusManagerInnerHtml() + '</div>' +
+      '</div>';
+    }
+    if(showingAddForm){
+      return '<div class="outreach-overlay outreach-overlay-dismissable" role="dialog" aria-modal="true" data-action="overlay-dismiss-add">' +
+        '<div class="outreach-overlay-card">' + renderAddFormInnerHtml() + '</div>' +
       '</div>';
     }
     return '';
@@ -5233,6 +5277,10 @@ document.querySelectorAll('.tab').forEach(btn => {
     const addBtn = document.getElementById('add-lead-btn');
     if(addBtn) addBtn.addEventListener('click', function(){
       showingAddForm = !showingAddForm;
+      // Reset the selected status to the first available whenever the overlay
+      // opens — so the dropdown always has a valid default.
+      if(showingAddForm) newLeadStatus = (statuses[0] && statuses[0].label) || null;
+      else newLeadStatus = null;
       render();
     });
 
@@ -5248,11 +5296,36 @@ document.querySelectorAll('.tab').forEach(btn => {
       showingStatusManager = false;
       render();
     });
-    document.querySelectorAll('[data-action="overlay-dismiss"]').forEach(function(ov){
+    document.querySelectorAll('[data-action="overlay-dismiss-status"]').forEach(function(ov){
       ov.addEventListener('click', function(e){
-        // Only the backdrop itself dismisses — clicks on the card don't bubble here.
         if(e.target !== ov) return;
         showingStatusManager = false;
+        render();
+      });
+    });
+
+    // Add Lead overlay — close via × button or backdrop click
+    const addLeadClose = document.getElementById('add-lead-close');
+    if(addLeadClose) addLeadClose.addEventListener('click', function(){
+      showingAddForm = false;
+      newLeadStatus = null;
+      render();
+    });
+    document.querySelectorAll('[data-action="overlay-dismiss-add"]').forEach(function(ov){
+      ov.addEventListener('click', function(e){
+        if(e.target !== ov) return;
+        showingAddForm = false;
+        newLeadStatus = null;
+        render();
+      });
+    });
+
+    // Add Lead status dropdown — option selection
+    document.querySelectorAll('[data-action="new-lead-status-select"]').forEach(function(opt){
+      opt.addEventListener('click', function(e){
+        e.stopPropagation();
+        newLeadStatus = opt.dataset.value;
+        openDropdownId = null;
         render();
       });
     });
@@ -5261,11 +5334,13 @@ document.querySelectorAll('.tab').forEach(btn => {
     if(saveBtn) saveBtn.addEventListener('click', async function(){
       const name = document.getElementById('lead-name').value.trim();
       const url = document.getElementById('lead-url').value.trim();
-      const status = document.getElementById('lead-status').value;
+      const status = newLeadStatus || (statuses[0] && statuses[0].label) || '';
       if(!name){ alert('Name is required'); return; }
+      if(!status){ alert('No status available — add one in Manage Statuses first'); return; }
       try {
         const result = await createLead({ name: name, profile_url: url || null, status: status });
         showingAddForm = false;
+        newLeadStatus = null;
         await loadLeads();
         // Prompt for note on the initial status row that was just created
         await loadAllHistories();
@@ -5282,7 +5357,9 @@ document.querySelectorAll('.tab').forEach(btn => {
     });
     const cancelBtn = document.getElementById('form-cancel');
     if(cancelBtn) cancelBtn.addEventListener('click', function(){
-      showingAddForm = false; render();
+      showingAddForm = false;
+      newLeadStatus = null;
+      render();
     });
 
     // Overlay — status-change confirmation step
