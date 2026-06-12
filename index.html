@@ -3741,7 +3741,8 @@ async function cloudFetchAllRevenueEntries(){
 
 // ----- Bootstrap on load: pull fresh from cloud, replace state, re-render.
 //      Silent fallback to localStorage on any failure.
-async function bootstrapFromCloud(){
+async function bootstrapFromCloud(opts){
+  opts = opts || {};
   const sb = getCloudClient();
   if(!sb) return;
   try {
@@ -3780,7 +3781,9 @@ async function bootstrapFromCloud(){
       revenueState.days = nextRevDays;
       try { localStorage.setItem(REVENUE_KEY, JSON.stringify(revenueState)); }catch(e){}
     }
-    render();
+    // Skip re-render when the caller is going to render() right after — avoids
+    // a double-paint during initial boot.
+    if(!opts.skipFinalRender) render();
   } catch(_){ /* silent fallback to localStorage already in state */ }
 }
 
@@ -3928,11 +3931,19 @@ function scheduleMidnightRefresh(){
   setTimeout(()=>{ viewingDayIdx = null; openDrawers.clear(); render(); scheduleMidnightRefresh(); }, next.getTime()-now.getTime());
 }
 
-render();
-scheduleMidnightRefresh();
-setupCloudMigrationSection();
-// Fire-and-forget: pull fresh data from cloud and re-render when it lands.
-bootstrapFromCloud();
+// When Supabase credentials are present, AWAIT the cloud fetch before the
+// first render so cross-device loads see real data immediately (not a flash
+// of empty localStorage). If creds are missing or the fetch fails, render
+// from localStorage as the silent fallback.
+async function initialBoot(){
+  if(getCloudClient()){
+    try { await bootstrapFromCloud({ skipFinalRender: true }); } catch(_){}
+  }
+  render();
+  scheduleMidnightRefresh();
+  setupCloudMigrationSection();
+}
+initialBoot();
 
 // TABS — switch between "75 Aaron" and "X"
 document.querySelectorAll('.tab').forEach(btn => {
