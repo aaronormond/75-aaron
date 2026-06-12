@@ -5224,54 +5224,160 @@ document.querySelectorAll('.tab').forEach(btn => {
     render();
   }
 
+  // ----- IN-PLACE DROPDOWN UPDATES (no full re-render) -----
+  // Build the menu HTML for a dropdown without rebuilding its trigger or
+  // surrounding DOM. Used when opening a dropdown in place.
+  function buildMenuHtmlForDropdown(ddId){
+    if(ddId === 'filter'){
+      const allColor = '#9aa2af';
+      const opts = [{ value: 'all', label: 'All statuses', color: allColor }]
+        .concat(statuses.map(function(s){ return { value: s.label, label: s.label, color: s.color || '#4D89FF' }; }));
+      return '<div class="outreach-cdrop-menu">' +
+        opts.map(function(o){
+          const selected = (currentFilter === o.value);
+          return '<button type="button" class="outreach-cdrop-option' + (selected ? ' selected' : '') + '" ' +
+            'data-action="filter-select" data-value="' + escapeHtml(o.value) + '">' +
+            dotSvg(o.color) + '<span class="outreach-cdrop-option-label">' + escapeHtml(o.label) + '</span>' +
+          '</button>';
+        }).join('') +
+      '</div>';
+    }
+    if(ddId === 'header-sort'){
+      return '<div class="outreach-cdrop-menu outreach-cdrop-menu-sort">' +
+        HEADER_SORT_OPTIONS.map(function(o){
+          const selected = (currentSort === o.value);
+          return '<button type="button" class="outreach-cdrop-option' + (selected ? ' selected' : '') + '" ' +
+            'data-action="sort-select" data-value="' + escapeHtml(o.value) + '">' +
+            '<span class="outreach-cdrop-option-label">' + escapeHtml(o.label) + '</span>' +
+          '</button>';
+        }).join('') +
+      '</div>';
+    }
+    if(ddId === 'add-lead-status'){
+      const selected = newLeadStatus || (statuses[0] && statuses[0].label) || '';
+      return '<div class="outreach-cdrop-menu">' +
+        statuses.map(function(s){
+          const c = s.color || '#4D89FF';
+          const isSel = s.label === selected;
+          return '<button type="button" class="outreach-cdrop-option' + (isSel ? ' selected' : '') + '" ' +
+            'data-action="new-lead-status-select" data-value="' + escapeHtml(s.label) + '">' +
+            dotSvg(c) + '<span class="outreach-cdrop-option-label">' + escapeHtml(s.label) + '</span>' +
+          '</button>';
+        }).join('') +
+      '</div>';
+    }
+    if(ddId && ddId.indexOf('lead-') === 0){
+      const leadId = ddId.slice(5);
+      const lead = leads.find(function(l){ return l.id === leadId; });
+      if(!lead) return '';
+      return '<div class="outreach-cdrop-menu">' +
+        statuses.map(function(s){
+          const c = s.color || '#4D89FF';
+          const isSel = s.label === lead.status;
+          return '<button type="button" class="outreach-cdrop-option' + (isSel ? ' selected' : '') + '" ' +
+            'data-action="status-select" data-lead-id="' + lead.id + '" data-value="' + escapeHtml(s.label) + '">' +
+            dotSvg(c) + '<span class="outreach-cdrop-option-label">' + escapeHtml(s.label) + '</span>' +
+          '</button>';
+        }).join('') +
+      '</div>';
+    }
+    return '';
+  }
+
+  // Sync every `.outreach-cdrop` in the DOM with `openDropdownId`. Only the
+  // affected dropdown's children are touched — the surrounding row / overlay /
+  // tracker frame is left untouched, so no flash.
+  function applyDropdownStateInPlace(){
+    document.querySelectorAll('.outreach-cdrop').forEach(function(cdrop){
+      const ddId = cdrop.dataset.dropdownId;
+      const shouldOpen = openDropdownId === ddId;
+      const isOpen = cdrop.classList.contains('open');
+      if(shouldOpen && !isOpen){
+        cdrop.classList.add('open');
+        const menuHtml = buildMenuHtmlForDropdown(ddId);
+        if(menuHtml){
+          cdrop.insertAdjacentHTML('beforeend', menuHtml);
+          const menu = cdrop.querySelector('.outreach-cdrop-menu');
+          if(menu) menu.addEventListener('click', handleDynamicMenuClick);
+        }
+      } else if(!shouldOpen && isOpen){
+        cdrop.classList.remove('open');
+        const menu = cdrop.querySelector('.outreach-cdrop-menu');
+        if(menu) menu.remove();
+      }
+    });
+  }
+
+  // Delegated click handler bound directly on dynamically-injected menus so
+  // their options work without relying on attachTrackerListeners (which only
+  // runs after a full render).
+  function handleDynamicMenuClick(e){
+    const opt = e.target.closest('[data-action]');
+    if(!opt) return;
+    if(opt.dataset.action === 'dropdown-toggle') return;
+    e.stopPropagation();
+    const action = opt.dataset.action;
+    if(action === 'filter-select'){
+      currentFilter = opt.dataset.value;
+      openDropdownId = null;
+      render();
+    } else if(action === 'sort-select'){
+      currentSort = opt.dataset.value;
+      openDropdownId = null;
+      render();
+    } else if(action === 'status-select'){
+      const leadId = opt.dataset.leadId;
+      const newStatus = opt.dataset.value;
+      const lead = leads.find(function(l){ return l.id === leadId; });
+      openDropdownId = null;
+      if(!lead || newStatus === lead.status){ applyDropdownStateInPlace(); return; }
+      pendingNote = {
+        kind: 'change',
+        stage: 'confirm',
+        leadId: lead.id,
+        leadName: lead.name,
+        oldStatus: lead.status,
+        newStatus: newStatus
+      };
+      render();
+    } else if(action === 'new-lead-status-select'){
+      // Per change #2 (this round): update the trigger in place, then close
+      // the menu. The overlay must NOT be rebuilt — form fields stay intact.
+      newLeadStatus = opt.dataset.value;
+      openDropdownId = null;
+      updateAddLeadTriggerInPlace();
+      applyDropdownStateInPlace();
+    }
+  }
+
+  // Update the Add Lead status trigger's label + dot color in place (no
+  // overlay rebuild).
+  function updateAddLeadTriggerInPlace(){
+    const cdrop = document.querySelector('.outreach-cdrop[data-dropdown-id="add-lead-status"]');
+    if(!cdrop) return;
+    const selected = newLeadStatus || (statuses[0] && statuses[0].label) || '';
+    const color = selected ? statusColor(selected) : '#9aa2af';
+    const labelEl = cdrop.querySelector('.outreach-cdrop-label');
+    const dotEl   = cdrop.querySelector('.outreach-cdrop-dot');
+    if(labelEl) labelEl.textContent = selected;
+    if(dotEl)   dotEl.style.background = color;
+  }
+
   function attachTrackerListeners(){
-    // Custom dropdown — toggle open / close + option selection
+    // Custom dropdown — toggle open / close in place (no full re-render).
     document.querySelectorAll('[data-action="dropdown-toggle"]').forEach(function(trig){
       trig.addEventListener('click', function(e){
         e.stopPropagation();
         const id = trig.dataset.dropdownId;
         openDropdownId = (openDropdownId === id) ? null : id;
-        render();
+        applyDropdownStateInPlace();
       });
     });
-    document.querySelectorAll('[data-action="filter-select"]').forEach(function(opt){
-      opt.addEventListener('click', function(e){
-        e.stopPropagation();
-        currentFilter = opt.dataset.value;
-        openDropdownId = null;
-        render();
-      });
-    });
-    document.querySelectorAll('[data-action="sort-select"]').forEach(function(opt){
-      opt.addEventListener('click', function(e){
-        e.stopPropagation();
-        currentSort = opt.dataset.value;
-        openDropdownId = null;
-        render();
-      });
-    });
-    // Per change #4: the column-header sort dropdown reuses the existing
-    // [data-action="dropdown-toggle"] + [data-action="sort-select"] handlers
-    // wired above, so nothing extra to bind here.
-    document.querySelectorAll('[data-action="status-select"]').forEach(function(opt){
-      opt.addEventListener('click', function(e){
-        e.stopPropagation();
-        const leadId = opt.dataset.leadId;
-        const newStatus = opt.dataset.value;
-        const lead = leads.find(function(l){ return l.id === leadId; });
-        openDropdownId = null;
-        if(!lead || newStatus === lead.status){ render(); return; }
-        // Enter confirmation step first (per change #7).
-        pendingNote = {
-          kind: 'change',
-          stage: 'confirm',
-          leadId: lead.id,
-          leadName: lead.name,
-          oldStatus: lead.status,
-          newStatus: newStatus
-        };
-        render();
-      });
+    // Bind the delegated menu click handler on any statically-rendered menus
+    // (i.e. dropdowns rendered with isOpen=true via the existing renderers).
+    // Dynamically-injected menus bind the same handler in applyDropdownStateInPlace.
+    document.querySelectorAll('.outreach-cdrop-menu').forEach(function(menu){
+      menu.addEventListener('click', handleDynamicMenuClick);
     });
 
     const addBtn = document.getElementById('add-lead-btn');
@@ -5320,15 +5426,8 @@ document.querySelectorAll('.tab').forEach(btn => {
       });
     });
 
-    // Add Lead status dropdown — option selection
-    document.querySelectorAll('[data-action="new-lead-status-select"]').forEach(function(opt){
-      opt.addEventListener('click', function(e){
-        e.stopPropagation();
-        newLeadStatus = opt.dataset.value;
-        openDropdownId = null;
-        render();
-      });
-    });
+    // Add Lead status dropdown options are bound via the delegated
+    // handleDynamicMenuClick handler (no static binding needed).
 
     const saveBtn = document.getElementById('form-save');
     if(saveBtn) saveBtn.addEventListener('click', async function(){
@@ -5562,11 +5661,13 @@ document.querySelectorAll('.tab').forEach(btn => {
   }
 
   // GLOBAL — close any open custom dropdown when a click lands outside it.
+  // Per change #1/#2 (this round): close in place so the surrounding row /
+  // overlay doesn't flash.
   document.addEventListener('click', function(e){
     if(!openDropdownId) return;
     if(e.target.closest('.outreach-cdrop[data-dropdown-id="' + openDropdownId + '"]')) return;
     openDropdownId = null;
-    if(phase === 'ready') render();
+    if(phase === 'ready') applyDropdownStateInPlace();
   });
 
   // BOOT
