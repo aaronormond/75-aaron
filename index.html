@@ -1212,7 +1212,9 @@
   }
 
   /* OUTREACH TRACKER */
-  .outreach-app { max-width: 820px; }
+  /* Wider on desktop — gives the table more horizontal space; mobile is
+     clamped by viewport so this doesn't affect small screens. */
+  .outreach-app { max-width: 1180px; }
   .outreach-loading {
     color: var(--text-3);
     font-size: 11px;
@@ -1727,11 +1729,13 @@
   .outreach-table-header,
   .outreach-row {
     display: grid;
+    /* Desktop: 5 columns — name + notes get the most space, status/rating/updated stay compact. */
     grid-template-columns:
-      minmax(200px, 1.6fr)
-      minmax(160px, 0.8fr)
-      minmax(140px, 0.8fr)
-      minmax(200px, 1.6fr);
+      minmax(220px, 2.4fr)
+      minmax(140px, 0.9fr)
+      minmax(110px, 0.65fr)
+      minmax(120px, 0.8fr)
+      minmax(220px, 2.6fr);
     gap: 14px;
     padding: 12px 16px;
     align-items: center;
@@ -1770,6 +1774,71 @@
     letter-spacing: 0.04em;
     white-space: nowrap;
   }
+
+  /* ===== RATING COLUMN ===== */
+  .outreach-col-rating {
+    display: flex;
+    align-items: center;
+  }
+  .outreach-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .outreach-star {
+    background: transparent;
+    border: none;
+    padding: 2px 1px;
+    margin: 0;
+    cursor: pointer;
+    font: inherit;
+    font-size: 15px;
+    line-height: 1;
+    /* SVG inside the button — color shifts handle the fill state. */
+    color: rgba(255, 255, 255, 0.18);
+    transition: color 140ms var(--ease), transform 140ms var(--ease);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .outreach-star svg { display: block; width: 14px; height: 14px; }
+  .outreach-star.filled {
+    color: #ffb547;
+    filter: drop-shadow(0 0 4px rgba(255, 181, 71, 0.22));
+  }
+  .outreach-star:hover {
+    color: rgba(255, 255, 255, 0.45);
+    transform: translateY(-1px);
+  }
+  .outreach-star.filled:hover {
+    color: #ffc66e;
+  }
+
+  /* Sort header for the rating column — matches outreach-sort-th-wrap pattern. */
+  .outreach-rating-sort-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: var(--text-3);
+    font: inherit;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 140ms var(--ease);
+  }
+  .outreach-rating-sort-btn:hover { color: var(--text-2); }
+  .outreach-rating-sort-btn.active { color: var(--text); }
+  .outreach-rating-sort-arrow {
+    font-size: 10px;
+    color: var(--text-3);
+    letter-spacing: 0;
+  }
+  .outreach-rating-sort-btn.active .outreach-rating-sort-arrow { color: var(--text); }
 
   /* Per change #5: collapsed row name cell — name on the left (never
      truncated), flexible spacer, URL (truncated with ellipsis if long)
@@ -2356,9 +2425,12 @@
   @media (max-width: 800px) {
     .outreach-table-header,
     .outreach-row {
+      /* Mobile column widths unchanged from before; rating slotted in as a
+         narrow column to keep the layout identical to the prior mobile look. */
       grid-template-columns:
         minmax(160px, 1.5fr)
         minmax(140px, 1fr)
+        minmax(80px, 0.5fr)
         minmax(110px, 0.8fr)
         minmax(160px, 1.5fr);
       gap: 10px;
@@ -4031,6 +4103,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     "alter table outreach_status_history add column if not exists notes text;",
     "alter table outreach_status_history add column if not exists notes_updated_at timestamptz;",
     "alter table outreach_leads drop column if exists notes;",
+    "alter table outreach_leads add column if not exists rating integer;",
     "create table if not exists outreach_note_edits (",
     "  id uuid default gen_random_uuid() primary key,",
     "  history_id uuid references outreach_status_history(id) on delete cascade,",
@@ -4192,6 +4265,17 @@ document.querySelectorAll('.tab').forEach(btn => {
         const tb = new Date(lastUpdatedIsoFor(b.id, b.created_at)).getTime();
         return ta - tb;
       });
+    } else if(currentSort === 'rating-desc' || currentSort === 'rating-asc'){
+      // Unrated leads always sort last regardless of direction.
+      const dir = currentSort === 'rating-desc' ? -1 : 1;
+      copy.sort(function(a,b){
+        const ar = (a.rating == null) ? null : Number(a.rating);
+        const br = (b.rating == null) ? null : Number(b.rating);
+        if(ar == null && br == null) return 0;
+        if(ar == null) return 1;
+        if(br == null) return -1;
+        return dir * (ar - br);
+      });
     } else {
       // recent-updated (default)
       copy.sort(function(a,b){
@@ -4268,6 +4352,13 @@ document.querySelectorAll('.tab').forEach(btn => {
       const msg = (r2.error.message || '') + ' ' + (r2.error.code || '');
       if(/does not exist|relation .* does not exist|PGRST205|42P01|404/i.test(msg)) return false;
       throw r2.error;
+    }
+    // Rating column on outreach_leads (added in the rating-column change).
+    const r3 = await supabaseClient.from('outreach_leads').select('id, rating').limit(1);
+    if(r3.error){
+      const msg = (r3.error.message || '') + ' ' + (r3.error.code || '');
+      if(/column .* rating|rating .* does not exist|PGRST204|42703/i.test(msg)) return false;
+      throw r3.error;
     }
     return true;
   }
@@ -4359,6 +4450,12 @@ document.querySelectorAll('.tab').forEach(btn => {
   }
   async function updateLeadFields(id, updates){
     const r = await supabaseClient.from('outreach_leads').update(updates).eq('id', id);
+    if(r.error) throw r.error;
+  }
+  async function updateLeadRating(id, rating){
+    // rating: integer 1-3 or null (cleared).
+    const r = await supabaseClient.from('outreach_leads')
+      .update({ rating: rating }).eq('id', id);
     if(r.error) throw r.error;
   }
   async function changeStatusWithNote(lead, newStatus, note){
@@ -4663,7 +4760,10 @@ document.querySelectorAll('.tab').forEach(btn => {
     if(value === 'oldest-added')   return 'Added ↑';
     if(value === 'newest-added')   return 'Added ↓';
     if(value === 'least-updated')  return 'Updated ↑';
-    return 'Updated ↓'; // 'recent-updated'
+    if(value === 'recent-updated') return 'Updated ↓';
+    // Rating sort active — neither time mode is the current sort, so show a
+    // neutral label so the time dropdown doesn't appear to be "selected".
+    return 'Updated';
   }
   // Per change #4: real custom dropdown in the table header (replaces the
   // cycling button). Same dropdown style used elsewhere in the tracker.
@@ -4735,6 +4835,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     html += '<div class="outreach-table-header">' +
       '<div class="outreach-th outreach-col-name">Name</div>' +
       '<div class="outreach-th outreach-col-status">Status</div>' +
+      renderRatingHeaderHtml() +
       '<div class="outreach-th outreach-col-updated outreach-sort-th-wrap">' +
         renderHeaderSortDropdownHtml() +
       '</div>' +
@@ -4864,6 +4965,32 @@ document.querySelectorAll('.tab').forEach(btn => {
 
   // SVG icons
   const COPY_ICON_SVG = '<svg width="11" height="11" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M11.5 1H4a1.5 1.5 0 0 0-1.5 1.5v8h1V2.5A.5.5 0 0 1 4 2h7.5z"/><path fill="currentColor" d="M13.5 4h-7A1.5 1.5 0 0 0 5 5.5v9A1.5 1.5 0 0 0 6.5 16h7a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 13.5 4zm.5 10.5a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5z"/></svg>';
+  // Filled star — used in the rating column. Uses currentColor so CSS controls fill.
+  const STAR_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 17.27 5.82 21l1.64-7.03L2 9.24l7.19-.62L12 2l2.81 6.62L22 9.24l-5.46 4.73L18.18 21z"/></svg>';
+
+  function renderRatingCellHtml(lead){
+    const r = (lead.rating == null) ? 0 : Number(lead.rating);
+    let stars = '';
+    for(let i = 1; i <= 3; i++){
+      const filled = i <= r;
+      stars += '<button type="button" class="outreach-star' + (filled ? ' filled' : '') + '" data-action="rate-lead" data-lead-id="' + lead.id + '" data-rating="' + i + '" data-noexpand="1" aria-label="Set rating to ' + i + '">' + STAR_SVG + '</button>';
+    }
+    return '<div class="outreach-td outreach-col-rating">' +
+      '<div class="outreach-rating" data-noexpand="1">' + stars + '</div>' +
+    '</div>';
+  }
+  function renderRatingHeaderHtml(){
+    const isAsc  = currentSort === 'rating-asc';
+    const isDesc = currentSort === 'rating-desc';
+    const active = isAsc || isDesc;
+    const arrow  = isAsc ? '↑' : (isDesc ? '↓' : '↕');
+    return '<div class="outreach-th outreach-col-rating">' +
+      '<button type="button" class="outreach-rating-sort-btn' + (active ? ' active' : '') + '" data-action="cycle-rating-sort" aria-label="Sort by rating">' +
+        '<span>Rating</span>' +
+        '<span class="outreach-rating-sort-arrow">' + arrow + '</span>' +
+      '</button>' +
+    '</div>';
+  }
 
   // Per change #1 (this round): the row layout is name + copy button + status
   // + timestamp + most recent note. URL is NOT shown in the collapsed view —
@@ -4884,6 +5011,7 @@ document.querySelectorAll('.tab').forEach(btn => {
         '<div class="outreach-name-cell">' + nameHtml + copyHtml + '</div>' +
       '</div>' +
       '<div class="outreach-td outreach-col-status">' + renderStatusPillDropdownHtml(lead) + '</div>' +
+      renderRatingCellHtml(lead) +
       '<div class="outreach-td outreach-col-updated">' + escapeHtml(fmtTodayOrFull(cellTs)) + '</div>' +
       '<div class="outreach-td outreach-col-notes">' +
         (noteText
@@ -5380,6 +5508,18 @@ document.querySelectorAll('.tab').forEach(btn => {
       menu.addEventListener('click', handleDynamicMenuClick);
     });
 
+    // Rating column header — click toggles between rating-desc and rating-asc.
+    // If currently on another sort, first click goes to rating-desc.
+    document.querySelectorAll('[data-action="cycle-rating-sort"]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        if(currentSort === 'rating-desc') currentSort = 'rating-asc';
+        else if(currentSort === 'rating-asc') currentSort = 'rating-desc';
+        else currentSort = 'rating-desc';
+        render();
+      });
+    });
+
     const addBtn = document.getElementById('add-lead-btn');
     if(addBtn) addBtn.addEventListener('click', function(){
       showingAddForm = !showingAddForm;
@@ -5531,6 +5671,29 @@ document.querySelectorAll('.tab').forEach(btn => {
                 btn.innerHTML = orig;
               }, 1200);
             } catch(_){}
+          } else if(action === 'rate-lead'){
+            // Per spec: click a star to set rating; click the current highest
+            // filled star to clear. Update the model + DOM in place — no full
+            // re-render so the row doesn't flash.
+            const clicked = parseInt(btn.dataset.rating, 10) || 0;
+            const target = (lead.rating === clicked) ? null : clicked;
+            lead.rating = target;
+            // Update the star buttons inside this row's rating cell.
+            const ratingWrap = row.querySelector('.outreach-rating');
+            if(ratingWrap){
+              ratingWrap.querySelectorAll('.outreach-star').forEach(function(starBtn){
+                const idx = parseInt(starBtn.dataset.rating, 10);
+                if(target != null && idx <= target) starBtn.classList.add('filled');
+                else starBtn.classList.remove('filled');
+              });
+            }
+            try {
+              await updateLeadRating(lead.id, target);
+            } catch(err){
+              alert('Error: ' + errMsg(err));
+              // Reload to reconcile with whatever the cloud actually has.
+              await loadLeads(); render();
+            }
           } else if(action === 'collapse'){
             expandedLeadId = null; editingLeadId = null; editingNoteHistoryId = null; activityExpanded = false; render();
           } else if(action === 'edit'){
