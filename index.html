@@ -20,94 +20,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  /* ===== CLOUD MIGRATION ===== */
-  .cloud-migrate {
-    margin-top: 22px;
-    padding: 14px 16px 18px;
-    background: rgba(255, 255, 255, 0.025);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 10px;
-    display: flex; flex-direction: column; gap: 10px;
-  }
-  .cloud-migrate-btn {
-    align-self: flex-start;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.85);
-    font: inherit;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    padding: 8px 14px;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: all 180ms ease;
-  }
-  .cloud-migrate-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.22);
-    color: #ffffff;
-  }
-  .cloud-migrate-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  .cloud-migrate-status {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.48);
-    line-height: 1.5;
-    min-height: 0;
-  }
-  .cloud-migrate-status.success { color: #06FFA5; }
-  .cloud-migrate-status.error   { color: #ff6464; }
-  .cloud-migrate-sql {
-    display: flex; flex-direction: column; gap: 10px;
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 8px;
-  }
-  .cloud-migrate-sql-help {
-    font-size: 11.5px;
-    color: rgba(255, 255, 255, 0.72);
-    line-height: 1.5;
-  }
-  .cloud-migrate-sql-actions {
-    display: flex; gap: 10px; align-items: center;
-  }
-  .cloud-migrate-copy {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.85);
-    font: inherit;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  .cloud-migrate-copy:hover { background: rgba(255, 255, 255, 0.08); }
-  .cloud-migrate-open {
-    font-size: 11px;
-    color: #4D89FF;
-    text-decoration: none;
-  }
-  .cloud-migrate-open:hover { color: #8B5CF6; }
-  .cloud-migrate-sql-block {
-    margin: 0;
-    padding: 10px 12px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 6px;
-    font-family: 'SF Mono', Menlo, monospace;
-    font-size: 10.5px;
-    color: rgba(255, 255, 255, 0.72);
-    line-height: 1.5;
-    white-space: pre;
-    overflow-x: auto;
-    max-height: 280px;
-    overflow-y: auto;
-  }
-
   /* ===== PASSWORD GATE ===== */
   /* Hide the app shell until unlocked so nothing flashes before the gate
      check runs. The inline gate script removes this class on unlock. */
@@ -463,6 +375,58 @@
   }
   .today-panel { padding: 26px 28px 22px; }
   .grid-panel { padding: 28px 30px; }
+
+  /* Centered date label at the top of the habit panel + Today button that
+     appears only when viewing a past day. */
+  .today-panel-day {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    margin: -4px 0 18px;
+    min-height: 22px;
+  }
+  .today-panel-day-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    transition: color 200ms var(--ease);
+  }
+  .today-panel-day-label.past {
+    /* Amber when viewing a past day. */
+    color: #ffb547;
+  }
+  .today-panel-today-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 181, 71, 0.08);
+    border: 1px solid rgba(255, 181, 71, 0.28);
+    color: #ffb547;
+    font: inherit;
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    padding: 5px 11px 5px 9px;
+    border-radius: 999px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+    transition: background 180ms var(--ease), color 180ms var(--ease), border-color 180ms var(--ease);
+  }
+  .today-panel-today-btn:hover {
+    background: rgba(255, 181, 71, 0.16);
+    border-color: rgba(255, 181, 71, 0.48);
+    color: #ffcc7a;
+  }
+  .today-panel-today-arrow {
+    /* Small arrow indicator. Flipped because Today is "back" to current day. */
+    display: inline-block;
+    transform: rotate(180deg);
+    font-size: 12px;
+    line-height: 1;
+  }
   .panel-header {
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 22px; gap: 12px; flex-wrap: wrap;
@@ -705,6 +669,65 @@
   }
   .habit-ring-btn:hover { background: rgba(255, 255, 255, 0.04); }
   .habit-ring-btn:active { transform: scale(0.92); }
+
+  /* ===== WEIGHT HABIT ===== */
+  /* Inline weight logging: number input + checkmark to save. No drawer. */
+  .habit.weight-habit .habit-row { cursor: pointer; }
+  .weight-edit-row {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 4px;
+  }
+  .weight-input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 6px;
+    color: var(--text);
+    font: inherit;
+    font-size: 13px;
+    padding: 5px 9px;
+    width: 84px;
+    -moz-appearance: textfield;
+    transition: border-color 160ms var(--ease), background 160ms var(--ease);
+  }
+  .weight-input::-webkit-outer-spin-button,
+  .weight-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .weight-input:focus {
+    outline: none;
+    border-color: rgba(77, 137, 255, 0.55);
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .weight-save-btn {
+    background: rgba(6, 255, 165, 0.12);
+    border: 1px solid rgba(6, 255, 165, 0.35);
+    color: #06FFA5;
+    font: inherit;
+    font-size: 13px;
+    line-height: 1;
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background 160ms var(--ease), border-color 160ms var(--ease);
+  }
+  .weight-save-btn:hover {
+    background: rgba(6, 255, 165, 0.22);
+    border-color: rgba(6, 255, 165, 0.5);
+  }
+  .weight-edit-icon {
+    background: transparent;
+    border: none;
+    color: var(--text-4);
+    cursor: pointer;
+    font-size: 11px;
+    padding: 0 4px;
+    margin-left: 6px;
+    line-height: 1;
+    transition: color 160ms var(--ease);
+  }
+  .weight-edit-icon:hover { color: var(--text-2); }
   .habit-ring-btn.is-complete {
     box-shadow: 0 0 14px var(--success-glow);
   }
@@ -2630,6 +2653,13 @@
     </header>
     <main class="main">
       <section class="panel today-panel">
+        <div class="today-panel-day">
+          <div class="today-panel-day-label" id="today-panel-date">&mdash;</div>
+          <button type="button" class="today-panel-today-btn" id="today-panel-today-btn" hidden>
+            <span class="today-panel-today-arrow" aria-hidden="true">→</span>
+            <span>Today</span>
+          </button>
+        </div>
         <div id="today-body"></div>
       </section>
       <section class="panel grid-panel">
@@ -2646,20 +2676,6 @@
           <span class="legend-item"><span class="dot dot-complete"></span>done</span>
           <span class="legend-item"><span class="dot dot-partial"></span>partial</span>
           <span class="legend-item"><span class="dot dot-exception"></span>exception</span>
-        </div>
-      </section>
-      <section class="cloud-migrate" id="cloud-migrate-section" hidden>
-        <button type="button" class="cloud-migrate-btn" id="cloud-migrate-btn">Migrate local data to cloud</button>
-        <div class="cloud-migrate-status" id="cloud-migrate-status"></div>
-        <div class="cloud-migrate-sql" id="cloud-migrate-sql" hidden>
-          <div class="cloud-migrate-sql-help">
-            The required tables don't exist yet. Anon-key DDL isn't permitted, so paste this into your Supabase SQL editor, then click <strong>Migrate</strong> again.
-          </div>
-          <div class="cloud-migrate-sql-actions">
-            <button type="button" class="cloud-migrate-copy" id="cloud-migrate-copy">Copy SQL</button>
-            <a class="cloud-migrate-open" id="cloud-migrate-open" href="#" target="_blank" rel="noopener">Open SQL editor →</a>
-          </div>
-          <pre class="cloud-migrate-sql-block" id="cloud-migrate-sql-block"></pre>
         </div>
       </section>
     </main>
@@ -2702,13 +2718,14 @@ const HABITS = {
   protein:  { id:'protein',  label:'180g protein', cat:'body', kind:'protein', target:180 }, // days 1–10 only
   fast:     { id:'fast',     label:'Fast until noon', cat:'body', kind:'binary' },      // day 11+
   lift:     { id:'lift',     label:'Lift', cat:'body', kind:'binary', liftOnly:true },
+  weight:   { id:'weight',   label:'Log Weight', cat:'body', kind:'weight', todayOnward:true }, // today + future days only
   sleep:    { id:'sleep',    label:'Wake up at 8am', cat:'discipline', kind:'sleep' },
   clean_diet:   { id:'clean_diet',   label:'No sugar, seed oils', cat:'discipline', kind:'binary' },
   sober:        { id:'sober',        label:'No weed, liquor, nicotine', cat:'discipline', kind:'binary' },
 };
 const ORDER = {
   work: ['outreach','study','creator'],
-  body: ['walk','protein','lift'],
+  body: ['walk','protein','lift','weight'],
   discipline: ['sleep','clean_diet','sober'],
 };
 const CATEGORIES = [{id:'work',label:'Work'},{id:'body',label:'Body'},{id:'discipline',label:'Discipline'}];
@@ -2734,6 +2751,10 @@ let state = loadState();
 let viewingDayIdx = null;
 let openDrawers = new Set();
 let renderedOnce = false;
+// Set to a day key (YYYY-MM-DD) while the weight habit's inline input is open
+// for that day. Reset to null when the input commits, cancels, or the user
+// navigates to a different day.
+let weightEditingKey = null;
 
 function loadState(){
   try{
@@ -2892,6 +2913,11 @@ function getDay(key){
   }
   if(!Array.isArray(d.habits.sleep.logs)) d.habits.sleep.logs = [];
   if(typeof d.habits.sleep.done !== 'boolean') d.habits.sleep.done = false;
+  // Weight: { lbs: number|null }. Seeded lazily so old days don't get the slot
+  // unless they're touched.
+  if(d.habits.weight && (typeof d.habits.weight !== 'object' || Array.isArray(d.habits.weight))){
+    d.habits.weight = { lbs: null };
+  }
   return d;
 }
 
@@ -2915,6 +2941,8 @@ function workHabitIds(dayIdx){
 
 function habitsForDay(i){
   const lift = isLiftDay(i);
+  // Weight habit is shown only on today and future days (not past).
+  const todayIdx = dayIndexFromDate(new Date());
   const out = [];
   for(const cat of ['work','body','discipline']){
     const ids = cat === 'work' ? workHabitIds(i) : ORDER[cat];
@@ -2922,6 +2950,7 @@ function habitsForDay(i){
       const actualId = resolveHabitId(id, i);
       const h = HABITS[actualId];
       if(h.liftOnly && !lift) continue;
+      if(h.todayOnward && i < todayIdx) continue;
       out.push(h);
     }
   }
@@ -3016,6 +3045,10 @@ function habitComplete(h, data){
     const v = data.habits[h.id];
     return !!(v && v.done === true);
   }
+  if(h.kind === 'weight'){
+    const v = data.habits[h.id];
+    return !!(v && typeof v.lbs === 'number' && v.lbs > 0);
+  }
   const v = data.habits[h.id] || { logs:[], forceComplete:false };
   if(v.forceComplete) return true;
   const total = logsTotal(h, data);
@@ -3031,6 +3064,10 @@ function habitPerfect(h, data){
     const v = data.habits[h.id];
     return !!(v && v.done === true);
   }
+  if(h.kind === 'weight'){
+    const v = data.habits[h.id];
+    return !!(v && typeof v.lbs === 'number' && v.lbs > 0);
+  }
   const v = data.habits[h.id] || { logs:[], forceComplete:false };
   if(v.forceComplete) return true;
   const total = logsTotal(h, data);
@@ -3045,6 +3082,7 @@ function anyMark(h, data){
   const v = data.habits[h.id];
   if(!v) return false;
   if(h.kind === 'sleep') return v.done === true || (v.logs && v.logs.length > 0);
+  if(h.kind === 'weight') return typeof v.lbs === 'number' && v.lbs > 0;
   if(v.forceComplete) return true;
   return (v.logs && v.logs.length > 0);
 }
@@ -3255,6 +3293,30 @@ function renderTodayPanel(){
   const s = dayStatus(i);
   const data = getDay(s.key);
 
+  // Date label centered at the top of the panel + "Today" button that
+  // appears only when viewing a past day.
+  const dateLabelEl = document.getElementById('today-panel-date');
+  const todayBtnEl  = document.getElementById('today-panel-today-btn');
+  if(dateLabelEl){
+    dateLabelEl.textContent = formatDate(s.date);
+    const isPast = (today >= 0 && i < today);
+    dateLabelEl.classList.toggle('past', isPast);
+  }
+  if(todayBtnEl){
+    const todayIdxClamped = Math.max(0, Math.min(TOTAL_DAYS - 1, today));
+    const showTodayBtn = (today >= 0 && i < today);
+    todayBtnEl.hidden = !showTodayBtn;
+    if(showTodayBtn){
+      todayBtnEl.onclick = function(){
+        viewingDayIdx = todayIdxClamped;
+        openDrawers.clear();
+        render();
+      };
+    } else {
+      todayBtnEl.onclick = null;
+    }
+  }
+
   const body = document.getElementById('today-body');
   body.innerHTML = '';
   if(today < 0 || today >= TOTAL_DAYS){
@@ -3419,6 +3481,13 @@ function renderCategory(cat, dayIdx, data){
 
 function habitMetaText(h, data){
   if(h.kind === 'binary') return '';
+  if(h.kind === 'weight'){
+    const v = data.habits[h.id];
+    if(v && typeof v.lbs === 'number' && v.lbs > 0){
+      return '<span class="accent">'+Math.round(v.lbs * 10) / 10+' lbs</span>';
+    }
+    return '<span class="dim">not logged</span>';
+  }
   const v = data.habits[h.id];
   const total = logsTotal(h, data);
   const target = h.kind==='timed' ? h.full : h.target;
@@ -3436,7 +3505,146 @@ function habitMetaText(h, data){
     + '<span class="dim">·</span>'+fmt(left)+' to go';
 }
 
+function saveWeight(lbs){
+  const key = ymd(dateForDayIndex(viewingDayIdx));
+  const data = getDay(key);
+  if(!data.habits.weight || typeof data.habits.weight !== 'object' || Array.isArray(data.habits.weight)){
+    data.habits.weight = { lbs: null };
+  }
+  data.habits.weight.lbs = lbs;
+  weightEditingKey = null;
+  saveState(key); render();
+}
+
+function renderWeightHabit(h, dayIdx, data){
+  const wrap = document.createElement('div');
+  wrap.className = 'habit binary-habit weight-habit';
+  wrap.dataset.id = h.id;
+  const complete = habitComplete(h, data);
+  if(complete) wrap.classList.add('done');
+
+  const row = document.createElement('div');
+  row.className = 'habit-row'; row.setAttribute('role','button'); row.tabIndex = 0;
+
+  const info = document.createElement('div'); info.className = 'habit-info';
+  const label = document.createElement('div'); label.className = 'habit-label';
+  label.textContent = h.label;
+  info.appendChild(label);
+
+  const key = ymd(dateForDayIndex(dayIdx));
+  const isEditing = (weightEditingKey === key);
+  const v = data.habits[h.id];
+  const currentLbs = (v && typeof v.lbs === 'number' && v.lbs > 0) ? v.lbs : null;
+
+  if(isEditing){
+    const editWrap = document.createElement('div');
+    editWrap.className = 'weight-edit-row';
+
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.className = 'weight-input';
+    input.placeholder = 'lbs';
+    input.min = '0';
+    input.step = '0.1';
+    input.value = currentLbs == null ? '' : String(currentLbs);
+    editWrap.appendChild(input);
+
+    const saveBtn = document.createElement('button');
+    saveBtn.type = 'button';
+    saveBtn.className = 'weight-save-btn';
+    saveBtn.innerHTML = '✓';
+    saveBtn.setAttribute('aria-label', 'Save weight');
+    editWrap.appendChild(saveBtn);
+
+    info.appendChild(editWrap);
+
+    const commit = () => {
+      const raw = input.value.trim();
+      if(!raw){
+        // Empty value cancels edit without changing
+        weightEditingKey = null;
+        render();
+        return;
+      }
+      const val = parseFloat(raw);
+      if(isNaN(val) || val <= 0){
+        weightEditingKey = null;
+        render();
+        return;
+      }
+      saveWeight(val);
+    };
+    saveBtn.addEventListener('click', (e) => { e.stopPropagation(); commit(); });
+    input.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){ e.preventDefault(); commit(); }
+      else if(e.key === 'Escape'){ e.preventDefault(); weightEditingKey = null; render(); }
+    });
+    input.addEventListener('click', (e) => e.stopPropagation());
+    // Focus + select existing value after render lands.
+    setTimeout(() => { try { input.focus(); input.select(); } catch(_){} }, 0);
+  } else {
+    const metaHtml = habitMetaText(h, data);
+    if(metaHtml){
+      const meta = document.createElement('div'); meta.className = 'habit-meta';
+      meta.innerHTML = metaHtml;
+      // Small edit icon shown only when a weight is already logged.
+      if(currentLbs != null){
+        const editIcon = document.createElement('button');
+        editIcon.type = 'button';
+        editIcon.className = 'weight-edit-icon';
+        editIcon.innerHTML = '✎';
+        editIcon.setAttribute('aria-label', 'Edit weight');
+        editIcon.addEventListener('click', (e) => {
+          e.stopPropagation();
+          weightEditingKey = key;
+          render();
+        });
+        meta.appendChild(editIcon);
+      }
+      info.appendChild(meta);
+    }
+  }
+
+  row.appendChild(info);
+
+  // Ring — click also enters edit mode (per spec).
+  const progress = complete ? 1 : 0;
+  const ringBtn = document.createElement('button');
+  ringBtn.type = 'button';
+  ringBtn.className = 'habit-ring-btn' + (complete ? ' is-complete' : '');
+  ringBtn.setAttribute('aria-label', (complete ? 'Edit weight: ' : 'Log weight: ') + h.label);
+  ringBtn.innerHTML = ringSVG(progress, { size: 28, stroke: 2.2, complete: complete });
+  ringBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    weightEditingKey = key;
+    render();
+  });
+  row.appendChild(ringBtn);
+
+  // Row click → enter edit (skipping clicks on input / save / ring / edit-icon).
+  row.addEventListener('click', (e) => {
+    if(e.target.closest('.habit-ring-btn')) return;
+    if(e.target.closest('.weight-edit-row')) return;
+    if(e.target.closest('.weight-edit-icon')) return;
+    weightEditingKey = key;
+    render();
+  });
+  row.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' || e.key === ' '){
+      if(document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('weight-input')) return;
+      e.preventDefault();
+      weightEditingKey = key;
+      render();
+    }
+  });
+
+  wrap.appendChild(row);
+  return wrap;
+}
+
 function renderHabit(h, dayIdx, data){
+  // Weight has its own simple inline-input UI (no drawer).
+  if(h.kind === 'weight') return renderWeightHabit(h, dayIdx, data);
   const wrap = document.createElement('div');
   wrap.className = 'habit ' + (DRAWER_KINDS.has(h.kind) ? 'drawer-habit' : 'binary-habit');
   wrap.dataset.id = h.id;
@@ -3902,142 +4110,6 @@ async function bootstrapFromCloud(opts){
   } catch(_){ /* silent fallback to localStorage already in state */ }
 }
 
-// ----- One-time migration upload (button) -----
-async function runOneTimeCloudMigration(){
-  const sb = getCloudClient();
-  if(!sb) return { ok: false, reason: 'no-client' };
-
-  // Test that tables exist by selecting from each.
-  const h = await sb.from('habit_days').select('id').limit(1);
-  if(h.error && isMissingTableError(h.error)) return { ok: false, reason: 'no-tables' };
-  if(h.error) return { ok: false, reason: 'error', error: h.error };
-  const r = await sb.from('revenue_entries').select('id').limit(1);
-  if(r.error && isMissingTableError(r.error)) return { ok: false, reason: 'no-tables' };
-  if(r.error) return { ok: false, reason: 'error', error: r.error };
-
-  // Upload habit days as upserts (preserves existing rows on re-run).
-  const habitRows = [];
-  for(const key of Object.keys(state.days || {})){
-    const idx = dayIndexFromKey(key);
-    if(idx === null || idx < 0) continue;
-    habitRows.push({
-      day_index: idx,
-      data: state.days[key],
-      updated_at: new Date().toISOString()
-    });
-  }
-  if(habitRows.length){
-    const up = await sb.from('habit_days').upsert(habitRows, { onConflict: 'day_index' });
-    if(up.error) return { ok: false, reason: 'error', error: up.error };
-  }
-
-  // Upload revenue entries. Only insert ones not already cloud-backed
-  // (entries whose id is not a UUID). For each new insert, swap the local
-  // id to the returned UUID so future deletes can target the cloud row.
-  let insertedRevenue = 0;
-  for(const key of Object.keys(revenueState.days || {})){
-    const idx = dayIndexFromKey(key);
-    if(idx === null || idx < 0) continue;
-    const list = revenueState.days[key] || [];
-    for(const e of list){
-      if(/^[0-9a-f-]{36}$/i.test(e.id)) continue;
-      const ins = await sb.from('revenue_entries').insert({
-        day_index: idx,
-        description: e.description || '',
-        amount: e.amount,
-        timestamp: new Date(e.timestamp || Date.now()).toISOString()
-      }).select().single();
-      if(ins.error) return { ok: false, reason: 'error', error: ins.error };
-      if(ins.data && ins.data.id){
-        e.id = ins.data.id;
-        insertedRevenue++;
-      }
-    }
-  }
-  if(insertedRevenue > 0){
-    try { localStorage.setItem(REVENUE_KEY, JSON.stringify(revenueState)); }catch(e){}
-  }
-
-  return {
-    ok: true,
-    habitCount: habitRows.length,
-    revenueCount: insertedRevenue
-  };
-}
-
-// ----- Migration section wiring -----
-function setupCloudMigrationSection(){
-  const section   = document.getElementById('cloud-migrate-section');
-  const btn       = document.getElementById('cloud-migrate-btn');
-  const statusEl  = document.getElementById('cloud-migrate-status');
-  const sqlWrap   = document.getElementById('cloud-migrate-sql');
-  const sqlBlock  = document.getElementById('cloud-migrate-sql-block');
-  const copyBtn   = document.getElementById('cloud-migrate-copy');
-  const openLink  = document.getElementById('cloud-migrate-open');
-  if(!section || !btn) return;
-
-  // Visible only if v1 localStorage exists AND Supabase creds are stored.
-  function shouldShow(){
-    let hasLocal = false;
-    let hasCreds = false;
-    try { hasLocal = !!localStorage.getItem(STORAGE_KEY); }catch(_){}
-    try { hasCreds = !!localStorage.getItem(SUPABASE_CREDS_KEY_AARON); }catch(_){}
-    return hasLocal && hasCreds;
-  }
-  if(!shouldShow()){ section.hidden = true; return; }
-  section.hidden = false;
-  sqlBlock.textContent = CLOUD_SCHEMA_SQL;
-
-  // SQL-editor deep link, if we can derive one from the creds URL.
-  try {
-    const creds = JSON.parse(localStorage.getItem(SUPABASE_CREDS_KEY_AARON));
-    const host = new URL(creds.url).host;
-    const ref = host.split('.')[0];
-    if(ref) openLink.href = 'https://supabase.com/dashboard/project/' + ref + '/sql/new';
-  } catch(_){}
-
-  copyBtn.addEventListener('click', async function(){
-    try {
-      await navigator.clipboard.writeText(CLOUD_SCHEMA_SQL);
-      const orig = copyBtn.textContent;
-      copyBtn.textContent = 'Copied!';
-      setTimeout(function(){ copyBtn.textContent = orig; }, 1200);
-    } catch(_){}
-  });
-
-  btn.addEventListener('click', async function(){
-    btn.disabled = true;
-    statusEl.className = 'cloud-migrate-status';
-    statusEl.textContent = 'Uploading…';
-    sqlWrap.hidden = true;
-    try {
-      const result = await runOneTimeCloudMigration();
-      if(result.ok){
-        statusEl.className = 'cloud-migrate-status success';
-        statusEl.textContent =
-          'Migrated ' + result.habitCount + ' habit day' + (result.habitCount === 1 ? '' : 's') +
-          ' and ' + result.revenueCount + ' revenue entr' + (result.revenueCount === 1 ? 'y' : 'ies') +
-          ' to cloud. Local data preserved as backup.';
-      } else if(result.reason === 'no-client'){
-        statusEl.className = 'cloud-migrate-status error';
-        statusEl.textContent = 'Supabase not connected. Connect in the Outreach tab first.';
-      } else if(result.reason === 'no-tables'){
-        statusEl.className = 'cloud-migrate-status';
-        statusEl.textContent = '';
-        sqlWrap.hidden = false;
-      } else {
-        statusEl.className = 'cloud-migrate-status error';
-        statusEl.textContent = 'Error: ' + ((result.error && result.error.message) || 'unknown');
-      }
-    } catch(e){
-      statusEl.className = 'cloud-migrate-status error';
-      statusEl.textContent = 'Error: ' + (e.message || e);
-    } finally {
-      btn.disabled = false;
-    }
-  });
-}
-
 // INIT
 
 function scheduleMidnightRefresh(){
@@ -4056,7 +4128,6 @@ async function initialBoot(){
   }
   render();
   scheduleMidnightRefresh();
-  setupCloudMigrationSection();
 }
 initialBoot();
 
