@@ -5271,8 +5271,10 @@ document.querySelectorAll('.tab').forEach(btn => {
     }
     const events = buildActivityEvents(history);
     // Per change #3: only the top (most-recent) event gets a × delete button.
+    // Per this round: don't show × at all when it's the only entry — there
+    // must always be at least one activity entry left on a lead.
     const renderEvent = function(ev, idx){
-      const opts = { allowDelete: idx === 0 };
+      const opts = { allowDelete: idx === 0 && events.length > 1 };
       if(ev.type === 'note-edit') return renderNoteEditEventHtml(ev.h, ev.edit, opts);
       return renderActivityRowHtml(ev.h, opts);
     };
@@ -5779,17 +5781,11 @@ document.querySelectorAll('.tab').forEach(btn => {
             render();
           } else if(action === 'delete-activity'){
             // Per change #3: × on the most-recent activity entry deletes it.
+            // The × button isn't rendered at all when it would leave the lead
+            // with zero activity entries, so we no longer warn about that.
             const evType = btn.dataset.eventType;
-            const histList = leadHistories.get(id) || [];
-            let warned = false;
             if(evType === 'status'){
-              // If this is the only history row, warn before deleting.
-              if(histList.length <= 1){
-                if(!confirm('This will remove all history for this lead.\n\nDelete this entry?')) return;
-                warned = true;
-              } else {
-                if(!confirm('Delete this activity entry?')) return;
-              }
+              if(!confirm('Delete this activity entry?')) return;
               try {
                 await deleteHistoryRow(btn.dataset.historyId, id);
                 await loadLeads();
@@ -5808,7 +5804,6 @@ document.querySelectorAll('.tab').forEach(btn => {
                 render();
               } catch(err){ alert('Error: ' + errMsg(err)); }
             }
-            void warned;
           }
         });
       });
