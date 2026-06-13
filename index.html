@@ -1607,6 +1607,33 @@
     letter-spacing: 0.05em;
     margin-left: 6px;
   }
+  /* Inline "required" marker shown on labels in forms where every field
+     must be filled before submit. */
+  .outreach-required {
+    color: rgba(255, 100, 100, 0.55);
+    margin-left: 4px;
+    font-weight: 600;
+  }
+  /* Subtle red border when a required field is empty after the user has
+     interacted with the form. */
+  .outreach-required-input.invalid {
+    border-color: rgba(255, 100, 100, 0.45);
+    background: rgba(255, 100, 100, 0.04);
+  }
+  /* Rating-as-form-field — same star icons as the table but laid out as
+     a row of labelled stars sitting inside a form field. */
+  .outreach-rating-form {
+    padding: 4px 0;
+    gap: 6px;
+  }
+  .outreach-rating-form .outreach-star { font-size: 18px; padding: 4px 2px; }
+  .outreach-rating-form .outreach-star svg { width: 18px; height: 18px; }
+  .outreach-rating-form.invalid {
+    box-shadow: inset 0 0 0 1px rgba(255, 100, 100, 0.45);
+    border-radius: 6px;
+    padding: 4px 8px;
+    background: rgba(255, 100, 100, 0.04);
+  }
   .outreach-btn-danger {
     background: linear-gradient(135deg, #FF6B6B 0%, #d04040 100%);
     box-shadow: 0 0 14px rgba(255, 107, 107, 0.3);
@@ -4137,6 +4164,7 @@ document.querySelectorAll('.tab').forEach(btn => {
   let pendingNote = null;        // { kind, stage, leadId, leadName, statusLabel?, historyId?, oldStatus?, newStatus? }
   let editingNoteHistoryId = null;
   let newLeadStatus = null;      // selected status label inside the Add Lead overlay
+  let newLeadRating = null;      // selected rating (1-3) inside the Add Lead overlay
   let openDropdownId = null;     // 'filter' | 'sort' | 'lead-<id>' | 'add-lead-status' | null
   let currentSort = 'recent-updated';  // 'oldest-added' | 'newest-added' | 'recent-updated' | 'least-updated'
   let activityExpanded = false;
@@ -4440,13 +4468,15 @@ document.querySelectorAll('.tab').forEach(btn => {
     const ins = await supabaseClient.from('outreach_leads').insert({
       name: fields.name,
       profile_url: fields.profile_url || null,
-      status: fields.status
+      status: fields.status,
+      rating: (fields.rating == null) ? null : fields.rating
     }).select().single();
     if(ins.error) throw ins.error;
     const hist = await supabaseClient.from('outreach_status_history').insert({
       lead_id: ins.data.id,
       old_status: null,
-      new_status: fields.status
+      new_status: fields.status,
+      notes: fields.notes || null
     }).select().single();
     if(hist.error) throw hist.error;
     return { lead: ins.data, history: hist.data };
@@ -4967,26 +4997,43 @@ document.querySelectorAll('.tab').forEach(btn => {
       menu +
     '</div>';
   }
+  function renderAddLeadRatingHtml(){
+    const r = (newLeadRating == null) ? 0 : Number(newLeadRating);
+    let stars = '';
+    for(let i = 1; i <= 3; i++){
+      const filled = i <= r;
+      stars += '<button type="button" class="outreach-star' + (filled ? ' filled' : '') + '" data-action="rate-new-lead" data-rating="' + i + '" aria-label="Set rating to ' + i + '">' + STAR_SVG + '</button>';
+    }
+    return '<div class="outreach-rating outreach-rating-form" id="new-lead-rating">' + stars + '</div>';
+  }
   function renderAddFormInnerHtml(){
     return '<div class="outreach-overlay-header">' +
         '<div class="supabase-section-label">add lead</div>' +
         '<button type="button" class="outreach-collapse-btn" id="add-lead-close" aria-label="Close">✕</button>' +
       '</div>' +
       '<div class="supabase-input-group">' +
-        '<label class="supabase-input-label">Name</label>' +
-        '<input type="text" id="lead-name" class="supabase-input" placeholder="full name" autocomplete="off" />' +
+        '<label class="supabase-input-label">Name <span class="outreach-required">*</span></label>' +
+        '<input type="text" id="lead-name" class="supabase-input outreach-required-input" placeholder="full name" autocomplete="off" />' +
       '</div>' +
       '<div class="supabase-input-group">' +
-        '<label class="supabase-input-label">Profile URL <span class="outreach-optional">(optional)</span></label>' +
-        '<input type="text" id="lead-url" class="supabase-input" placeholder="https://…" autocomplete="off" />' +
+        '<label class="supabase-input-label">Profile URL <span class="outreach-required">*</span></label>' +
+        '<input type="text" id="lead-url" class="supabase-input outreach-required-input" placeholder="https://…" autocomplete="off" />' +
       '</div>' +
       '<div class="supabase-input-group">' +
-        '<label class="supabase-input-label">Status</label>' +
+        '<label class="supabase-input-label">Status <span class="outreach-required">*</span></label>' +
         renderAddLeadStatusDropdownHtml() +
+      '</div>' +
+      '<div class="supabase-input-group">' +
+        '<label class="supabase-input-label">Rating <span class="outreach-required">*</span></label>' +
+        renderAddLeadRatingHtml() +
+      '</div>' +
+      '<div class="supabase-input-group">' +
+        '<label class="supabase-input-label">Notes <span class="outreach-required">*</span></label>' +
+        '<textarea id="lead-note" class="supabase-input outreach-textarea outreach-required-input" rows="3" placeholder="first note about this lead"></textarea>' +
       '</div>' +
       '<div class="outreach-form-actions">' +
         '<button type="button" class="supabase-btn supabase-btn-secondary" id="form-cancel">Cancel</button>' +
-        '<button type="button" class="supabase-btn" id="form-save">Save Lead</button>' +
+        '<button type="button" class="supabase-btn" id="form-save" disabled>Save Lead</button>' +
       '</div>';
   }
 
@@ -5163,6 +5210,11 @@ document.querySelectorAll('.tab').forEach(btn => {
       '</div>';
   }
   function renderNotePromptInnerHtml(){
+    // Per change #2 (this round): notes are required across the app.
+    //   - 'change' (status change): no Skip button, Save disabled until text
+    //   - 'note-edit': Cancel button stays, Save disabled until text
+    //   - 'create': no longer reached — initial note is now captured in the
+    //     Add Lead form itself
     let headerText;
     if(pendingNote.kind === 'create') headerText = 'Add a note for the initial status';
     else if(pendingNote.kind === 'note-edit') headerText = 'Edit note';
@@ -5179,14 +5231,20 @@ document.querySelectorAll('.tab').forEach(btn => {
 
     const isEdit = pendingNote.kind === 'note-edit';
     const initialValue = isEdit ? (pendingNote.currentNote || '') : '';
-    const skipLabel = isEdit ? 'Cancel' : 'Skip';
-    const saveLabel = isEdit ? 'Save Note' : 'Save Note';
+    // Save starts enabled only if the note-edit textarea is pre-filled with
+    // non-whitespace text; otherwise it's disabled until the user types.
+    const initiallyValid = /\S/.test(initialValue);
+
+    const cancelBtnHtml = isEdit
+      ? '<button type="button" class="supabase-btn supabase-btn-secondary" id="note-prompt-skip">Cancel</button>'
+      : '';
+
     return '<div class="supabase-section-label">' + escapeHtml(headerText) + '</div>' +
       '<div class="outreach-overlay-sub">' + escapeHtml(sub) + '</div>' +
-      '<textarea id="note-prompt-input" class="supabase-input outreach-textarea" rows="3" placeholder="' + (isEdit ? 'note…' : 'optional note…') + '">' + escapeHtml(initialValue) + '</textarea>' +
+      '<textarea id="note-prompt-input" class="supabase-input outreach-textarea outreach-required-input" rows="3" placeholder="note…">' + escapeHtml(initialValue) + '</textarea>' +
       '<div class="outreach-form-actions">' +
-        '<button type="button" class="supabase-btn supabase-btn-secondary" id="note-prompt-skip">' + escapeHtml(skipLabel) + '</button>' +
-        '<button type="button" class="supabase-btn" id="note-prompt-save">' + escapeHtml(saveLabel) + '</button>' +
+        cancelBtnHtml +
+        '<button type="button" class="supabase-btn" id="note-prompt-save"' + (initiallyValid ? '' : ' disabled') + '>Save Note</button>' +
       '</div>';
   }
 
@@ -5553,9 +5611,15 @@ document.querySelectorAll('.tab').forEach(btn => {
     if(addBtn) addBtn.addEventListener('click', function(){
       showingAddForm = !showingAddForm;
       // Reset the selected status to the first available whenever the overlay
-      // opens — so the dropdown always has a valid default.
-      if(showingAddForm) newLeadStatus = (statuses[0] && statuses[0].label) || null;
-      else newLeadStatus = null;
+      // opens — so the dropdown always has a valid default. Rating starts
+      // unset so the user must explicitly pick one.
+      if(showingAddForm){
+        newLeadStatus = (statuses[0] && statuses[0].label) || null;
+        newLeadRating = null;
+      } else {
+        newLeadStatus = null;
+        newLeadRating = null;
+      }
       render();
     });
 
@@ -5584,6 +5648,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     if(addLeadClose) addLeadClose.addEventListener('click', function(){
       showingAddForm = false;
       newLeadStatus = null;
+      newLeadRating = null;
       render();
     });
     document.querySelectorAll('[data-action="overlay-dismiss-add"]').forEach(function(ov){
@@ -5591,6 +5656,7 @@ document.querySelectorAll('.tab').forEach(btn => {
         if(e.target !== ov) return;
         showingAddForm = false;
         newLeadStatus = null;
+        newLeadRating = null;
         render();
       });
     });
@@ -5598,35 +5664,112 @@ document.querySelectorAll('.tab').forEach(btn => {
     // Add Lead status dropdown options are bound via the delegated
     // handleDynamicMenuClick handler (no static binding needed).
 
+    // Add Lead form — gather field values for validation + save.
+    function readAddLeadFields(){
+      const nameEl = document.getElementById('lead-name');
+      const urlEl  = document.getElementById('lead-url');
+      const noteEl = document.getElementById('lead-note');
+      return {
+        name:   nameEl ? nameEl.value.trim() : '',
+        url:    urlEl  ? urlEl.value.trim()  : '',
+        status: newLeadStatus || '',
+        rating: newLeadRating,
+        note:   noteEl ? noteEl.value.trim() : ''
+      };
+    }
+    function isAddLeadValid(){
+      const f = readAddLeadFields();
+      return !!f.name && !!f.url && !!f.status &&
+             (f.rating === 1 || f.rating === 2 || f.rating === 3) &&
+             !!f.note;
+    }
+    function updateAddLeadFormStateInPlace(){
+      // Toggle the Save button's disabled attribute in place.
+      const btn = document.getElementById('form-save');
+      if(btn) btn.disabled = !isAddLeadValid();
+    }
+    function markAddLeadInvalidFields(){
+      // Show inline indicators on whichever required fields are still empty.
+      const f = readAddLeadFields();
+      const nameEl = document.getElementById('lead-name');
+      const urlEl  = document.getElementById('lead-url');
+      const noteEl = document.getElementById('lead-note');
+      const ratingWrap = document.getElementById('new-lead-rating');
+      if(nameEl) nameEl.classList.toggle('invalid', !f.name);
+      if(urlEl)  urlEl.classList.toggle('invalid',  !f.url);
+      if(noteEl) noteEl.classList.toggle('invalid', !f.note);
+      if(ratingWrap) ratingWrap.classList.toggle('invalid',
+        !(f.rating === 1 || f.rating === 2 || f.rating === 3));
+    }
+
+    // Live disable Save while the user types / picks options.
+    ['lead-name', 'lead-url', 'lead-note'].forEach(function(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.addEventListener('input', function(){
+        // Clear the invalid mark on this field as soon as it has content.
+        if(el.value.trim()) el.classList.remove('invalid');
+        updateAddLeadFormStateInPlace();
+      });
+    });
+
+    // Star handler for the Add Lead form rating field.
+    document.querySelectorAll('[data-action="rate-new-lead"]').forEach(function(starBtn){
+      starBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        e.preventDefault();
+        const clicked = parseInt(starBtn.dataset.rating, 10) || 0;
+        // Click the current highest filled star → clear (same UX as table).
+        newLeadRating = (newLeadRating === clicked) ? null : clicked;
+        const wrap = document.getElementById('new-lead-rating');
+        if(wrap){
+          wrap.querySelectorAll('.outreach-star').forEach(function(b){
+            const idx = parseInt(b.dataset.rating, 10);
+            if(newLeadRating != null && idx <= newLeadRating) b.classList.add('filled');
+            else b.classList.remove('filled');
+          });
+          if(newLeadRating != null) wrap.classList.remove('invalid');
+        }
+        updateAddLeadFormStateInPlace();
+      });
+    });
+
     const saveBtn = document.getElementById('form-save');
     if(saveBtn) saveBtn.addEventListener('click', async function(){
-      const name = document.getElementById('lead-name').value.trim();
-      const url = document.getElementById('lead-url').value.trim();
-      const status = newLeadStatus || (statuses[0] && statuses[0].label) || '';
-      if(!name){ alert('Name is required'); return; }
-      if(!status){ alert('No status available — add one in Manage Statuses first'); return; }
+      // Defensive: button should already be disabled while invalid, but
+      // mark fields anyway if somehow reached without a valid form.
+      if(!isAddLeadValid()){
+        markAddLeadInvalidFields();
+        return;
+      }
+      const f = readAddLeadFields();
+      saveBtn.disabled = true;
       try {
-        const result = await createLead({ name: name, profile_url: url || null, status: status });
+        await createLead({
+          name: f.name,
+          profile_url: f.url,
+          status: f.status,
+          rating: f.rating,
+          notes: f.note
+        });
         showingAddForm = false;
         newLeadStatus = null;
+        newLeadRating = null;
         await loadLeads();
-        // Prompt for note on the initial status row that was just created
         await loadAllHistories();
-        pendingNote = {
-          kind: 'create',
-          stage: 'note',
-          leadId: result.lead.id,
-          leadName: result.lead.name,
-          historyId: result.history.id,
-          statusLabel: status
-        };
+        // Per change #1 (this round): no post-save note prompt — the note
+        // was already saved into the initial history row by createLead.
         render();
-      } catch(e){ alert('Error: ' + errMsg(e)); }
+      } catch(e){
+        alert('Error: ' + errMsg(e));
+        saveBtn.disabled = false;
+      }
     });
     const cancelBtn = document.getElementById('form-cancel');
     if(cancelBtn) cancelBtn.addEventListener('click', function(){
       showingAddForm = false;
       newLeadStatus = null;
+      newLeadRating = null;
       render();
     });
 
@@ -5642,22 +5785,33 @@ document.querySelectorAll('.tab').forEach(btn => {
       render();
     });
 
-    // Overlay — note prompt Save / Skip
+    // Overlay — note prompt Save (always required) + Cancel (note-edit only)
+    const noteInput = document.getElementById('note-prompt-input');
     const noteSaveBtn = document.getElementById('note-prompt-save');
+    if(noteInput && noteSaveBtn){
+      // Live-disable Save until the textarea has non-whitespace text.
+      const sync = function(){
+        const v = noteInput.value || '';
+        const valid = /\S/.test(v);
+        noteSaveBtn.disabled = !valid;
+        if(valid) noteInput.classList.remove('invalid');
+      };
+      noteInput.addEventListener('input', sync);
+    }
     if(noteSaveBtn) noteSaveBtn.addEventListener('click', async function(){
       const input = document.getElementById('note-prompt-input');
       const note = input ? input.value.trim() : '';
+      // Defensive: button should be disabled while empty.
+      if(!note){
+        if(input) input.classList.add('invalid');
+        return;
+      }
       await commitPendingNote(note);
     });
+    // Cancel is only rendered for the note-edit kind — dismiss without saving.
     const noteSkipBtn = document.getElementById('note-prompt-skip');
-    if(noteSkipBtn) noteSkipBtn.addEventListener('click', async function(){
-      // Cancel on note-edit dismisses without writing; Skip on create/change
-      // commits an empty note (records the status row without a note).
-      if(pendingNote && pendingNote.kind === 'note-edit'){
-        cancelPendingNote();
-      } else {
-        await commitPendingNote('');
-      }
+    if(noteSkipBtn) noteSkipBtn.addEventListener('click', function(){
+      cancelPendingNote();
     });
 
     document.querySelectorAll('.outreach-row').forEach(function(row){
