@@ -1452,6 +1452,90 @@
     white-space: nowrap;
   }
 
+  /* ===== MULTI-STATUS STACK ===== */
+  /* Stack of colored status pills, one per line, with an "Add status"
+     dropdown beneath them. Used in both collapsed and expanded rows. */
+  .outreach-statuses-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    min-width: 0;
+  }
+  .outreach-status-pill { padding-right: 6px; }
+  .outreach-status-pill-label { display: inline-block; }
+  .outreach-status-pill-remove {
+    margin-left: 6px;
+    background: transparent;
+    border: none;
+    color: color-mix(in oklab, var(--badge-color) 75%, transparent);
+    font: inherit;
+    font-size: 13px;
+    line-height: 1;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 140ms var(--ease), color 140ms var(--ease);
+  }
+  .outreach-status-pill-remove:hover {
+    background: color-mix(in oklab, var(--badge-color) 30%, transparent);
+    color: var(--badge-color);
+  }
+
+  /* "Add status" dropdown trigger — smaller, neutral, doesn't compete
+     visually with the colored pills above it. */
+  .outreach-cstatus-add { display: inline-block; }
+  .outreach-cstatus-add-trigger {
+    background: transparent;
+    border: 1px dashed rgba(255, 255, 255, 0.18);
+    padding: 3px 10px 3px 8px;
+    color: var(--text-3);
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+    transition: color 140ms var(--ease), border-color 140ms var(--ease), background 140ms var(--ease);
+  }
+  .outreach-cstatus-add-trigger:hover {
+    color: var(--text);
+    border-color: rgba(255, 255, 255, 0.36);
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .outreach-cstatus-add.open .outreach-cstatus-add-trigger {
+    color: var(--text);
+    border-style: solid;
+    border-color: rgba(77, 137, 255, 0.5);
+    background: rgba(77, 137, 255, 0.06);
+  }
+  .outreach-cstatus-add.is-full .outreach-cstatus-add-trigger {
+    opacity: 0.45;
+    cursor: not-allowed;
+    border-color: rgba(255, 255, 255, 0.10);
+  }
+  .outreach-cstatus-add-plus {
+    font-size: 12px;
+    line-height: 1;
+    color: inherit;
+  }
+
+  /* Confirm-overlay sigils for the add/remove flows. */
+  .outreach-confirm-plus,
+  .outreach-confirm-minus {
+    font-size: 18px;
+    line-height: 1;
+    color: var(--text-3);
+  }
+  .outreach-confirm-plus { color: #06FFA5; }
+  .outreach-confirm-minus { color: #ff6464; }
+
   .outreach-collapse-btn {
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -4272,6 +4356,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     "alter table outreach_status_history add column if not exists notes_updated_at timestamptz;",
     "alter table outreach_leads drop column if exists notes;",
     "alter table outreach_leads add column if not exists rating integer;",
+    "alter table outreach_leads add column if not exists statuses text[];",
     "create table if not exists outreach_note_edits (",
     "  id uuid default gen_random_uuid() primary key,",
     "  history_id uuid references outreach_status_history(id) on delete cascade,",
@@ -4530,6 +4615,13 @@ document.querySelectorAll('.tab').forEach(btn => {
       if(/column .* rating|rating .* does not exist|PGRST204|42703/i.test(msg)) return false;
       throw r3.error;
     }
+    // Multi-status `statuses` text[] column on outreach_leads.
+    const r4 = await supabaseClient.from('outreach_leads').select('id, statuses').limit(1);
+    if(r4.error){
+      const msg = (r4.error.message || '') + ' ' + (r4.error.code || '');
+      if(/column .* statuses|statuses .* does not exist|PGRST204|42703/i.test(msg)) return false;
+      throw r4.error;
+    }
     return true;
   }
   async function tryAutoMigrate(){
@@ -4556,7 +4648,24 @@ document.querySelectorAll('.tab').forEach(btn => {
   async function loadLeads(){
     const r = await supabaseClient.from('outreach_leads').select('*').order('created_at', { ascending: false });
     if(r.error) throw r.error;
-    leads = r.data || [];
+    leads = (r.data || []).map(normalizeLeadStatuses);
+  }
+  // Backfill the new `statuses` array from the legacy single `status` column
+  // when missing/empty. Mutates and returns the lead.
+  function normalizeLeadStatuses(lead){
+    if(!Array.isArray(lead.statuses) || lead.statuses.length === 0){
+      lead.statuses = lead.status ? [lead.status] : [];
+    }
+    return lead;
+  }
+  // Most recently added status — used as the representative for ordering /
+  // legacy `status` column writes / labels that need a single value.
+  function representativeStatus(lead){
+    const arr = (lead && Array.isArray(lead.statuses)) ? lead.statuses : [];
+    return arr.length ? arr[arr.length - 1] : (lead && lead.status) || '';
+  }
+  function leadHasStatus(lead, label){
+    return Array.isArray(lead.statuses) && lead.statuses.indexOf(label) !== -1;
   }
   async function loadLeadHistory(leadId){
     const r = await supabaseClient.from('outreach_status_history')
@@ -4608,6 +4717,7 @@ document.querySelectorAll('.tab').forEach(btn => {
       name: fields.name,
       profile_url: fields.profile_url || null,
       status: fields.status,
+      statuses: [fields.status],
       rating: (fields.rating == null) ? null : fields.rating
     }).select().single();
     if(ins.error) throw ins.error;
@@ -4638,6 +4748,49 @@ document.querySelectorAll('.tab').forEach(btn => {
       lead_id: lead.id,
       old_status: lead.status,
       new_status: newStatus,
+      notes: note || null
+    });
+    if(h.error) throw h.error;
+  }
+  // Append a status to the lead's statuses array (skips if already present).
+  // Inserts a history row with old=null + new=addedStatus (same shape as the
+  // initial "Added with status X" event). Also keeps the legacy `status`
+  // column in sync with the new representative.
+  async function addStatusToLead(lead, addedStatus, note){
+    const current = Array.isArray(lead.statuses) ? lead.statuses.slice() : [];
+    if(current.indexOf(addedStatus) !== -1) return;
+    current.push(addedStatus);
+    const u = await supabaseClient.from('outreach_leads')
+      .update({ statuses: current, status: addedStatus })
+      .eq('id', lead.id);
+    if(u.error) throw u.error;
+    const h = await supabaseClient.from('outreach_status_history').insert({
+      lead_id: lead.id,
+      old_status: null,
+      new_status: addedStatus,
+      notes: note || null
+    });
+    if(h.error) throw h.error;
+  }
+  // Remove a status from the lead's statuses array. Inserts a history row
+  // with old_status === new_status === removedStatus as a "removal" sentinel
+  // (renderActivityRowHtml branches on that). Keeps the legacy `status`
+  // column synced to the new representative.
+  async function removeStatusFromLead(lead, removedStatus, note){
+    const current = Array.isArray(lead.statuses) ? lead.statuses.slice() : [];
+    const idx = current.indexOf(removedStatus);
+    if(idx === -1) return;
+    current.splice(idx, 1);
+    if(current.length === 0) throw new Error('A lead must have at least one status.');
+    const newRep = current[current.length - 1];
+    const u = await supabaseClient.from('outreach_leads')
+      .update({ statuses: current, status: newRep })
+      .eq('id', lead.id);
+    if(u.error) throw u.error;
+    const h = await supabaseClient.from('outreach_status_history').insert({
+      lead_id: lead.id,
+      old_status: removedStatus,
+      new_status: removedStatus,
       notes: note || null
     });
     if(h.error) throw h.error;
@@ -4914,7 +5067,7 @@ document.querySelectorAll('.tab').forEach(btn => {
   function renderTracker(root){
     const statusFiltered = currentFilter === 'all'
       ? leads
-      : leads.filter(function(l){ return l.status === currentFilter; });
+      : leads.filter(function(l){ return leadHasStatus(l, currentFilter); });
     const qLower = (searchQuery || '').trim().toLowerCase();
     const searchFiltered = qLower
       ? statusFiltered.filter(function(l){ return leadMatchesSearch(l, qLower); })
@@ -5115,7 +5268,67 @@ document.querySelectorAll('.tab').forEach(btn => {
       menu +
     '</div>';
   }
+  // Renders all of a lead's statuses as a vertical stack of colored pills.
+  // When `removable` is true (expanded view), each pill gets a small × to
+  // remove that status individually. Below the pills sits an "Add status"
+  // dropdown.
+  function renderStatusStackHtml(lead, opts){
+    opts = opts || {};
+    const removable = !!opts.removable;
+    const statusesArr = (lead.statuses && lead.statuses.length) ? lead.statuses : [];
+    const pills = statusesArr.map(function(label){
+      const color = statusColor(label);
+      const removeBtn = removable
+        ? '<button type="button" class="outreach-status-pill-remove" data-action="remove-status" data-lead-id="' + lead.id + '" data-value="' + escapeHtml(label) + '" data-noexpand="1" aria-label="Remove ' + escapeHtml(label) + '">×</button>'
+        : '';
+      return '<span class="outreach-status-badge outreach-status-pill" style="--badge-color: ' + escapeHtml(color) + '" data-noexpand="1">' +
+        '<span class="outreach-status-pill-label">' + escapeHtml(label) + '</span>' +
+        removeBtn +
+      '</span>';
+    }).join('');
+    return '<div class="outreach-statuses-stack" data-noexpand="1">' +
+      pills +
+      renderAddStatusDropdownHtml(lead) +
+    '</div>';
+  }
+  // "Add status" dropdown — replaces the old single-status pill dropdown on
+  // the row. Selecting an option appends that status to the lead's array
+  // (after the standard confirm + note prompt flow).
+  function renderAddStatusDropdownHtml(lead){
+    const dropdownId = 'lead-' + lead.id;
+    const isOpen = openDropdownId === dropdownId;
+    // Hide statuses the lead already has; if all are added, render the
+    // trigger disabled so the row still lays out the same way.
+    const remaining = statuses.filter(function(s){ return !leadHasStatus(lead, s.label); });
+    const noneLeft = remaining.length === 0;
+
+    let menu = '';
+    if(isOpen && !noneLeft){
+      menu = '<div class="outreach-cdrop-menu">' +
+        remaining.map(function(s){
+          const c = s.color || '#4D89FF';
+          return '<button type="button" class="outreach-cdrop-option" ' +
+            'data-action="status-select" data-lead-id="' + lead.id + '" data-value="' + escapeHtml(s.label) + '">' +
+            dotSvg(c) + '<span class="outreach-cdrop-option-label">' + escapeHtml(s.label) + '</span>' +
+          '</button>';
+        }).join('') +
+      '</div>';
+    }
+    const triggerDisabledAttr = noneLeft ? ' disabled' : '';
+    return '<div class="outreach-cdrop outreach-cstatus-add' + (isOpen && !noneLeft ? ' open' : '') + (noneLeft ? ' is-full' : '') + '" data-dropdown-id="' + dropdownId + '" data-noexpand="1">' +
+      '<button type="button" class="outreach-cdrop-trigger outreach-cstatus-add-trigger" data-action="dropdown-toggle" data-dropdown-id="' + dropdownId + '" data-noexpand="1"' + triggerDisabledAttr + '>' +
+        '<span class="outreach-cstatus-add-plus" aria-hidden="true">+</span>' +
+        '<span class="outreach-cdrop-label">' + (noneLeft ? 'All added' : 'Add status') + '</span>' +
+      '</button>' +
+      menu +
+    '</div>';
+  }
+  // Kept for callers that still expect a single-pill dropdown helper — now
+  // delegates to the stack renderer (collapsed mode = no × buttons).
   function renderStatusPillDropdownHtml(lead){
+    return renderStatusStackHtml(lead, { removable: false });
+  }
+  function _legacyRenderStatusPillDropdownHtml_unused(lead){
     const dropdownId = 'lead-' + lead.id;
     const isOpen = openDropdownId === dropdownId;
     const color = statusColor(lead.status);
@@ -5244,7 +5457,8 @@ document.querySelectorAll('.tab').forEach(btn => {
   // Per change #1 (this round): the row layout is name + copy button + status
   // + timestamp + most recent note. URL is NOT shown in the collapsed view —
   // only the copy button (which copies the URL silently).
-  function renderLeadTopRowCellsHtml(lead){
+  function renderLeadTopRowCellsHtml(lead, opts){
+    opts = opts || {};
     const nameHtml = (hrefValid(lead.profile_url)
       ? '<a href="' + escapeHtml(lead.profile_url) + '" target="_blank" rel="noopener noreferrer" class="outreach-lead-name outreach-link" data-noexpand="1">' + escapeHtml(lead.name) + '</a>'
       : '<span class="outreach-lead-name">' + escapeHtml(lead.name) + '</span>');
@@ -5259,7 +5473,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     return '<div class="outreach-td outreach-col-name">' +
         '<div class="outreach-name-cell">' + nameHtml + copyHtml + '</div>' +
       '</div>' +
-      '<div class="outreach-td outreach-col-status">' + renderStatusPillDropdownHtml(lead) + '</div>' +
+      '<div class="outreach-td outreach-col-status">' + renderStatusStackHtml(lead, { removable: !!opts.removableStatuses }) + '</div>' +
       renderRatingCellHtml(lead) +
       '<div class="outreach-td outreach-col-updated">' + escapeHtml(fmtTodayOrFull(cellTs)) + '</div>' +
       '<div class="outreach-td outreach-col-notes">' +
@@ -5287,7 +5501,7 @@ document.querySelectorAll('.tab').forEach(btn => {
 
     if(isEditing){
       return '<div class="outreach-row outreach-row-expanded" data-lead-id="' + lead.id + '">' +
-        renderLeadTopRowCellsHtml(lead) +
+        renderLeadTopRowCellsHtml(lead, { removableStatuses: true }) +
         '<div class="outreach-expanded-body">' +
           '<div class="outreach-edit">' +
             '<div class="supabase-input-group">' +
@@ -5327,7 +5541,7 @@ document.querySelectorAll('.tab').forEach(btn => {
       '</div>';
 
     return '<div class="outreach-row outreach-row-expanded" data-lead-id="' + lead.id + '">' +
-      renderLeadTopRowCellsHtml(lead) +
+      renderLeadTopRowCellsHtml(lead, { removableStatuses: true }) +
       '<div class="outreach-expanded-body">' +
         subRowHtml +
         renderActivityLogHtml(history, lead) +
@@ -5370,6 +5584,32 @@ document.querySelectorAll('.tab').forEach(btn => {
           '<button type="button" class="supabase-btn" id="confirm-yes">Confirm</button>' +
         '</div>';
     }
+    if(pendingNote.kind === 'add-status'){
+      const c = statusColor(pendingNote.addedStatus);
+      return '<div class="supabase-section-label">add status?</div>' +
+        '<div class="outreach-overlay-sub">' + escapeHtml(pendingNote.leadName) + '</div>' +
+        '<div class="outreach-confirm-flow">' +
+          '<span class="outreach-confirm-plus">+</span>' +
+          '<span class="outreach-status-badge" style="--badge-color: ' + escapeHtml(c) + '">' + escapeHtml(pendingNote.addedStatus) + '</span>' +
+        '</div>' +
+        '<div class="outreach-form-actions">' +
+          '<button type="button" class="supabase-btn supabase-btn-secondary" id="confirm-cancel">Cancel</button>' +
+          '<button type="button" class="supabase-btn" id="confirm-yes">Confirm</button>' +
+        '</div>';
+    }
+    if(pendingNote.kind === 'remove-status'){
+      const c = statusColor(pendingNote.removedStatus);
+      return '<div class="supabase-section-label">remove status?</div>' +
+        '<div class="outreach-overlay-sub">' + escapeHtml(pendingNote.leadName) + '</div>' +
+        '<div class="outreach-confirm-flow">' +
+          '<span class="outreach-confirm-minus">×</span>' +
+          '<span class="outreach-status-badge" style="--badge-color: ' + escapeHtml(c) + '">' + escapeHtml(pendingNote.removedStatus) + '</span>' +
+        '</div>' +
+        '<div class="outreach-form-actions">' +
+          '<button type="button" class="supabase-btn supabase-btn-secondary" id="confirm-cancel">Cancel</button>' +
+          '<button type="button" class="supabase-btn" id="confirm-yes">Confirm</button>' +
+        '</div>';
+    }
     const oldColor = statusColor(pendingNote.oldStatus);
     const newColor = statusColor(pendingNote.newStatus);
     return '<div class="supabase-section-label">change status?</div>' +
@@ -5393,6 +5633,8 @@ document.querySelectorAll('.tab').forEach(btn => {
     let headerText;
     if(pendingNote.kind === 'create') headerText = 'Add a note for the initial status';
     else if(pendingNote.kind === 'note-edit') headerText = 'Edit note';
+    else if(pendingNote.kind === 'add-status') headerText = 'Add a note for the added status';
+    else if(pendingNote.kind === 'remove-status') headerText = 'Add a note for the removed status';
     else headerText = 'Add a note for the status change';
 
     let sub = pendingNote.leadName || '';
@@ -5400,6 +5642,10 @@ document.querySelectorAll('.tab').forEach(btn => {
       sub += ' · ' + pendingNote.oldStatus + ' → ' + pendingNote.newStatus;
     } else if(pendingNote.kind === 'note-edit'){
       sub += ' · status ' + pendingNote.statusLabel;
+    } else if(pendingNote.kind === 'add-status'){
+      sub += ' · + ' + pendingNote.addedStatus;
+    } else if(pendingNote.kind === 'remove-status'){
+      sub += ' · − ' + pendingNote.removedStatus;
     } else if(pendingNote.statusLabel){
       sub += ' · ' + pendingNote.statusLabel;
     }
@@ -5429,9 +5675,17 @@ document.querySelectorAll('.tab').forEach(btn => {
     opts = opts || {};
     const t = fmtTodayOrFull(h.changed_at);
     const isInitial = (h.old_status === null || h.old_status === undefined);
-    const statusLine = isInitial
-      ? '<span class="outreach-activity-text">Added with status <strong>' + escapeHtml(h.new_status) + '</strong></span>'
-      : '<span class="outreach-activity-text">Status: <strong>' + escapeHtml(h.old_status) + '</strong> → <strong>' + escapeHtml(h.new_status) + '</strong></span>';
+    // old_status === new_status is the multi-status "removal" sentinel
+    // (see removeStatusFromLead). Treat all three cases distinctly.
+    const isRemoval = !isInitial && h.old_status === h.new_status;
+    let statusLine;
+    if(isInitial){
+      statusLine = '<span class="outreach-activity-text">Added status <strong>' + escapeHtml(h.new_status) + '</strong></span>';
+    } else if(isRemoval){
+      statusLine = '<span class="outreach-activity-text">Removed status <strong>' + escapeHtml(h.new_status) + '</strong></span>';
+    } else {
+      statusLine = '<span class="outreach-activity-text">Status: <strong>' + escapeHtml(h.old_status) + '</strong> → <strong>' + escapeHtml(h.new_status) + '</strong></span>';
+    }
     const editGlyph = h.notes ? '✎' : '+';
     const editTitle = h.notes ? 'Edit note' : 'Add note';
 
@@ -5593,6 +5847,16 @@ document.querySelectorAll('.tab').forEach(btn => {
         if(!lead){ render(); return; }
         await changeStatusWithNote(lead, pn.newStatus, noteValue);
         await loadLeads();
+      } else if(pn.kind === 'add-status'){
+        const lead = leads.find(function(l){ return l.id === pn.leadId; });
+        if(!lead){ render(); return; }
+        await addStatusToLead(lead, pn.addedStatus, noteValue);
+        await loadLeads();
+      } else if(pn.kind === 'remove-status'){
+        const lead = leads.find(function(l){ return l.id === pn.leadId; });
+        if(!lead){ render(); return; }
+        await removeStatusFromLead(lead, pn.removedStatus, noteValue);
+        await loadLeads();
       } else if(pn.kind === 'note-edit'){
         // Per change #6: every edit logs a new outreach_note_edits row.
         const oldNotes = pn.currentNote || '';
@@ -5660,11 +5924,14 @@ document.querySelectorAll('.tab').forEach(btn => {
       const leadId = ddId.slice(5);
       const lead = leads.find(function(l){ return l.id === leadId; });
       if(!lead) return '';
+      // Per multi-status change: dropdown now shows only statuses the lead
+      // does NOT already have. Selecting one appends rather than replaces.
+      const remaining = statuses.filter(function(s){ return !leadHasStatus(lead, s.label); });
+      if(remaining.length === 0) return '';
       return '<div class="outreach-cdrop-menu">' +
-        statuses.map(function(s){
+        remaining.map(function(s){
           const c = s.color || '#4D89FF';
-          const isSel = s.label === lead.status;
-          return '<button type="button" class="outreach-cdrop-option' + (isSel ? ' selected' : '') + '" ' +
+          return '<button type="button" class="outreach-cdrop-option" ' +
             'data-action="status-select" data-lead-id="' + lead.id + '" data-value="' + escapeHtml(s.label) + '">' +
             dotSvg(c) + '<span class="outreach-cdrop-option-label">' + escapeHtml(s.label) + '</span>' +
           '</button>';
@@ -5717,17 +5984,18 @@ document.querySelectorAll('.tab').forEach(btn => {
       render();
     } else if(action === 'status-select'){
       const leadId = opt.dataset.leadId;
-      const newStatus = opt.dataset.value;
+      const addedStatus = opt.dataset.value;
       const lead = leads.find(function(l){ return l.id === leadId; });
       openDropdownId = null;
-      if(!lead || newStatus === lead.status){ applyDropdownStateInPlace(); return; }
+      if(!lead || leadHasStatus(lead, addedStatus)){ applyDropdownStateInPlace(); return; }
+      // Per multi-status change: this is now an ADD, not a replace. Confirm
+      // + note prompt before appending.
       pendingNote = {
-        kind: 'change',
+        kind: 'add-status',
         stage: 'confirm',
         leadId: lead.id,
         leadName: lead.name,
-        oldStatus: lead.status,
-        newStatus: newStatus
+        addedStatus: addedStatus
       };
       render();
     } else if(action === 'new-lead-status-select'){
@@ -6131,6 +6399,25 @@ document.querySelectorAll('.tab').forEach(btn => {
             render();
           } else if(action === 'toggle-activity'){
             activityExpanded = !activityExpanded;
+            render();
+          } else if(action === 'remove-status'){
+            // Per multi-status change: × on a pill in the expanded view
+            // removes that single status (after confirm + note). Blocked
+            // when it would leave the lead with zero statuses.
+            const removed = btn.dataset.value;
+            const arr = Array.isArray(lead.statuses) ? lead.statuses : [];
+            if(arr.length <= 1){
+              alert('A lead must have at least one status.');
+              return;
+            }
+            if(arr.indexOf(removed) === -1) return;
+            pendingNote = {
+              kind: 'remove-status',
+              stage: 'confirm',
+              leadId: lead.id,
+              leadName: lead.name,
+              removedStatus: removed
+            };
             render();
           } else if(action === 'delete-activity'){
             // Per change #3: × on the most-recent activity entry deletes it.
