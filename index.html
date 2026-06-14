@@ -1630,6 +1630,24 @@
   }
   .outreach-platform-hint[hidden] { display: none; }
 
+  /* ===== MIGRATION OVERLAY HEADER (identifier + progress) ===== */
+  .outreach-migration-identifier {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.012em;
+    margin: 6px 0 4px;
+    word-break: break-word;
+  }
+  .outreach-migration-progress {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    margin: 0 0 12px;
+  }
+
   /* ===== MIGRATION BANNER (Part 5) ===== */
   .outreach-migration-banner {
     display: flex; align-items: center; justify-content: space-between;
@@ -4727,6 +4745,7 @@ document.querySelectorAll('.tab').forEach(btn => {
   // Active when a queue is in progress; banner mode when user dismissed.
   let migrationLeadId = null;               // id of the lead currently being migrated
   let migrationDismissed = false;           // true after user closes without saving
+  let migrationTotalCount = 0;              // snapshot of incomplete count when the queue started
   let openDropdownId = null;
   let currentSort = 'recent-updated';
   let activityExpanded = false;
@@ -5385,7 +5404,15 @@ document.querySelectorAll('.tab').forEach(btn => {
   function maybeStartIncompleteLeadMigration(){
     if(migrationDismissed) return;
     const nxt = findNextIncompleteLead();
-    if(!nxt) return;
+    if(!nxt){
+      // Queue is empty — reset the snapshot for the next time the flow starts.
+      migrationTotalCount = 0;
+      return;
+    }
+    // Snapshot the queue size on a fresh start (not mid-queue).
+    if(migrationTotalCount === 0){
+      migrationTotalCount = countIncompleteLeads();
+    }
     migrationLeadId = nxt.id;
     editingLeadOverlayId = nxt.id;
   }
@@ -5889,6 +5916,24 @@ document.querySelectorAll('.tab').forEach(btn => {
     // Migration overlay is non-dismissable via backdrop (× still works) and
     // its title is more directive.
     const title = isMigration ? 'complete lead profile' : 'edit lead';
+    // Identifier line shown under the title in migration mode so the user
+    // knows which lead they're updating — falls back through display_name →
+    // legacy `name` column → status → "Unnamed lead".
+    const identifier = (lead.display_name && lead.display_name.trim())
+      || (lead.name && lead.name.trim())
+      || (lead.status && lead.status.trim())
+      || 'Unnamed lead';
+    // Progress indicator: position out of the queue snapshot taken when the
+    // migration flow started.
+    let migrationHeaderHtml = '';
+    if(isMigration){
+      const remaining = countIncompleteLeads();
+      const total = migrationTotalCount > 0 ? migrationTotalCount : remaining;
+      const position = Math.max(1, Math.min(total, total - remaining + 1));
+      migrationHeaderHtml =
+        '<div class="outreach-migration-identifier">' + escapeHtml(identifier) + '</div>' +
+        '<div class="outreach-migration-progress">Lead ' + position + ' of ' + total + '</div>';
+    }
     const help  = isMigration
       ? '<p class="outreach-help-text">This lead is missing both Instagram and YouTube. Add at least one to continue.</p>'
       : '';
@@ -5897,6 +5942,7 @@ document.querySelectorAll('.tab').forEach(btn => {
         '<div class="supabase-section-label">' + title + '</div>' +
         '<button type="button" class="outreach-collapse-btn" id="edit-lead-close" aria-label="Close">✕</button>' +
       '</div>' +
+      migrationHeaderHtml +
       help +
       '<div class="supabase-input-group">' +
         '<label class="supabase-input-label">Name</label>' +
