@@ -1546,6 +1546,23 @@
     vertical-align: middle;
   }
   .outreach-activity-note-edit-icon:hover { color: var(--text); }
+  /* Part 4: × delete icon on the most-recent activity item. */
+  .outreach-activity-delete-icon {
+    background: transparent;
+    border: none;
+    color: rgba(255, 100, 100, 0.55);
+    cursor: pointer;
+    padding: 0 4px;
+    margin-left: 6px;
+    font-size: 14px;
+    line-height: 1;
+    transition: color 140ms var(--ease);
+    vertical-align: middle;
+  }
+  .outreach-activity-delete-icon:hover { color: #ff8a8a; }
+  .outreach-activity-delete-block {
+    margin-left: auto;
+  }
   .outreach-activity-block-add {
     margin-top: 8px;
     background: transparent;
@@ -4733,6 +4750,9 @@ document.querySelectorAll('.tab').forEach(btn => {
   let showingStatusManager = false;
   // Status-change prompt overlay: { kind, stage, leadId, leadName, oldStatus?, newStatus? }
   let pendingNote = null;
+  // Custom delete-confirmation overlay state (Part 5).
+  //   { title, sub?, confirmLabel, onConfirm: async () => void }
+  let pendingConfirm = null;
   // Inline note editing within the activity log: history_id of the note being edited.
   let editingNoteId = null;
   // Add Lead overlay field state
@@ -6075,17 +6095,17 @@ document.querySelectorAll('.tab').forEach(btn => {
     '</div>';
   }
 
-  // OVERLAY routing.
+  // OVERLAY routing. pendingConfirm wins so a delete confirmation can stack
+  // over any other open overlay.
   function renderOverlayHtml(){
+    if(pendingConfirm){
+      return '<div class="outreach-overlay outreach-overlay-dismissable" role="dialog" aria-modal="true" data-action="overlay-dismiss-confirm">' +
+        '<div class="outreach-overlay-card">' + renderConfirmDeleteInnerHtml() + '</div>' +
+      '</div>';
+    }
     if(pendingNote){
-      let inner = '';
-      if(pendingNote.stage === 'confirm'){
-        inner = renderConfirmInnerHtml();
-      } else {
-        inner = renderNotePromptInnerHtml();
-      }
       return '<div class="outreach-overlay" role="dialog" aria-modal="true">' +
-        '<div class="outreach-overlay-card">' + inner + '</div>' +
+        '<div class="outreach-overlay-card">' + renderNotePromptInnerHtml() + '</div>' +
       '</div>';
     }
     if(showingStatusManager){
@@ -6109,60 +6129,72 @@ document.querySelectorAll('.tab').forEach(btn => {
     }
     return '';
   }
-  function renderConfirmInnerHtml(){
-    // Only the 'change' kind reaches this stage. Note edits + add-note skip
-    // straight to the note prompt (no confirm).
-    const oldColor = pendingNote.oldStatus ? statusColor(pendingNote.oldStatus) : '#9aa2af';
-    const newColor = statusColor(pendingNote.newStatus);
-    return '<div class="supabase-section-label">change status?</div>' +
-      '<div class="outreach-overlay-sub">' + escapeHtml(pendingNote.leadName) + '</div>' +
-      '<div class="outreach-confirm-flow">' +
-        (pendingNote.oldStatus
-          ? '<span class="outreach-status-badge" style="--badge-color: ' + escapeHtml(oldColor) + '">' + escapeHtml(pendingNote.oldStatus) + '</span>' +
-            '<span class="outreach-confirm-arrow">→</span>'
-          : '') +
-        '<span class="outreach-status-badge" style="--badge-color: ' + escapeHtml(newColor) + '">' + escapeHtml(pendingNote.newStatus) + '</span>' +
-      '</div>' +
+  // Custom delete-confirmation overlay (Part 5/6).
+  function renderConfirmDeleteInnerHtml(){
+    return '<div class="supabase-section-label">' + escapeHtml(pendingConfirm.title || 'delete?') + '</div>' +
+      (pendingConfirm.sub
+        ? '<div class="outreach-overlay-sub">' + escapeHtml(pendingConfirm.sub) + '</div>'
+        : '') +
       '<div class="outreach-form-actions">' +
-        '<button type="button" class="supabase-btn supabase-btn-secondary" id="confirm-cancel">Cancel</button>' +
-        '<button type="button" class="supabase-btn" id="confirm-yes">Confirm</button>' +
+        '<button type="button" class="supabase-btn supabase-btn-secondary" id="confirm-delete-cancel">Cancel</button>' +
+        '<button type="button" class="supabase-btn outreach-btn-danger" id="confirm-delete-yes">' + escapeHtml(pendingConfirm.confirmLabel || 'Delete') + '</button>' +
       '</div>';
   }
   function renderNotePromptInnerHtml(){
     // Kinds at this stage:
-    //   - 'change'    — status change, post-confirm. Note required.
+    //   - 'change'    — combined single-overlay status change (Part 2). Shows
+    //                   the [OLD → NEW] pill flow + required textarea +
+    //                   "Update Status" button. No Cancel, no Skip.
     //   - 'note-edit' — editing an existing outreach_notes row. Pre-filled, Cancel allowed.
     //   - 'add-note'  — adding a note to an existing block. Note required.
+    const isChange  = pendingNote.kind === 'change';
+    const isEdit    = pendingNote.kind === 'note-edit';
+
     let headerText;
-    if(pendingNote.kind === 'note-edit') headerText = 'Edit note';
+    if(isEdit) headerText = 'Edit note';
     else if(pendingNote.kind === 'add-note') headerText = 'Add a note';
-    else headerText = 'Add a note for the status change';
+    else headerText = 'change status';
 
     let sub = pendingNote.leadName || '';
-    if(pendingNote.kind === 'change'){
-      sub += ' · ' + (pendingNote.oldStatus ? pendingNote.oldStatus + ' → ' : '') + pendingNote.newStatus;
-    } else if(pendingNote.kind === 'note-edit'){
+    if(isEdit){
       sub += pendingNote.statusLabel ? ' · status ' + pendingNote.statusLabel : '';
     } else if(pendingNote.kind === 'add-note'){
       sub += pendingNote.statusLabel ? ' · status ' + pendingNote.statusLabel : '';
     }
 
-    const isEdit = pendingNote.kind === 'note-edit';
+    // For 'change': show the [old → new] status pill flow as part of the
+    // combined overlay so the user sees what they're committing to.
+    let changeFlowHtml = '';
+    if(isChange){
+      const newColor = statusColor(pendingNote.newStatus);
+      const oldColor = pendingNote.oldStatus ? statusColor(pendingNote.oldStatus) : '#9aa2af';
+      changeFlowHtml = '<div class="outreach-confirm-flow">' +
+        (pendingNote.oldStatus
+          ? '<span class="outreach-status-badge" style="--badge-color: ' + escapeHtml(oldColor) + '">' + escapeHtml(pendingNote.oldStatus) + '</span>' +
+            '<span class="outreach-confirm-arrow">→</span>'
+          : '') +
+        '<span class="outreach-status-badge" style="--badge-color: ' + escapeHtml(newColor) + '">' + escapeHtml(pendingNote.newStatus) + '</span>' +
+      '</div>';
+    }
+
     const initialValue = isEdit ? (pendingNote.currentNote || '') : '';
     const initiallyValid = /\S/.test(initialValue);
 
-    // 'change' has no escape route by design (the spec requires a note); the
-    // others get a Cancel button.
-    const cancelBtnHtml = pendingNote.kind !== 'change'
+    // 'change' has no escape route (spec); 'note-edit' and 'add-note' get Cancel.
+    const cancelBtnHtml = !isChange
       ? '<button type="button" class="supabase-btn supabase-btn-secondary" id="note-prompt-skip">Cancel</button>'
       : '';
 
+    const saveLabel = isChange ? 'Update Status' : 'Save Note';
+    const placeholder = isChange ? 'note about this status change…' : 'note…';
+
     return '<div class="supabase-section-label">' + escapeHtml(headerText) + '</div>' +
       '<div class="outreach-overlay-sub">' + escapeHtml(sub) + '</div>' +
-      '<textarea id="note-prompt-input" class="supabase-input outreach-textarea outreach-required-input" rows="3" placeholder="note…">' + escapeHtml(initialValue) + '</textarea>' +
+      changeFlowHtml +
+      '<textarea id="note-prompt-input" class="supabase-input outreach-textarea outreach-required-input" rows="3" placeholder="' + escapeHtml(placeholder) + '">' + escapeHtml(initialValue) + '</textarea>' +
       '<div class="outreach-form-actions">' +
         cancelBtnHtml +
-        '<button type="button" class="supabase-btn" id="note-prompt-save"' + (initiallyValid ? '' : ' disabled') + '>Save Note</button>' +
+        '<button type="button" class="supabase-btn" id="note-prompt-save"' + (initiallyValid ? '' : ' disabled') + '>' + escapeHtml(saveLabel) + '</button>' +
       '</div>';
   }
 
@@ -6186,12 +6218,22 @@ document.querySelectorAll('.tab').forEach(btn => {
           '<svg viewBox="0 0 16 16" width="11" height="11" aria-hidden="true"><path fill="currentColor" d="M11.41 1.59a2 2 0 0 1 2.83 2.83l-8.7 8.7L1.5 14.5l1.38-4.04 8.53-8.87z"/></svg>' +
         '</button>'
       : '';
+    // Part 4: × on the most recent item — delete the note edit (revert) or
+    // the note itself depending on what's most recent.
+    const dt = opts.deleteTarget;
+    const deleteNoteIcon = (dt && dt.type === 'note' && dt.noteId === note.id)
+      ? '<button type="button" class="outreach-activity-delete-icon" data-action="delete-note" data-note-id="' + note.id + '" title="Delete note" aria-label="Delete note">×</button>'
+      : '';
+    const deleteEditIcon = (dt && dt.type === 'note-edit' && dt.noteId === note.id)
+      ? '<button type="button" class="outreach-activity-delete-icon" data-action="delete-note-edit" data-note-id="' + note.id + '" data-edit-id="' + dt.editId + '" title="Revert edit" aria-label="Revert edit">×</button>'
+      : '';
     if(!lastEdit){
       const ts = fmtTodayOrFull(note.created_at);
       return '<div class="outreach-activity-note-row">' +
         '<span class="outreach-activity-note-time">' + escapeHtml(ts) + '</span>' +
         '<span class="outreach-activity-note-text">' + escapeHtml(note.note_text || '') + '</span>' +
         editIcon +
+        deleteNoteIcon +
       '</div>';
     }
     const ts = fmtTodayOrFull(lastEdit.edited_at);
@@ -6201,7 +6243,7 @@ document.querySelectorAll('.tab').forEach(btn => {
       '<span class="outreach-activity-note-time">' + escapeHtml(ts) + '</span>' +
       '<div class="outreach-activity-note-edit-stack">' +
         '<span class="outreach-activity-note-text outreach-activity-note-strike">' + escapeHtml(prev) + '</span>' +
-        '<span class="outreach-activity-note-text outreach-activity-note-current">' + escapeHtml(next) + editIcon + '</span>' +
+        '<span class="outreach-activity-note-text outreach-activity-note-current">' + escapeHtml(next) + editIcon + deleteEditIcon + '</span>' +
       '</div>' +
     '</div>';
   }
@@ -6222,23 +6264,61 @@ document.querySelectorAll('.tab').forEach(btn => {
       headerInner = oldPill + '<span class="outreach-activity-block-arrow">→</span>' + newPill;
     }
 
+    // Part 4: × on the block header when the most-recent item IS the block
+    // (i.e. the latest block has no notes). We still show the ×; the handler
+    // alerts if it's the only block.
+    const dt = opts.deleteTarget;
+    if(dt && dt.type === 'block' && dt.historyId === h.id){
+      headerInner += '<button type="button" class="outreach-activity-delete-icon outreach-activity-delete-block" data-action="delete-block" data-history-id="' + h.id + '" title="Delete status change" aria-label="Delete status change">×</button>';
+    }
+
     const notes = (notesByHistoryId.get(h.id) || []).slice().sort(function(a,b){
       return new Date(a.created_at) - new Date(b.created_at);
     });
     const lastNoteIdx = notes.length - 1;
     const notesHtml = notes.map(function(n, i){
-      const showEditIcon = !!(opts.isLatestBlock && i === lastNoteIdx);
-      return renderNoteRowHtml(n, { showEditIcon: showEditIcon });
+      const isLastNoteInLatestBlock = !!(opts.isLatestBlock && i === lastNoteIdx);
+      return renderNoteRowHtml(n, {
+        showEditIcon: isLastNoteInLatestBlock,
+        // Only the last note in the latest block can be the delete target.
+        deleteTarget: isLastNoteInLatestBlock ? dt : null
+      });
     }).join('');
+
+    // Part 1: ＋ button only on the most recent block.
+    const addBtnHtml = opts.isLatestBlock
+      ? '<button type="button" class="outreach-activity-block-add" data-action="add-note-to-block" data-history-id="' + h.id + '" aria-label="Add note">' +
+          '<span class="outreach-activity-block-add-glyph">＋</span>' +
+        '</button>'
+      : '';
 
     return '<div class="outreach-activity-block" data-history-id="' + h.id + '">' +
       '<div class="outreach-activity-block-header">' + headerInner + '</div>' +
       (notesHtml ? '<div class="outreach-activity-block-notes">' + notesHtml + '</div>' : '') +
-      '<button type="button" class="outreach-activity-block-add" data-action="add-note-to-block" data-history-id="' + h.id + '" aria-label="Add note">' +
-        '<span class="outreach-activity-block-add-glyph">＋</span>' +
-      '</button>' +
+      addBtnHtml +
     '</div>';
   }
+  // Compute the "most recent item" eligible for the × delete button (Part 4).
+  // Walks the latest block:
+  //   - If notes exist → latest note. If that note has edits → most recent edit.
+  //   - If no notes → the block itself.
+  function computeDeleteTarget(ordered){
+    if(!ordered || ordered.length === 0) return null;
+    const last = ordered[ordered.length - 1];
+    const notes = (notesByHistoryId.get(last.id) || []).slice().sort(function(a,b){
+      return new Date(a.created_at) - new Date(b.created_at);
+    });
+    if(notes.length === 0){
+      return { type: 'block', historyId: last.id, isOnlyBlock: ordered.length === 1 };
+    }
+    const lastNote = notes[notes.length - 1];
+    const edits = editsByNoteId.get(lastNote.id) || [];
+    if(edits.length > 0){
+      return { type: 'note-edit', noteId: lastNote.id, editId: edits[edits.length - 1].id };
+    }
+    return { type: 'note', noteId: lastNote.id };
+  }
+
   function renderActivityLogHtml(history, lead){
     if(!history || history.length === 0){
       return '<div class="outreach-activity" data-noexpand="1">' +
@@ -6251,8 +6331,12 @@ document.querySelectorAll('.tab').forEach(btn => {
       return new Date(a.changed_at) - new Date(b.changed_at);
     });
     const lastIdx = ordered.length - 1;
+    const deleteTarget = computeDeleteTarget(ordered);
     const blocksHtml = ordered.map(function(h, i){
-      return renderActivityBlockHtml(h, { isLatestBlock: i === lastIdx });
+      return renderActivityBlockHtml(h, {
+        isLatestBlock: i === lastIdx,
+        deleteTarget: i === lastIdx ? deleteTarget : null
+      });
     }).join('');
     return '<div class="outreach-activity" data-noexpand="1">' +
       '<div class="outreach-detail-label">activity</div>' +
@@ -6471,10 +6555,12 @@ document.querySelectorAll('.tab').forEach(btn => {
       const lead = leads.find(function(l){ return l.id === leadId; });
       openDropdownId = null;
       if(!lead || newStatus === lead.status){ applyDropdownStateInPlace(); return; }
-      // Part 2 revert: status REPLACE (not append). Confirm + required note.
+      // Part 2 (this round): single combined overlay — go straight to the
+      // note prompt (which renders the [old → new] pill flow + textarea +
+      // Update Status button).
       pendingNote = {
         kind: 'change',
-        stage: 'confirm',
+        stage: 'note',
         leadId: lead.id,
         leadName: lead.display_name || primaryUsernameOf(lead) || 'Lead',
         oldStatus: lead.status,
@@ -6674,6 +6760,15 @@ document.querySelectorAll('.tab').forEach(btn => {
         if(el.value.trim()) el.classList.remove('invalid');
         updateAddLeadFormStateInPlace();
       });
+      // Part 3: Enter (no Shift) submits the form. Shift+Enter inserts a
+      // newline in the notes textarea; on single-line inputs Enter just submits.
+      el.addEventListener('keydown', function(e){
+        if(e.key !== 'Enter') return;
+        if(e.shiftKey) return; // allow newline in textarea
+        e.preventDefault();
+        const sb = document.getElementById('form-save');
+        if(sb && !sb.disabled) sb.click();
+      });
     });
     // Primary platform toggle inside the Add Lead form.
     document.querySelectorAll('[data-action="new-lead-primary"]').forEach(function(btn){
@@ -6865,23 +6960,11 @@ document.querySelectorAll('.tab').forEach(btn => {
       render();
     }
 
-    // Overlay — status-change confirmation step
-    const confirmCancelBtn = document.getElementById('confirm-cancel');
-    if(confirmCancelBtn) confirmCancelBtn.addEventListener('click', function(){
-      pendingNote = null;
-      render();
-    });
-    const confirmYesBtn = document.getElementById('confirm-yes');
-    if(confirmYesBtn) confirmYesBtn.addEventListener('click', function(){
-      if(pendingNote) pendingNote.stage = 'note';
-      render();
-    });
-
-    // Overlay — note prompt Save (always required) + Cancel (note-edit only)
+    // Overlay — note prompt Save (always required) + Cancel (note-edit/
+    // add-note only). Enter submits, Shift+Enter inserts newline (Part 3).
     const noteInput = document.getElementById('note-prompt-input');
     const noteSaveBtn = document.getElementById('note-prompt-save');
     if(noteInput && noteSaveBtn){
-      // Live-disable Save until the textarea has non-whitespace text.
       const sync = function(){
         const v = noteInput.value || '';
         const valid = /\S/.test(v);
@@ -6889,21 +6972,50 @@ document.querySelectorAll('.tab').forEach(btn => {
         if(valid) noteInput.classList.remove('invalid');
       };
       noteInput.addEventListener('input', sync);
+      noteInput.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' && !e.shiftKey){
+          e.preventDefault();
+          if(!noteSaveBtn.disabled) noteSaveBtn.click();
+        }
+      });
     }
     if(noteSaveBtn) noteSaveBtn.addEventListener('click', async function(){
       const input = document.getElementById('note-prompt-input');
       const note = input ? input.value.trim() : '';
-      // Defensive: button should be disabled while empty.
       if(!note){
         if(input) input.classList.add('invalid');
         return;
       }
       await commitPendingNote(note);
     });
-    // Cancel is only rendered for the note-edit kind — dismiss without saving.
+    // Cancel is only rendered for note-edit / add-note kinds.
     const noteSkipBtn = document.getElementById('note-prompt-skip');
     if(noteSkipBtn) noteSkipBtn.addEventListener('click', function(){
       cancelPendingNote();
+    });
+
+    // Part 5/6: custom delete-confirmation overlay handlers.
+    const confirmDeleteCancelBtn = document.getElementById('confirm-delete-cancel');
+    if(confirmDeleteCancelBtn) confirmDeleteCancelBtn.addEventListener('click', function(){
+      pendingConfirm = null;
+      render();
+    });
+    document.querySelectorAll('[data-action="overlay-dismiss-confirm"]').forEach(function(ov){
+      ov.addEventListener('click', function(e){
+        if(e.target !== ov) return;
+        pendingConfirm = null;
+        render();
+      });
+    });
+    const confirmDeleteYesBtn = document.getElementById('confirm-delete-yes');
+    if(confirmDeleteYesBtn) confirmDeleteYesBtn.addEventListener('click', async function(){
+      const pc = pendingConfirm;
+      pendingConfirm = null;
+      render();
+      if(pc && typeof pc.onConfirm === 'function'){
+        try { await pc.onConfirm(); }
+        catch(err){ alert('Error: ' + errMsg(err)); }
+      }
     });
 
     document.querySelectorAll('.outreach-row').forEach(function(row){
@@ -6966,17 +7078,106 @@ document.querySelectorAll('.tab').forEach(btn => {
             editingLeadOverlayId = id;
             render();
           } else if(action === 'delete'){
+            // Part 6: custom delete confirmation (no browser confirm).
             const displayName = lead.display_name || primaryUsernameOf(lead) || 'this lead';
-            if(!confirm('Delete ' + displayName + '? This cannot be undone.')) return;
-            try {
-              await deleteLead(id);
-              expandedLeadId = null;
-              await loadLeads();
-              await loadAllHistories();
-              await loadAllNotes();
-              await loadAllNoteEdits();
-              render();
-            } catch(err){ alert('Error: ' + errMsg(err)); }
+            pendingConfirm = {
+              title: 'delete lead?',
+              sub: 'Delete lead ' + displayName + '? This cannot be undone.',
+              confirmLabel: 'Delete',
+              onConfirm: async function(){
+                await deleteLead(id);
+                expandedLeadId = null;
+                await loadLeads();
+                await loadAllHistories();
+                await loadAllNotes();
+                await loadAllNoteEdits();
+                render();
+              }
+            };
+            render();
+          } else if(action === 'delete-note'){
+            // Part 4: × on a note row — silently remove. No activity log entry.
+            const noteId = btn.dataset.noteId;
+            pendingConfirm = {
+              title: 'delete note?',
+              sub: 'This note will be permanently removed.',
+              confirmLabel: 'Delete',
+              onConfirm: async function(){
+                const del = await supabaseClient.from('outreach_notes').delete().eq('id', noteId);
+                if(del.error) throw del.error;
+                await loadAllNotes();
+                await loadAllNoteEdits();
+                render();
+              }
+            };
+            render();
+          } else if(action === 'delete-note-edit'){
+            // Part 4: × on a note edit — revert text to previous_text, delete edit row.
+            const editId = btn.dataset.editId;
+            const noteId = btn.dataset.noteId;
+            // Locate the previous_text on the edit being reverted.
+            let prevText = '';
+            const arr = editsByNoteId.get(noteId) || [];
+            for(const e of arr){
+              if(e.id === editId){ prevText = e.previous_text || ''; break; }
+            }
+            pendingConfirm = {
+              title: 'revert edit?',
+              sub: 'The note will be restored to its previous text.',
+              confirmLabel: 'Revert',
+              onConfirm: async function(){
+                const upd = await supabaseClient.from('outreach_notes')
+                  .update({ note_text: prevText })
+                  .eq('id', noteId);
+                if(upd.error) throw upd.error;
+                const del = await supabaseClient.from('outreach_note_edits')
+                  .delete().eq('id', editId);
+                if(del.error) throw del.error;
+                await loadAllNotes();
+                await loadAllNoteEdits();
+                render();
+              }
+            };
+            render();
+          } else if(action === 'delete-block'){
+            // Part 4: × on the latest status block — silently remove the
+            // history row + cascaded notes/edits. Block if it's the only one.
+            const histId = btn.dataset.historyId;
+            const histList = leadHistories.get(id) || [];
+            if(histList.length <= 1){
+              alert('Cannot delete — this would leave the lead with no history.');
+              return;
+            }
+            pendingConfirm = {
+              title: 'remove most recent status change?',
+              sub: 'The status block and any of its notes will be permanently removed.',
+              confirmLabel: 'Remove',
+              onConfirm: async function(){
+                const del = await supabaseClient.from('outreach_status_history')
+                  .delete().eq('id', histId);
+                if(del.error) throw del.error;
+                // Sync the lead's `status` column back to whatever the new
+                // most-recent block says.
+                const r = await supabaseClient.from('outreach_status_history')
+                  .select('id, new_status, changed_at')
+                  .eq('lead_id', id)
+                  .order('changed_at', { ascending: false })
+                  .limit(1);
+                if(r.error) throw r.error;
+                if(r.data && r.data.length){
+                  const upd = await supabaseClient.from('outreach_leads')
+                    .update({ status: r.data[0].new_status })
+                    .eq('id', id);
+                  if(upd.error) throw upd.error;
+                }
+                await loadLeads();
+                await loadAllHistories();
+                await loadAllNotes();
+                await loadAllNoteEdits();
+                render();
+              }
+            };
+            render();
           } else if(action === 'add-note-to-block'){
             // Part 8: + button on a block opens the note prompt; saving
             // appends a note row to that history row's block.
