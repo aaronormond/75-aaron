@@ -1341,6 +1341,312 @@
     color: var(--text);
     background: rgba(255, 255, 255, 0.06);
   }
+
+  /* ===== USER CELL (Part 6) ===== */
+  .outreach-user-cell {
+    display: flex; align-items: center; gap: 8px;
+    min-width: 0;
+  }
+  .outreach-platform-pill {
+    display: inline-flex; align-items: center; justify-content: center;
+    flex: 0 0 auto;
+    width: 26px; height: 18px;
+    border-radius: 4px;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+  .outreach-platform-ig {
+    background: rgba(139, 92, 246, 0.16);
+    color: #c4b1ff;
+    border: 1px solid rgba(139, 92, 246, 0.45);
+  }
+  .outreach-platform-yt {
+    background: rgba(255, 64, 64, 0.14);
+    color: #ff8a8a;
+    border: 1px solid rgba(255, 64, 64, 0.40);
+  }
+  .outreach-platform-none {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-4);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+  }
+  .outreach-user-link {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex: 0 1 auto;
+  }
+  a.outreach-user-link:hover { color: var(--accent-2); }
+  .outreach-user-empty { color: var(--text-4); font-size: 13px; }
+
+  /* ===== NAME CELL ===== */
+  .outreach-display-name {
+    font-size: 13px;
+    color: var(--text-2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    max-width: 100%;
+  }
+  .outreach-name-empty { color: var(--text-4); font-size: 13px; }
+
+  /* ===== LOOM CELL ===== */
+  .outreach-col-loom { display: flex; align-items: center; }
+  .outreach-loom-pill {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    background: rgba(77, 137, 255, 0.14);
+    color: #7fa9ff;
+    border: 1px solid rgba(77, 137, 255, 0.40);
+    text-decoration: none;
+    transition: background 140ms var(--ease), color 140ms var(--ease);
+  }
+  .outreach-loom-pill:hover {
+    background: rgba(77, 137, 255, 0.24);
+    color: #a9c4ff;
+  }
+  .outreach-loom-empty { display: inline-block; }
+
+  /* ===== EXPANDED SUBROW LINKS (Part 8) ===== */
+  .outreach-expanded-links {
+    flex: 1 1 auto;
+    display: flex; flex-wrap: wrap; gap: 8px;
+    min-width: 0;
+  }
+  .outreach-expanded-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px 5px 4px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-2);
+    font-size: 12px;
+    text-decoration: none;
+    transition: background 140ms var(--ease), color 140ms var(--ease);
+  }
+  .outreach-expanded-link:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text);
+  }
+  .outreach-expanded-link-tag {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 16px;
+    border-radius: 3px;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .outreach-expanded-ig .outreach-expanded-link-tag {
+    background: rgba(139, 92, 246, 0.16);
+    color: #c4b1ff;
+  }
+  .outreach-expanded-yt .outreach-expanded-link-tag {
+    background: rgba(255, 64, 64, 0.14);
+    color: #ff8a8a;
+  }
+  .outreach-expanded-loom .outreach-expanded-link-tag {
+    background: rgba(77, 137, 255, 0.16);
+    color: #7fa9ff;
+  }
+
+  /* ===== ACTIVITY BLOCKS (Part 8) ===== */
+  .outreach-activity-blocks {
+    display: flex; flex-direction: column;
+    gap: 18px;
+    margin-top: 8px;
+  }
+  .outreach-activity-block {
+    padding: 12px 14px 8px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+  }
+  .outreach-activity-block-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 8px;
+  }
+  .outreach-activity-block-tag {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+  }
+  .outreach-activity-block-arrow {
+    color: var(--text-3);
+    font-size: 11px;
+    line-height: 1;
+  }
+  .outreach-activity-block-notes {
+    display: flex; flex-direction: column;
+    gap: 6px;
+    padding: 6px 0 4px 4px;
+  }
+  .outreach-activity-note-row {
+    display: flex; align-items: baseline; gap: 12px;
+    font-size: 12px;
+    color: var(--text-2);
+    line-height: 1.45;
+  }
+  .outreach-activity-note-row-edited { align-items: flex-start; }
+  .outreach-activity-note-time {
+    flex: 0 0 auto;
+    min-width: 100px;
+    font-size: 10.5px;
+    color: var(--text-4);
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .outreach-activity-note-text {
+    flex: 1 1 auto;
+    word-break: break-word;
+  }
+  .outreach-activity-note-strike {
+    color: var(--text-4);
+    text-decoration: line-through;
+    text-decoration-color: rgba(255, 255, 255, 0.35);
+    display: block;
+  }
+  .outreach-activity-note-edit-stack {
+    flex: 1 1 auto;
+    display: flex; flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .outreach-activity-note-current {
+    padding-left: 18px;
+    color: var(--text);
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .outreach-activity-note-edit-icon {
+    background: transparent;
+    border: none;
+    color: var(--text-4);
+    cursor: pointer;
+    padding: 0;
+    margin-left: 6px;
+    font-size: 11px;
+    line-height: 1;
+    transition: color 140ms var(--ease);
+    vertical-align: middle;
+  }
+  .outreach-activity-note-edit-icon:hover { color: var(--text); }
+  .outreach-activity-block-add {
+    margin-top: 8px;
+    background: transparent;
+    border: 1px dashed rgba(255, 255, 255, 0.10);
+    color: var(--text-4);
+    width: 100%;
+    padding: 4px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1;
+    transition: background 140ms var(--ease), color 140ms var(--ease), border-color 140ms var(--ease);
+  }
+  .outreach-activity-block-add:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.22);
+    color: var(--text-2);
+  }
+  .outreach-activity-block-add-glyph { display: inline-block; line-height: 1; }
+
+  /* ===== ADD/EDIT LEAD — USERNAME INPUT + PRIMARY TOGGLE ===== */
+  .outreach-username-input {
+    display: flex; align-items: stretch;
+    width: 100%;
+  }
+  .outreach-username-prefix {
+    display: inline-flex; align-items: center;
+    padding: 0 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-right: none;
+    border-radius: 7px 0 0 7px;
+    color: var(--text-4);
+    font-size: 13px;
+  }
+  .outreach-username-field { border-radius: 0 7px 7px 0 !important; }
+  .outreach-primary-toggle {
+    display: flex; align-items: center; gap: 10px;
+    margin: -4px 0 12px;
+  }
+  .outreach-primary-toggle[hidden] { display: none; }
+  .outreach-primary-toggle-label {
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--text-3);
+  }
+  .outreach-primary-toggle-buttons { display: inline-flex; gap: 0; }
+  .outreach-primary-toggle-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    color: var(--text-3);
+    font: inherit;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: background 140ms var(--ease), color 140ms var(--ease);
+  }
+  .outreach-primary-toggle-btn:first-child { border-radius: 6px 0 0 6px; }
+  .outreach-primary-toggle-btn:last-child  { border-radius: 0 6px 6px 0; border-left: none; }
+  .outreach-primary-toggle-ig.active {
+    background: rgba(139, 92, 246, 0.22);
+    color: #c4b1ff;
+    border-color: rgba(139, 92, 246, 0.55);
+  }
+  .outreach-primary-toggle-yt.active {
+    background: rgba(255, 64, 64, 0.20);
+    color: #ff8a8a;
+    border-color: rgba(255, 64, 64, 0.55);
+  }
+  .outreach-platform-hint {
+    font-size: 11px;
+    color: var(--text-3);
+    margin: -4px 0 12px;
+    padding: 6px 10px;
+    background: rgba(77, 137, 255, 0.06);
+    border: 1px solid rgba(77, 137, 255, 0.22);
+    border-radius: 6px;
+  }
+  .outreach-platform-hint[hidden] { display: none; }
+
+  /* ===== MIGRATION BANNER (Part 5) ===== */
+  .outreach-migration-banner {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 14px;
+    padding: 12px 16px;
+    background: rgba(255, 181, 71, 0.08);
+    border: 1px solid rgba(255, 181, 71, 0.28);
+    border-radius: 10px;
+  }
+  .outreach-migration-banner-text {
+    color: #ffd28a;
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .outreach-migration-banner .supabase-btn { margin-top: 0; }
+
   .outreach-filter {
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.10);
@@ -1931,17 +2237,16 @@
   .outreach-table-header,
   .outreach-row {
     display: grid;
-    /* Desktop: 5 columns — name + notes get the most space, status/rating/updated stay compact. */
+    /* Part 6: 6 columns — USER · NAME · STATUS · RATING · NOTES · LOOM. */
     grid-template-columns:
-      minmax(220px, 2.4fr)
-      minmax(140px, 0.9fr)
-      minmax(110px, 0.65fr)
-      minmax(120px, 0.8fr)
-      minmax(220px, 2.6fr);
-    gap: 16px;
-    /* Per change #2 (this round): roomier rows — more breathing space
-       horizontally and vertically. */
-    padding: 18px 24px;
+      minmax(200px, 1.6fr)
+      minmax(120px, 0.9fr)
+      minmax(130px, 0.85fr)
+      minmax(110px, 0.6fr)
+      minmax(180px, 2fr)
+      minmax(70px, 0.45fr);
+    gap: 14px;
+    padding: 16px 22px;
     align-items: center;
     min-width: 0;
   }
@@ -2629,14 +2934,14 @@
   @media (max-width: 800px) {
     .outreach-table-header,
     .outreach-row {
-      /* Mobile column widths unchanged from before; rating slotted in as a
-         narrow column to keep the layout identical to the prior mobile look. */
+      /* Mobile: 6 columns, tighter. */
       grid-template-columns:
-        minmax(160px, 1.5fr)
-        minmax(140px, 1fr)
+        minmax(140px, 1.4fr)
+        minmax(110px, 0.9fr)
+        minmax(120px, 0.9fr)
         minmax(80px, 0.5fr)
-        minmax(110px, 0.8fr)
-        minmax(160px, 1.5fr);
+        minmax(140px, 1.4fr)
+        minmax(60px, 0.4fr);
       gap: 10px;
       padding: 10px 12px;
     }
@@ -2864,6 +3169,8 @@ const HABITS = {
   outreach_looms: { id:'outreach_looms', label:'Funnel Hacks', cat:'work', kind:'count', target:3 },
   reel_1:         { id:'reel_1',         label:'1 Reel', cat:'work', kind:'binary' },
   trial_reels_5:  { id:'trial_reels_5',  label:'5 Trial Reels', cat:'work', kind:'binary' },
+  tof_reel:       { id:'tof_reel',       label:'TOF Reel', cat:'work', kind:'binary' },
+  hacking_reel:   { id:'hacking_reel',   label:'Hacking Reel', cat:'work', kind:'binary' },
   walk:     { id:'walk',     label:'20 min walk', cat:'body', kind:'binary' },          // days 1–10 only
   steps:    { id:'steps',    label:'7500 steps', cat:'body', kind:'binary' },           // day 11+
   protein:  { id:'protein',  label:'180g protein', cat:'body', kind:'protein', target:180 }, // days 1–10 only
@@ -3075,6 +3382,7 @@ function getDay(key){
 // Day-index-based habit swaps.
 //   Day 11+ (index ≥ 10): walk→steps, protein→fast
 //   Day 25+ (index ≥ 24): work category fully replaced — outreach/study/creator → hours_worked + outreach_looms + 1 Reel + 5 Trial Reels
+//   Day 27+ (index ≥ 26): 1 Reel → TOF Reel + Hacking Reel (two binary toggles)
 // Days before each cutoff keep the originals so existing logged data renders intact.
 function resolveHabitId(id, dayIdx){
   if(dayIdx >= 10){
@@ -3085,9 +3393,12 @@ function resolveHabitId(id, dayIdx){
 }
 
 const WORK_HABIT_IDS_DAY25 = ['hours_worked','outreach_looms','reel_1','trial_reels_5'];
+const WORK_HABIT_IDS_DAY27 = ['hours_worked','outreach_looms','tof_reel','hacking_reel','trial_reels_5'];
 
 function workHabitIds(dayIdx){
-  return dayIdx >= 24 ? WORK_HABIT_IDS_DAY25 : ORDER.work;
+  if(dayIdx >= 26) return WORK_HABIT_IDS_DAY27;
+  if(dayIdx >= 24) return WORK_HABIT_IDS_DAY25;
+  return ORDER.work;
 }
 
 function habitsForDay(i){
@@ -4357,13 +4668,31 @@ document.querySelectorAll('.tab').forEach(btn => {
     "alter table outreach_leads drop column if exists notes;",
     "alter table outreach_leads add column if not exists rating integer;",
     "alter table outreach_leads add column if not exists statuses text[];",
-    "create table if not exists outreach_note_edits (",
+    "alter table outreach_leads add column if not exists instagram text;",
+    "alter table outreach_leads add column if not exists youtube text;",
+    "alter table outreach_leads add column if not exists loom_url text;",
+    "alter table outreach_leads add column if not exists primary_platform text check (primary_platform in ('instagram', 'youtube'));",
+    "alter table outreach_leads add column if not exists display_name text;",
+    // The old outreach_note_edits used `history_id` + `old_notes`/`new_notes`.
+    // The new schema (Part 10) re-keys edits off `outreach_notes(id)` and uses
+    // `previous_text`/`new_text`. The simplest migration is to drop the old
+    // table and recreate. Existing notes are preserved in outreach_status_history.notes
+    // and get rehoused into outreach_notes via a one-time JS migration on load.
+    "drop table if exists outreach_note_edits;",
+    "create table if not exists outreach_notes (",
     "  id uuid default gen_random_uuid() primary key,",
     "  history_id uuid references outreach_status_history(id) on delete cascade,",
-    "  old_notes text,",
-    "  new_notes text,",
+    "  note_text text not null,",
+    "  created_at timestamptz default now()",
+    ");",
+    "create table if not exists outreach_note_edits (",
+    "  id uuid default gen_random_uuid() primary key,",
+    "  note_id uuid references outreach_notes(id) on delete cascade,",
+    "  previous_text text not null,",
+    "  new_text text not null,",
     "  edited_at timestamptz default now()",
     ");",
+    "alter table outreach_notes disable row level security;",
     "alter table outreach_note_edits disable row level security;"
   ].join('\n');
 
@@ -4373,24 +4702,33 @@ document.querySelectorAll('.tab').forEach(btn => {
   let lastError = null;
   let leads = [];
   let statuses = [];
-  const leadHistories = new Map();
-  const noteEditsByHistoryId = new Map();   // history_id → [edits sorted by edited_at asc]
-  const ACTIVITY_VISIBLE_COUNT = 3;
+  const leadHistories = new Map();          // lead_id → [history rows sorted by changed_at asc]
+  const notesByHistoryId = new Map();       // history_id → [outreach_notes rows sorted by created_at asc]
+  const editsByNoteId = new Map();          // note_id → [outreach_note_edits rows sorted by edited_at asc]
   let currentFilter = 'all';
-  let searchQuery = '';          // toolbar search box — case-insensitive, matches name/URL/all notes
+  let currentPlatformFilter = 'all';        // 'all' | 'instagram' | 'youtube'
+  let currentLoomFilter = 'all';            // 'all' | 'has' | 'none'
+  let searchQuery = '';
   let expandedLeadId = null;
-  let editingLeadId = null;
+  let editingLeadId = null;                 // dead — kept so legacy refs don't throw
   let showingAddForm = false;
   let showingStatusManager = false;
-  // Prompt overlay state
-  // For change: stage starts as 'confirm', moves to 'note' after Confirm.
-  // For create: stage is always 'note' (skips confirmation).
-  let pendingNote = null;        // { kind, stage, leadId, leadName, statusLabel?, historyId?, oldStatus?, newStatus? }
-  let editingNoteHistoryId = null;
-  let newLeadStatus = null;      // selected status label inside the Add Lead overlay
-  let newLeadRating = null;      // selected rating (1-3) inside the Add Lead overlay
-  let openDropdownId = null;     // 'filter' | 'sort' | 'lead-<id>' | 'add-lead-status' | null
-  let currentSort = 'recent-updated';  // 'oldest-added' | 'newest-added' | 'recent-updated' | 'least-updated'
+  // Status-change prompt overlay: { kind, stage, leadId, leadName, oldStatus?, newStatus? }
+  let pendingNote = null;
+  // Inline note editing within the activity log: history_id of the note being edited.
+  let editingNoteId = null;
+  // Add Lead overlay field state
+  let newLeadStatus = null;
+  let newLeadRating = null;
+  let newLeadPrimaryPlatform = 'instagram';
+  // Edit Lead overlay state — set to a lead id to open; null when closed.
+  let editingLeadOverlayId = null;
+  // Auto-migration of leads missing both IG and YT.
+  // Active when a queue is in progress; banner mode when user dismissed.
+  let migrationLeadId = null;               // id of the lead currently being migrated
+  let migrationDismissed = false;           // true after user closes without saving
+  let openDropdownId = null;
+  let currentSort = 'recent-updated';
   let activityExpanded = false;
 
   // CREDENTIALS
@@ -4481,16 +4819,25 @@ document.querySelectorAll('.tab').forEach(btn => {
     return hist[hist.length - 1];
   }
   function lastNoteForLead(leadId){
+    // Most recent note across all outreach_notes for the lead's history rows.
     const hist = leadHistories.get(leadId);
     if(!hist) return null;
-    // Most recent (later changed_at) history row with a non-empty notes field.
-    for(let i = hist.length - 1; i >= 0; i--){
-      if(hist[i].notes) return hist[i].notes;
+    let latestMs = 0;
+    let latestText = null;
+    for(const h of hist){
+      const notesArr = notesByHistoryId.get(h.id) || [];
+      for(const n of notesArr){
+        const edits = editsByNoteId.get(n.id) || [];
+        const current = edits.length ? edits[edits.length - 1].new_text : n.note_text;
+        const ts = edits.length ? edits[edits.length - 1].edited_at : n.created_at;
+        const t = ts ? new Date(ts).getTime() : 0;
+        if(t > latestMs){ latestMs = t; latestText = current; }
+      }
     }
-    return null;
+    return latestText;
   }
   function lastUpdatedIsoFor(leadId, fallback){
-    // The most recent timestamp across all status changes AND note edits.
+    // The most recent timestamp across all status changes, notes, and edits.
     const hist = leadHistories.get(leadId) || [];
     let latestMs = 0;
     let latestIso = null;
@@ -4499,14 +4846,48 @@ document.querySelectorAll('.tab').forEach(btn => {
         const t = new Date(h.changed_at).getTime();
         if(t > latestMs){ latestMs = t; latestIso = h.changed_at; }
       }
-      const edits = noteEditsByHistoryId.get(h.id) || [];
-      for(const e of edits){
-        if(!e.edited_at) continue;
-        const t = new Date(e.edited_at).getTime();
-        if(t > latestMs){ latestMs = t; latestIso = e.edited_at; }
+      const notes = notesByHistoryId.get(h.id) || [];
+      for(const n of notes){
+        if(n.created_at){
+          const t = new Date(n.created_at).getTime();
+          if(t > latestMs){ latestMs = t; latestIso = n.created_at; }
+        }
+        const edits = editsByNoteId.get(n.id) || [];
+        for(const e of edits){
+          if(!e.edited_at) continue;
+          const t = new Date(e.edited_at).getTime();
+          if(t > latestMs){ latestMs = t; latestIso = e.edited_at; }
+        }
       }
     }
     return latestIso || fallback || null;
+  }
+  // Auto-derived profile URL for a lead based on primary platform / username.
+  function primaryUsernameOf(lead){
+    const p = lead.primary_platform || (lead.instagram ? 'instagram' : (lead.youtube ? 'youtube' : null));
+    if(p === 'instagram') return lead.instagram || '';
+    if(p === 'youtube') return lead.youtube || '';
+    return '';
+  }
+  function primaryPlatformOf(lead){
+    return lead.primary_platform || (lead.instagram ? 'instagram' : (lead.youtube ? 'youtube' : null));
+  }
+  function instagramUrl(username){ return username ? 'https://instagram.com/' + encodeURIComponent(username) : ''; }
+  function youtubeUrl(username){ return username ? 'https://youtube.com/@' + encodeURIComponent(username) : ''; }
+  function primaryProfileUrlOf(lead){
+    const p = primaryPlatformOf(lead);
+    if(p === 'instagram') return instagramUrl(lead.instagram);
+    if(p === 'youtube') return youtubeUrl(lead.youtube);
+    return '';
+  }
+  function leadIsIncomplete(lead){
+    return !lead.instagram && !lead.youtube;
+  }
+  function findNextIncompleteLead(){
+    return leads.find(leadIsIncomplete) || null;
+  }
+  function countIncompleteLeads(){
+    return leads.filter(leadIsIncomplete).length;
   }
   function sortLeads(arr){
     const copy = arr.slice();
@@ -4601,26 +4982,34 @@ document.querySelectorAll('.tab').forEach(btn => {
       if(/column .* (notes|notes_updated_at)|(notes|notes_updated_at) .* does not exist|PGRST204|42703/i.test(msg)) return false;
       throw r1.error;
     }
-    // Also require the outreach_note_edits table for the per-edit activity log.
-    const r2 = await supabaseClient.from('outreach_note_edits').select('id').limit(1);
-    if(r2.error){
-      const msg = (r2.error.message || '') + ' ' + (r2.error.code || '');
-      if(/does not exist|relation .* does not exist|PGRST205|42P01|404/i.test(msg)) return false;
-      throw r2.error;
-    }
-    // Rating column on outreach_leads (added in the rating-column change).
+    // Rating column on outreach_leads.
     const r3 = await supabaseClient.from('outreach_leads').select('id, rating').limit(1);
     if(r3.error){
       const msg = (r3.error.message || '') + ' ' + (r3.error.code || '');
       if(/column .* rating|rating .* does not exist|PGRST204|42703/i.test(msg)) return false;
       throw r3.error;
     }
-    // Multi-status `statuses` text[] column on outreach_leads.
-    const r4 = await supabaseClient.from('outreach_leads').select('id, statuses').limit(1);
-    if(r4.error){
-      const msg = (r4.error.message || '') + ' ' + (r4.error.code || '');
-      if(/column .* statuses|statuses .* does not exist|PGRST204|42703/i.test(msg)) return false;
-      throw r4.error;
+    // New lead columns from Part 3.
+    const r5 = await supabaseClient.from('outreach_leads')
+      .select('id, instagram, youtube, loom_url, primary_platform, display_name').limit(1);
+    if(r5.error){
+      const msg = (r5.error.message || '') + ' ' + (r5.error.code || '');
+      if(/column .* (instagram|youtube|loom_url|primary_platform|display_name)|(instagram|youtube|loom_url|primary_platform|display_name) .* does not exist|PGRST204|42703/i.test(msg)) return false;
+      throw r5.error;
+    }
+    // New outreach_notes table from Part 10.
+    const r6 = await supabaseClient.from('outreach_notes').select('id').limit(1);
+    if(r6.error){
+      const msg = (r6.error.message || '') + ' ' + (r6.error.code || '');
+      if(/does not exist|relation .* does not exist|PGRST205|42P01|404/i.test(msg)) return false;
+      throw r6.error;
+    }
+    // New outreach_note_edits schema (note_id, previous_text, new_text).
+    const r7 = await supabaseClient.from('outreach_note_edits').select('id, note_id, previous_text, new_text').limit(1);
+    if(r7.error){
+      const msg = (r7.error.message || '') + ' ' + (r7.error.code || '');
+      if(/does not exist|relation .* does not exist|column .* (note_id|previous_text|new_text)|(note_id|previous_text|new_text) .* does not exist|PGRST204|PGRST205|42703|42P01|404/i.test(msg)) return false;
+      throw r7.error;
     }
     return true;
   }
@@ -4648,35 +5037,17 @@ document.querySelectorAll('.tab').forEach(btn => {
   async function loadLeads(){
     const r = await supabaseClient.from('outreach_leads').select('*').order('created_at', { ascending: false });
     if(r.error) throw r.error;
-    leads = (r.data || []).map(normalizeLeadStatuses);
+    leads = (r.data || []).map(normalizeLeadSingleStatus);
   }
-  // Backfill the new `statuses` array from the legacy single `status` column
-  // when missing/empty. Mutates and returns the lead.
-  function normalizeLeadStatuses(lead){
-    if(!Array.isArray(lead.statuses) || lead.statuses.length === 0){
-      lead.statuses = lead.status ? [lead.status] : [];
+  // Part 2 (this round): revert the multi-status feature. Collapse any
+  // legacy `statuses` array back to a single `status` field (first element).
+  function normalizeLeadSingleStatus(lead){
+    if(!lead.status && Array.isArray(lead.statuses) && lead.statuses.length > 0){
+      lead.status = lead.statuses[0];
     }
     return lead;
   }
-  // Most recently added status — used as the representative for ordering /
-  // legacy `status` column writes / labels that need a single value.
-  function representativeStatus(lead){
-    const arr = (lead && Array.isArray(lead.statuses)) ? lead.statuses : [];
-    return arr.length ? arr[arr.length - 1] : (lead && lead.status) || '';
-  }
-  function leadHasStatus(lead, label){
-    return Array.isArray(lead.statuses) && lead.statuses.indexOf(label) !== -1;
-  }
-  async function loadLeadHistory(leadId){
-    const r = await supabaseClient.from('outreach_status_history')
-      .select('*').eq('lead_id', leadId).order('changed_at', { ascending: true });
-    if(r.error) throw r.error;
-    return r.data || [];
-  }
   async function loadAllHistories(){
-    // Pre-load every history row in chronological order so collapsed rows
-    // can render the most-recent status timestamp and most-recent note
-    // without an extra round-trip per row.
     const r = await supabaseClient.from('outreach_status_history')
       .select('*').order('changed_at', { ascending: true });
     if(r.error) throw r.error;
@@ -4687,59 +5058,123 @@ document.querySelectorAll('.tab').forEach(btn => {
       leadHistories.get(h.lead_id).push(h);
     }
   }
+  // Part 10: load all notes from the new outreach_notes table.
+  async function loadAllNotes(){
+    const r = await supabaseClient.from('outreach_notes')
+      .select('*').order('created_at', { ascending: true });
+    if(r.error) throw r.error;
+    notesByHistoryId.clear();
+    for(const n of (r.data || [])){
+      if(!notesByHistoryId.has(n.history_id)) notesByHistoryId.set(n.history_id, []);
+      notesByHistoryId.get(n.history_id).push(n);
+    }
+  }
+  // Part 10: load all note edits keyed by the new note_id.
   async function loadAllNoteEdits(){
     const r = await supabaseClient.from('outreach_note_edits')
       .select('*').order('edited_at', { ascending: true });
     if(r.error) throw r.error;
-    noteEditsByHistoryId.clear();
+    editsByNoteId.clear();
     for(const e of (r.data || [])){
-      if(!noteEditsByHistoryId.has(e.history_id)) noteEditsByHistoryId.set(e.history_id, []);
-      noteEditsByHistoryId.get(e.history_id).push(e);
+      if(!editsByNoteId.has(e.note_id)) editsByNoteId.set(e.note_id, []);
+      editsByNoteId.get(e.note_id).push(e);
     }
   }
-  async function createNoteEdit(historyId, oldNotes, newNotes){
-    // Inserts a new row in outreach_note_edits AND updates the history
-    // row's notes column to the new value so the current state stays in sync.
-    const ins = await supabaseClient.from('outreach_note_edits').insert({
+  // Part 10: one-time migration — for any outreach_status_history row that
+  // still has a `notes` value but no outreach_notes row yet, insert a
+  // matching outreach_notes row (using changed_at as created_at) so existing
+  // notes show up in the new activity log. Idempotent: runs only when the
+  // outreach_notes table is empty.
+  async function migrateLegacyNotesIfNeeded(){
+    const probe = await supabaseClient.from('outreach_notes').select('id').limit(1);
+    if(probe.error) throw probe.error;
+    if(probe.data && probe.data.length > 0) return; // already migrated
+    const r = await supabaseClient.from('outreach_status_history')
+      .select('id, notes, changed_at, notes_updated_at')
+      .not('notes', 'is', null);
+    if(r.error) throw r.error;
+    const rows = (r.data || []).filter(function(h){ return h.notes && h.notes.trim(); });
+    if(rows.length === 0) return;
+    const inserts = rows.map(function(h){
+      return {
+        history_id: h.id,
+        note_text: h.notes,
+        created_at: h.notes_updated_at || h.changed_at || new Date().toISOString()
+      };
+    });
+    const ins = await supabaseClient.from('outreach_notes').insert(inserts);
+    if(ins.error) throw ins.error;
+  }
+  async function createNoteRow(historyId, noteText){
+    const r = await supabaseClient.from('outreach_notes').insert({
       history_id: historyId,
-      old_notes: oldNotes,
-      new_notes: newNotes
+      note_text: noteText
+    }).select().single();
+    if(r.error) throw r.error;
+    return r.data;
+  }
+  async function updateNoteRow(noteId, previousText, newText){
+    // Inserts an edit row AND updates the note's text in place so the
+    // "current" value lives in one place.
+    const ins = await supabaseClient.from('outreach_note_edits').insert({
+      note_id: noteId,
+      previous_text: previousText,
+      new_text: newText
     }).select().single();
     if(ins.error) throw ins.error;
-    const upd = await supabaseClient.from('outreach_status_history')
-      .update({ notes: newNotes || null, notes_updated_at: new Date().toISOString() })
-      .eq('id', historyId);
+    const upd = await supabaseClient.from('outreach_notes')
+      .update({ note_text: newText })
+      .eq('id', noteId);
     if(upd.error) throw upd.error;
     return ins.data;
   }
   async function createLead(fields){
+    // Build the row, defaulting primary_platform sensibly if only one
+    // platform is provided.
+    let primary = fields.primary_platform || null;
+    if(!primary){
+      if(fields.instagram && !fields.youtube) primary = 'instagram';
+      else if(fields.youtube && !fields.instagram) primary = 'youtube';
+    }
     const ins = await supabaseClient.from('outreach_leads').insert({
-      name: fields.name,
-      profile_url: fields.profile_url || null,
+      name: fields.display_name || primaryUsernameForCreate(fields) || 'Untitled',
+      display_name: fields.display_name || null,
+      instagram: fields.instagram || null,
+      youtube: fields.youtube || null,
+      loom_url: fields.loom_url || null,
+      primary_platform: primary,
       status: fields.status,
-      statuses: [fields.status],
       rating: (fields.rating == null) ? null : fields.rating
     }).select().single();
     if(ins.error) throw ins.error;
     const hist = await supabaseClient.from('outreach_status_history').insert({
       lead_id: ins.data.id,
       old_status: null,
-      new_status: fields.status,
-      notes: fields.notes || null
+      new_status: fields.status
     }).select().single();
     if(hist.error) throw hist.error;
+    if(fields.notes && fields.notes.trim()){
+      await createNoteRow(hist.data.id, fields.notes.trim());
+    }
     return { lead: ins.data, history: hist.data };
+  }
+  function primaryUsernameForCreate(f){
+    if(f.primary_platform === 'youtube') return f.youtube;
+    if(f.primary_platform === 'instagram') return f.instagram;
+    return f.instagram || f.youtube || '';
   }
   async function updateLeadFields(id, updates){
     const r = await supabaseClient.from('outreach_leads').update(updates).eq('id', id);
     if(r.error) throw r.error;
   }
   async function updateLeadRating(id, rating){
-    // rating: integer 1-3 or null (cleared).
     const r = await supabaseClient.from('outreach_leads')
       .update({ rating: rating }).eq('id', id);
     if(r.error) throw r.error;
   }
+  // Part 2: revert to a single-status replace (no array). Inserts a history
+  // row with old/new statuses; if a note is provided, also inserts a note row
+  // on that history row.
   async function changeStatusWithNote(lead, newStatus, note){
     if(lead.status === newStatus) return;
     const u = await supabaseClient.from('outreach_leads').update({ status: newStatus }).eq('id', lead.id);
@@ -4747,123 +5182,16 @@ document.querySelectorAll('.tab').forEach(btn => {
     const h = await supabaseClient.from('outreach_status_history').insert({
       lead_id: lead.id,
       old_status: lead.status,
-      new_status: newStatus,
-      notes: note || null
-    });
+      new_status: newStatus
+    }).select().single();
     if(h.error) throw h.error;
-  }
-  // Append a status to the lead's statuses array (skips if already present).
-  // Inserts a history row with old=null + new=addedStatus (same shape as the
-  // initial "Added with status X" event). Also keeps the legacy `status`
-  // column in sync with the new representative.
-  async function addStatusToLead(lead, addedStatus, note){
-    const current = Array.isArray(lead.statuses) ? lead.statuses.slice() : [];
-    if(current.indexOf(addedStatus) !== -1) return;
-    current.push(addedStatus);
-    const u = await supabaseClient.from('outreach_leads')
-      .update({ statuses: current, status: addedStatus })
-      .eq('id', lead.id);
-    if(u.error) throw u.error;
-    const h = await supabaseClient.from('outreach_status_history').insert({
-      lead_id: lead.id,
-      old_status: null,
-      new_status: addedStatus,
-      notes: note || null
-    });
-    if(h.error) throw h.error;
-  }
-  // Remove a status from the lead's statuses array. Inserts a history row
-  // with old_status === new_status === removedStatus as a "removal" sentinel
-  // (renderActivityRowHtml branches on that). Keeps the legacy `status`
-  // column synced to the new representative.
-  async function removeStatusFromLead(lead, removedStatus, note){
-    const current = Array.isArray(lead.statuses) ? lead.statuses.slice() : [];
-    const idx = current.indexOf(removedStatus);
-    if(idx === -1) return;
-    current.splice(idx, 1);
-    if(current.length === 0) throw new Error('A lead must have at least one status.');
-    const newRep = current[current.length - 1];
-    const u = await supabaseClient.from('outreach_leads')
-      .update({ statuses: current, status: newRep })
-      .eq('id', lead.id);
-    if(u.error) throw u.error;
-    const h = await supabaseClient.from('outreach_status_history').insert({
-      lead_id: lead.id,
-      old_status: removedStatus,
-      new_status: removedStatus,
-      notes: note || null
-    });
-    if(h.error) throw h.error;
-  }
-  async function setHistoryNoteInitial(historyId, note){
-    // For the create-flow note prompt — first time the note is set on a
-    // freshly-inserted history row, so we don't flag it as "edited".
-    const r = await supabaseClient.from('outreach_status_history')
-      .update({ notes: note || null })
-      .eq('id', historyId);
-    if(r.error) throw r.error;
-  }
-  async function updateHistoryNote(historyId, note){
-    // For inline edits from the activity log — stamps notes_updated_at.
-    const r = await supabaseClient.from('outreach_status_history')
-      .update({ notes: note || null, notes_updated_at: new Date().toISOString() })
-      .eq('id', historyId);
-    if(r.error) throw r.error;
+    if(note && note.trim()){
+      await createNoteRow(h.data.id, note.trim());
+    }
   }
   async function deleteLead(id){
     const r = await supabaseClient.from('outreach_leads').delete().eq('id', id);
     if(r.error) throw r.error;
-  }
-  // Per change #3 (this round): delete a single history row, then update the
-  // lead's current status to the previous one (the new "newest" history row's
-  // new_status). If the deleted row was the only history row, the lead is
-  // left without history — the caller should have warned first.
-  async function deleteHistoryRow(historyId, leadId){
-    const del = await supabaseClient.from('outreach_status_history')
-      .delete().eq('id', historyId);
-    if(del.error) throw del.error;
-    // Reload the lead's history newest-first, pick its new current status.
-    const r = await supabaseClient.from('outreach_status_history')
-      .select('id, new_status, changed_at')
-      .eq('lead_id', leadId)
-      .order('changed_at', { ascending: false })
-      .limit(1);
-    if(r.error) throw r.error;
-    if(r.data && r.data.length){
-      const upd = await supabaseClient.from('outreach_leads')
-        .update({ status: r.data[0].new_status })
-        .eq('id', leadId);
-      if(upd.error) throw upd.error;
-    }
-  }
-  async function deleteNoteEditRow(editId){
-    // Per change #3 (this round): before deleting the note edit, revert the
-    // parent history row's `notes` column to the `old_notes` stored on this
-    // edit. That way the activity log and the displayed note stay consistent
-    // — deleting the edit undoes it rather than leaving the post-edit value.
-    let parentHistoryId = null;
-    let oldNotesToRestore = null;
-    noteEditsByHistoryId.forEach(function(arr, historyId){
-      if(parentHistoryId) return;
-      for(const e of arr){
-        if(e.id === editId){
-          parentHistoryId = historyId;
-          oldNotesToRestore = (e.old_notes == null) ? null : e.old_notes;
-          break;
-        }
-      }
-    });
-    if(parentHistoryId){
-      // Use the same update shape as setHistoryNoteInitial so we don't stamp
-      // notes_updated_at (this isn't a fresh edit — it's a revert).
-      const upd = await supabaseClient.from('outreach_status_history')
-        .update({ notes: oldNotesToRestore || null })
-        .eq('id', parentHistoryId);
-      if(upd.error) throw upd.error;
-    }
-    const del = await supabaseClient.from('outreach_note_edits')
-      .delete().eq('id', editId);
-    if(del.error) throw del.error;
   }
   async function createStatus(fields){
     const maxOrder = statuses.length ? Math.max.apply(null, statuses.map(function(s){ return s.sort_order || 0; })) : -1;
@@ -4918,9 +5246,16 @@ document.querySelectorAll('.tab').forEach(btn => {
         return;
       }
       await loadStatuses();
+      // Part 10: rehouse any legacy notes from outreach_status_history.notes
+      // into outreach_notes before the first read.
+      try { await migrateLegacyNotesIfNeeded(); } catch(_){ /* non-fatal */ }
       await loadLeads();
       await loadAllHistories();
+      await loadAllNotes();
       await loadAllNoteEdits();
+      // Part 5: kick off the auto-migration flow for any leads still missing
+      // both instagram and youtube. First call after a fresh load only.
+      maybeStartIncompleteLeadMigration();
       phase = 'ready';
       render();
     } catch(e){
@@ -4948,7 +5283,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     root.innerHTML =
       '<div class="supabase-panel">' +
         '<div class="supabase-section-label">migration needed</div>' +
-        '<p class="outreach-help-text">Notes have moved from <strong>outreach_leads</strong> to <strong>outreach_status_history</strong>. Anon-key DDL isn\'t permitted by Supabase, so paste this SQL into your project\'s SQL editor — then click <strong>Recheck</strong>.</p>' +
+        '<p class="outreach-help-text">New columns and tables are required (lead platform fields, ratings, and the new notes/edits schema). Anon-key DDL isn\'t permitted by Supabase, so paste this SQL into your project\'s SQL editor — then click <strong>Recheck</strong>.</p>' +
         (editorUrl ? '<p class="outreach-help-text"><a href="' + escapeHtml(editorUrl) + '" target="_blank" rel="noopener" class="outreach-link">Open SQL editor →</a></p>' : '') +
         '<div class="outreach-sql-actions">' +
           '<button type="button" class="supabase-btn supabase-btn-secondary" id="migration-copy">Copy SQL</button>' +
@@ -5046,32 +5381,59 @@ document.querySelectorAll('.tab').forEach(btn => {
     });
   }
 
-  // Real-time search: matches lead name, profile URL, and any note text
-  // across the lead's full status history and note edits. Case-insensitive.
+  // Part 5: opens the next incomplete lead's edit overlay if any exist.
+  function maybeStartIncompleteLeadMigration(){
+    if(migrationDismissed) return;
+    const nxt = findNextIncompleteLead();
+    if(!nxt) return;
+    migrationLeadId = nxt.id;
+    editingLeadOverlayId = nxt.id;
+  }
+
+  // Part 11: real-time search across primary username, display name, and all
+  // note text (from outreach_notes + outreach_note_edits). Case-insensitive.
   function leadMatchesSearch(lead, qLower){
     if(!qLower) return true;
-    if((lead.name || '').toLowerCase().indexOf(qLower) !== -1) return true;
-    if((lead.profile_url || '').toLowerCase().indexOf(qLower) !== -1) return true;
+    const u = primaryUsernameOf(lead);
+    if(u && u.toLowerCase().indexOf(qLower) !== -1) return true;
+    if((lead.display_name || '').toLowerCase().indexOf(qLower) !== -1) return true;
+    if((lead.instagram || '').toLowerCase().indexOf(qLower) !== -1) return true;
+    if((lead.youtube || '').toLowerCase().indexOf(qLower) !== -1) return true;
     const history = leadHistories.get(lead.id) || [];
     for(const h of history){
-      if(h.notes && h.notes.toLowerCase().indexOf(qLower) !== -1) return true;
-      const edits = noteEditsByHistoryId.get(h.id) || [];
-      for(const e of edits){
-        if(e.new_notes && e.new_notes.toLowerCase().indexOf(qLower) !== -1) return true;
-        if(e.old_notes && e.old_notes.toLowerCase().indexOf(qLower) !== -1) return true;
+      const notes = notesByHistoryId.get(h.id) || [];
+      for(const n of notes){
+        if(n.note_text && n.note_text.toLowerCase().indexOf(qLower) !== -1) return true;
+        const edits = editsByNoteId.get(n.id) || [];
+        for(const e of edits){
+          if(e.previous_text && e.previous_text.toLowerCase().indexOf(qLower) !== -1) return true;
+          if(e.new_text && e.new_text.toLowerCase().indexOf(qLower) !== -1) return true;
+        }
       }
     }
     return false;
   }
 
+  function leadMatchesPlatformFilter(lead){
+    if(currentPlatformFilter === 'all') return true;
+    return primaryPlatformOf(lead) === currentPlatformFilter;
+  }
+  function leadMatchesLoomFilter(lead){
+    if(currentLoomFilter === 'all') return true;
+    const has = !!(lead.loom_url && lead.loom_url.trim());
+    return currentLoomFilter === 'has' ? has : !has;
+  }
+
   function renderTracker(root){
     const statusFiltered = currentFilter === 'all'
       ? leads
-      : leads.filter(function(l){ return leadHasStatus(l, currentFilter); });
+      : leads.filter(function(l){ return l.status === currentFilter; });
+    const platformFiltered = statusFiltered.filter(leadMatchesPlatformFilter);
+    const loomFiltered = platformFiltered.filter(leadMatchesLoomFilter);
     const qLower = (searchQuery || '').trim().toLowerCase();
     const searchFiltered = qLower
-      ? statusFiltered.filter(function(l){ return leadMatchesSearch(l, qLower); })
-      : statusFiltered;
+      ? loomFiltered.filter(function(l){ return leadMatchesSearch(l, qLower); })
+      : loomFiltered;
     const filtered = sortLeads(searchFiltered);
 
     const clearBtnHtml = qLower
@@ -5079,9 +5441,20 @@ document.querySelectorAll('.tab').forEach(btn => {
       : '';
 
     let html = '';
+    // Part 5: persistent banner when the user dismissed the auto-migration
+    // mid-flow and there are still incomplete leads.
+    const incompleteCount = countIncompleteLeads();
+    if(migrationDismissed && incompleteCount > 0){
+      html += '<div class="outreach-migration-banner">' +
+        '<span class="outreach-migration-banner-text">' + incompleteCount + ' lead' + (incompleteCount === 1 ? '' : 's') + ' still need updating</span>' +
+        '<button type="button" class="supabase-btn supabase-btn-secondary" id="migration-resume-btn">Resume</button>' +
+      '</div>';
+    }
     html += '<div class="outreach-toolbar">' +
               '<div class="outreach-toolbar-left">' +
                 renderFilterDropdownHtml() +
+                renderPlatformFilterDropdownHtml() +
+                renderLoomFilterDropdownHtml() +
                 '<span class="outreach-count">' + filtered.length + ' lead' + (filtered.length === 1 ? '' : 's') + '</span>' +
               '</div>' +
               '<div class="outreach-toolbar-center">' +
@@ -5114,6 +5487,68 @@ document.querySelectorAll('.tab').forEach(btn => {
         promptInput.setSelectionRange(len, len);
       }
     }
+  }
+  // Part 7: Platform filter dropdown ("All / IG / YT primary").
+  function renderPlatformFilterDropdownHtml(){
+    const isOpen = openDropdownId === 'platform-filter';
+    const label = currentPlatformFilter === 'all' ? 'All platforms'
+      : currentPlatformFilter === 'instagram' ? 'IG primary'
+      : 'YT primary';
+    let menu = '';
+    if(isOpen){
+      const opts = [
+        { value: 'all', label: 'All platforms' },
+        { value: 'instagram', label: 'IG primary' },
+        { value: 'youtube', label: 'YT primary' }
+      ];
+      menu = '<div class="outreach-cdrop-menu">' +
+        opts.map(function(o){
+          const selected = (currentPlatformFilter === o.value);
+          return '<button type="button" class="outreach-cdrop-option' + (selected ? ' selected' : '') + '" ' +
+            'data-action="platform-filter-select" data-value="' + escapeHtml(o.value) + '">' +
+            '<span class="outreach-cdrop-option-label">' + escapeHtml(o.label) + '</span>' +
+          '</button>';
+        }).join('') +
+      '</div>';
+    }
+    return '<div class="outreach-cdrop outreach-cfilter' + (isOpen ? ' open' : '') + '" data-dropdown-id="platform-filter">' +
+      '<button type="button" class="outreach-cdrop-trigger" data-action="dropdown-toggle" data-dropdown-id="platform-filter">' +
+        '<span class="outreach-cdrop-label">' + escapeHtml(label) + '</span>' +
+        '<span class="outreach-cdrop-chevron">▾</span>' +
+      '</button>' +
+      menu +
+    '</div>';
+  }
+  // Part 7: Loom filter dropdown ("All / Has Loom / No Loom").
+  function renderLoomFilterDropdownHtml(){
+    const isOpen = openDropdownId === 'loom-filter';
+    const label = currentLoomFilter === 'all' ? 'All looms'
+      : currentLoomFilter === 'has' ? 'Has Loom'
+      : 'No Loom';
+    let menu = '';
+    if(isOpen){
+      const opts = [
+        { value: 'all', label: 'All looms' },
+        { value: 'has', label: 'Has Loom' },
+        { value: 'none', label: 'No Loom' }
+      ];
+      menu = '<div class="outreach-cdrop-menu">' +
+        opts.map(function(o){
+          const selected = (currentLoomFilter === o.value);
+          return '<button type="button" class="outreach-cdrop-option' + (selected ? ' selected' : '') + '" ' +
+            'data-action="loom-filter-select" data-value="' + escapeHtml(o.value) + '">' +
+            '<span class="outreach-cdrop-option-label">' + escapeHtml(o.label) + '</span>' +
+          '</button>';
+        }).join('') +
+      '</div>';
+    }
+    return '<div class="outreach-cdrop outreach-cfilter' + (isOpen ? ' open' : '') + '" data-dropdown-id="loom-filter">' +
+      '<button type="button" class="outreach-cdrop-trigger" data-action="dropdown-toggle" data-dropdown-id="loom-filter">' +
+        '<span class="outreach-cdrop-label">' + escapeHtml(label) + '</span>' +
+        '<span class="outreach-cdrop-chevron">▾</span>' +
+      '</button>' +
+      menu +
+    '</div>';
   }
 
   function renderSortDropdownHtml(){
@@ -5215,16 +5650,16 @@ document.querySelectorAll('.tab').forEach(btn => {
     return MONTHS_FULL[d.getMonth()] + ' ' + d.getDate() + ' · ' + time;
   }
 
+  // Part 6: new column order — USER · NAME · STATUS · RATING · NOTES · LOOM.
   function renderTableHtml(filtered){
     let html = '<div class="outreach-table">';
     html += '<div class="outreach-table-header">' +
+      '<div class="outreach-th outreach-col-user">User</div>' +
       '<div class="outreach-th outreach-col-name">Name</div>' +
       '<div class="outreach-th outreach-col-status">Status</div>' +
       renderRatingHeaderHtml() +
-      '<div class="outreach-th outreach-col-updated outreach-sort-th-wrap">' +
-        renderHeaderSortDropdownHtml() +
-      '</div>' +
       '<div class="outreach-th outreach-col-notes">Notes</div>' +
+      '<div class="outreach-th outreach-col-loom">Loom</div>' +
     '</div>';
     if(filtered.length === 0){
       html += '<div class="outreach-empty">No leads ' + (currentFilter !== 'all' ? 'with this status' : 'yet') + '.</div>';
@@ -5233,6 +5668,79 @@ document.querySelectorAll('.tab').forEach(btn => {
     }
     html += '</div>';
     return html;
+  }
+  // Part 6: USER cell — platform pill (IG purple / YT red) + username link + copy.
+  function renderUserCellHtml(lead){
+    const platform = primaryPlatformOf(lead);
+    const username = primaryUsernameOf(lead);
+    const url = primaryProfileUrlOf(lead);
+    const pillClass = platform === 'youtube' ? 'outreach-platform-pill outreach-platform-yt'
+      : platform === 'instagram' ? 'outreach-platform-pill outreach-platform-ig'
+      : 'outreach-platform-pill outreach-platform-none';
+    const pillLabel = platform === 'youtube' ? 'YT'
+      : platform === 'instagram' ? 'IG'
+      : '—';
+    const pillHtml = '<span class="' + pillClass + '">' + pillLabel + '</span>';
+    let userHtml;
+    if(username && url){
+      userHtml = '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer" class="outreach-user-link" data-noexpand="1">' + escapeHtml(username) + '</a>';
+    } else if(username){
+      userHtml = '<span class="outreach-user-link">' + escapeHtml(username) + '</span>';
+    } else {
+      userHtml = '<span class="outreach-user-empty">—</span>';
+    }
+    const copyHtml = url
+      ? '<button type="button" class="outreach-copy-btn" data-action="copy-url" data-noexpand="1" data-url="' + escapeHtml(url) + '" title="Copy URL" aria-label="Copy URL">' + COPY_ICON_SVG + '</button>'
+      : '';
+    return '<div class="outreach-td outreach-col-user">' +
+      '<div class="outreach-user-cell">' + pillHtml + userHtml + copyHtml + '</div>' +
+    '</div>';
+  }
+  // Part 6: NAME cell — display_name or em dash.
+  function renderNameCellHtml(lead){
+    const name = lead.display_name && lead.display_name.trim();
+    return '<div class="outreach-td outreach-col-name">' +
+      (name
+        ? '<span class="outreach-display-name">' + escapeHtml(name) + '</span>'
+        : '<span class="outreach-name-empty">—</span>') +
+    '</div>';
+  }
+  // Part 6: LOOM cell — small blue "Loom" pill if loom_url present.
+  function renderLoomCellHtml(lead){
+    if(!lead.loom_url){
+      return '<div class="outreach-td outreach-col-loom"><span class="outreach-loom-empty"></span></div>';
+    }
+    return '<div class="outreach-td outreach-col-loom">' +
+      '<a href="' + escapeHtml(lead.loom_url) + '" target="_blank" rel="noopener noreferrer" class="outreach-loom-pill" data-noexpand="1">Loom</a>' +
+    '</div>';
+  }
+  // Single-status pill dropdown — selecting a status replaces (Part 2 revert).
+  function renderStatusPillDropdownHtml(lead){
+    const dropdownId = 'lead-' + lead.id;
+    const isOpen = openDropdownId === dropdownId;
+    const current = lead.status || '';
+    const color = current ? statusColor(current) : '#9aa2af';
+    let menu = '';
+    if(isOpen){
+      menu = '<div class="outreach-cdrop-menu">' +
+        statuses.map(function(s){
+          const c = s.color || '#4D89FF';
+          const selected = s.label === current;
+          return '<button type="button" class="outreach-cdrop-option' + (selected ? ' selected' : '') + '" ' +
+            'data-action="status-select" data-lead-id="' + lead.id + '" data-value="' + escapeHtml(s.label) + '">' +
+            dotSvg(c) + '<span class="outreach-cdrop-option-label">' + escapeHtml(s.label) + '</span>' +
+          '</button>';
+        }).join('') +
+      '</div>';
+    }
+    return '<div class="outreach-cdrop outreach-cstatus-pill' + (isOpen ? ' open' : '') + '" data-dropdown-id="' + dropdownId + '" data-noexpand="1">' +
+      '<button type="button" class="outreach-cdrop-trigger outreach-cstatus-trigger" style="--badge-color: ' + escapeHtml(color) + '" data-action="dropdown-toggle" data-dropdown-id="' + dropdownId + '" data-noexpand="1">' +
+        dotSvg(color) +
+        '<span class="outreach-cdrop-label">' + escapeHtml(current || '—') + '</span>' +
+        '<span class="outreach-cdrop-chevron">▾</span>' +
+      '</button>' +
+      menu +
+    '</div>';
   }
 
   // CUSTOM DROPDOWNS (color-coded)
@@ -5270,91 +5778,7 @@ document.querySelectorAll('.tab').forEach(btn => {
   }
   // Renders all of a lead's statuses as a vertical stack of colored pills.
   // When `removable` is true (expanded view), each pill gets a small × to
-  // remove that status individually. Below the pills sits an "Add status"
-  // dropdown.
-  function renderStatusStackHtml(lead, opts){
-    opts = opts || {};
-    const removable = !!opts.removable;
-    const statusesArr = (lead.statuses && lead.statuses.length) ? lead.statuses : [];
-    const pills = statusesArr.map(function(label){
-      const color = statusColor(label);
-      const removeBtn = removable
-        ? '<button type="button" class="outreach-status-pill-remove" data-action="remove-status" data-lead-id="' + lead.id + '" data-value="' + escapeHtml(label) + '" data-noexpand="1" aria-label="Remove ' + escapeHtml(label) + '">×</button>'
-        : '';
-      return '<span class="outreach-status-badge outreach-status-pill" style="--badge-color: ' + escapeHtml(color) + '" data-noexpand="1">' +
-        '<span class="outreach-status-pill-label">' + escapeHtml(label) + '</span>' +
-        removeBtn +
-      '</span>';
-    }).join('');
-    return '<div class="outreach-statuses-stack" data-noexpand="1">' +
-      pills +
-      renderAddStatusDropdownHtml(lead) +
-    '</div>';
-  }
-  // "Add status" dropdown — replaces the old single-status pill dropdown on
-  // the row. Selecting an option appends that status to the lead's array
-  // (after the standard confirm + note prompt flow).
-  function renderAddStatusDropdownHtml(lead){
-    const dropdownId = 'lead-' + lead.id;
-    const isOpen = openDropdownId === dropdownId;
-    // Hide statuses the lead already has; if all are added, render the
-    // trigger disabled so the row still lays out the same way.
-    const remaining = statuses.filter(function(s){ return !leadHasStatus(lead, s.label); });
-    const noneLeft = remaining.length === 0;
-
-    let menu = '';
-    if(isOpen && !noneLeft){
-      menu = '<div class="outreach-cdrop-menu">' +
-        remaining.map(function(s){
-          const c = s.color || '#4D89FF';
-          return '<button type="button" class="outreach-cdrop-option" ' +
-            'data-action="status-select" data-lead-id="' + lead.id + '" data-value="' + escapeHtml(s.label) + '">' +
-            dotSvg(c) + '<span class="outreach-cdrop-option-label">' + escapeHtml(s.label) + '</span>' +
-          '</button>';
-        }).join('') +
-      '</div>';
-    }
-    const triggerDisabledAttr = noneLeft ? ' disabled' : '';
-    return '<div class="outreach-cdrop outreach-cstatus-add' + (isOpen && !noneLeft ? ' open' : '') + (noneLeft ? ' is-full' : '') + '" data-dropdown-id="' + dropdownId + '" data-noexpand="1">' +
-      '<button type="button" class="outreach-cdrop-trigger outreach-cstatus-add-trigger" data-action="dropdown-toggle" data-dropdown-id="' + dropdownId + '" data-noexpand="1"' + triggerDisabledAttr + '>' +
-        '<span class="outreach-cstatus-add-plus" aria-hidden="true">+</span>' +
-        '<span class="outreach-cdrop-label">' + (noneLeft ? 'All added' : 'Add status') + '</span>' +
-      '</button>' +
-      menu +
-    '</div>';
-  }
-  // Kept for callers that still expect a single-pill dropdown helper — now
-  // delegates to the stack renderer (collapsed mode = no × buttons).
-  function renderStatusPillDropdownHtml(lead){
-    return renderStatusStackHtml(lead, { removable: false });
-  }
-  function _legacyRenderStatusPillDropdownHtml_unused(lead){
-    const dropdownId = 'lead-' + lead.id;
-    const isOpen = openDropdownId === dropdownId;
-    const color = statusColor(lead.status);
-
-    let menu = '';
-    if(isOpen){
-      menu = '<div class="outreach-cdrop-menu">' +
-        statuses.map(function(s){
-          const c = s.color || '#4D89FF';
-          const selected = s.label === lead.status;
-          return '<button type="button" class="outreach-cdrop-option' + (selected ? ' selected' : '') + '" ' +
-            'data-action="status-select" data-lead-id="' + lead.id + '" data-value="' + escapeHtml(s.label) + '">' +
-            dotSvg(c) + '<span class="outreach-cdrop-option-label">' + escapeHtml(s.label) + '</span>' +
-          '</button>';
-        }).join('') +
-      '</div>';
-    }
-    return '<div class="outreach-cdrop outreach-cstatus-pill' + (isOpen ? ' open' : '') + '" data-dropdown-id="' + dropdownId + '" data-noexpand="1">' +
-      '<button type="button" class="outreach-cdrop-trigger outreach-cstatus-trigger" style="--badge-color: ' + escapeHtml(color) + '" data-action="dropdown-toggle" data-dropdown-id="' + dropdownId + '" data-noexpand="1">' +
-        dotSvg(color) +
-        '<span class="outreach-cdrop-label">' + escapeHtml(lead.status) + '</span>' +
-        '<span class="outreach-cdrop-chevron">▾</span>' +
-      '</button>' +
-      menu +
-    '</div>';
-  }
+  // (Multi-status helpers removed — Part 2 reverted the feature.)
 
   // Add Lead overlay — rendered as an inner block inside the centered modal
   // (same scaffold as the status manager / note prompt overlays).
@@ -5394,18 +5818,49 @@ document.querySelectorAll('.tab').forEach(btn => {
     }
     return '<div class="outreach-rating outreach-rating-form" id="new-lead-rating">' + stars + '</div>';
   }
+  // Part 4: Add Lead overlay — display_name optional, IG/YT optional with
+  // at-least-one required, optional Loom, required status/rating/notes.
+  function renderAddLeadPrimaryToggleHtml(){
+    // Visible only when both IG and YT have values (resolved at render time
+    // via the live values in the DOM — but on first render we just show it
+    // unless explicitly hidden via CSS).
+    const isIg = newLeadPrimaryPlatform !== 'youtube';
+    return '<div class="outreach-primary-toggle" id="new-lead-primary-toggle" hidden>' +
+      '<span class="outreach-primary-toggle-label">Primary</span>' +
+      '<div class="outreach-primary-toggle-buttons">' +
+        '<button type="button" class="outreach-primary-toggle-btn outreach-primary-toggle-ig' + (isIg ? ' active' : '') + '" data-action="new-lead-primary" data-value="instagram">IG</button>' +
+        '<button type="button" class="outreach-primary-toggle-btn outreach-primary-toggle-yt' + (!isIg ? ' active' : '') + '" data-action="new-lead-primary" data-value="youtube">YT</button>' +
+      '</div>' +
+    '</div>';
+  }
   function renderAddFormInnerHtml(){
     return '<div class="outreach-overlay-header">' +
         '<div class="supabase-section-label">add lead</div>' +
         '<button type="button" class="outreach-collapse-btn" id="add-lead-close" aria-label="Close">✕</button>' +
       '</div>' +
       '<div class="supabase-input-group">' +
-        '<label class="supabase-input-label">Name <span class="outreach-required">*</span></label>' +
-        '<input type="text" id="lead-name" class="supabase-input outreach-required-input" placeholder="full name" autocomplete="off" />' +
+        '<label class="supabase-input-label">Name</label>' +
+        '<input type="text" id="lead-display-name" class="supabase-input" placeholder="real name (optional)" autocomplete="off" />' +
       '</div>' +
       '<div class="supabase-input-group">' +
-        '<label class="supabase-input-label">Profile URL <span class="outreach-required">*</span></label>' +
-        '<input type="text" id="lead-url" class="supabase-input outreach-required-input" placeholder="https://…" autocomplete="off" />' +
+        '<label class="supabase-input-label">Instagram username</label>' +
+        '<div class="outreach-username-input">' +
+          '<span class="outreach-username-prefix">@</span>' +
+          '<input type="text" id="lead-instagram" class="supabase-input outreach-username-field" placeholder="aaronormond" autocomplete="off" />' +
+        '</div>' +
+      '</div>' +
+      '<div class="supabase-input-group">' +
+        '<label class="supabase-input-label">YouTube username</label>' +
+        '<div class="outreach-username-input">' +
+          '<span class="outreach-username-prefix">@</span>' +
+          '<input type="text" id="lead-youtube" class="supabase-input outreach-username-field" placeholder="aaronormond" autocomplete="off" />' +
+        '</div>' +
+      '</div>' +
+      renderAddLeadPrimaryToggleHtml() +
+      '<div class="outreach-platform-hint" id="new-lead-platform-hint">At least one of Instagram or YouTube is required.</div>' +
+      '<div class="supabase-input-group">' +
+        '<label class="supabase-input-label">Loom URL</label>' +
+        '<input type="text" id="lead-loom" class="supabase-input" placeholder="https://loom.com/… (optional)" autocomplete="off" />' +
       '</div>' +
       '<div class="supabase-input-group">' +
         '<label class="supabase-input-label">Status <span class="outreach-required">*</span></label>' +
@@ -5422,6 +5877,60 @@ document.querySelectorAll('.tab').forEach(btn => {
       '<div class="outreach-form-actions">' +
         '<button type="button" class="supabase-btn supabase-btn-secondary" id="form-cancel">Cancel</button>' +
         '<button type="button" class="supabase-btn" id="form-save" disabled>Save Lead</button>' +
+      '</div>';
+  }
+
+  // Part 9: edit lead overlay — display name, IG, YT, Loom only. Status/
+  // rating/notes are edited inline elsewhere.
+  function renderEditLeadInnerHtml(){
+    const lead = leads.find(function(l){ return l.id === editingLeadOverlayId; });
+    if(!lead) return '<div class="supabase-section-label">edit lead</div><div class="outreach-help-text">Lead not found.</div>';
+    const isMigration = (migrationLeadId === lead.id);
+    // Migration overlay is non-dismissable via backdrop (× still works) and
+    // its title is more directive.
+    const title = isMigration ? 'complete lead profile' : 'edit lead';
+    const help  = isMigration
+      ? '<p class="outreach-help-text">This lead is missing both Instagram and YouTube. Add at least one to continue.</p>'
+      : '';
+    const initialPrimary = lead.primary_platform || (lead.instagram ? 'instagram' : (lead.youtube ? 'youtube' : 'instagram'));
+    return '<div class="outreach-overlay-header">' +
+        '<div class="supabase-section-label">' + title + '</div>' +
+        '<button type="button" class="outreach-collapse-btn" id="edit-lead-close" aria-label="Close">✕</button>' +
+      '</div>' +
+      help +
+      '<div class="supabase-input-group">' +
+        '<label class="supabase-input-label">Name</label>' +
+        '<input type="text" id="edit-lead-display-name" class="supabase-input" value="' + escapeHtml(lead.display_name || '') + '" placeholder="real name (optional)" autocomplete="off" />' +
+      '</div>' +
+      '<div class="supabase-input-group">' +
+        '<label class="supabase-input-label">Instagram username</label>' +
+        '<div class="outreach-username-input">' +
+          '<span class="outreach-username-prefix">@</span>' +
+          '<input type="text" id="edit-lead-instagram" class="supabase-input outreach-username-field" value="' + escapeHtml(lead.instagram || '') + '" placeholder="aaronormond" autocomplete="off" />' +
+        '</div>' +
+      '</div>' +
+      '<div class="supabase-input-group">' +
+        '<label class="supabase-input-label">YouTube username</label>' +
+        '<div class="outreach-username-input">' +
+          '<span class="outreach-username-prefix">@</span>' +
+          '<input type="text" id="edit-lead-youtube" class="supabase-input outreach-username-field" value="' + escapeHtml(lead.youtube || '') + '" placeholder="aaronormond" autocomplete="off" />' +
+        '</div>' +
+      '</div>' +
+      '<div class="outreach-primary-toggle" id="edit-lead-primary-toggle" hidden>' +
+        '<span class="outreach-primary-toggle-label">Primary</span>' +
+        '<div class="outreach-primary-toggle-buttons">' +
+          '<button type="button" class="outreach-primary-toggle-btn outreach-primary-toggle-ig' + (initialPrimary === 'instagram' ? ' active' : '') + '" data-action="edit-lead-primary" data-value="instagram">IG</button>' +
+          '<button type="button" class="outreach-primary-toggle-btn outreach-primary-toggle-yt' + (initialPrimary === 'youtube' ? ' active' : '') + '" data-action="edit-lead-primary" data-value="youtube">YT</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="outreach-platform-hint" id="edit-lead-platform-hint" hidden>At least one of Instagram or YouTube is required.</div>' +
+      '<div class="supabase-input-group">' +
+        '<label class="supabase-input-label">Loom URL</label>' +
+        '<input type="text" id="edit-lead-loom" class="supabase-input" value="' + escapeHtml(lead.loom_url || '') + '" placeholder="https://loom.com/…" autocomplete="off" />' +
+      '</div>' +
+      '<div class="outreach-form-actions">' +
+        '<button type="button" class="supabase-btn supabase-btn-secondary" id="edit-lead-cancel">Cancel</button>' +
+        '<button type="button" class="supabase-btn" id="edit-lead-save">Save</button>' +
       '</div>';
   }
 
@@ -5454,33 +5963,19 @@ document.querySelectorAll('.tab').forEach(btn => {
     '</div>';
   }
 
-  // Per change #1 (this round): the row layout is name + copy button + status
-  // + timestamp + most recent note. URL is NOT shown in the collapsed view —
-  // only the copy button (which copies the URL silently).
-  function renderLeadTopRowCellsHtml(lead, opts){
-    opts = opts || {};
-    const nameHtml = (hrefValid(lead.profile_url)
-      ? '<a href="' + escapeHtml(lead.profile_url) + '" target="_blank" rel="noopener noreferrer" class="outreach-lead-name outreach-link" data-noexpand="1">' + escapeHtml(lead.name) + '</a>'
-      : '<span class="outreach-lead-name">' + escapeHtml(lead.name) + '</span>');
-
-    const copyHtml = lead.profile_url
-      ? '<button type="button" class="outreach-copy-btn" data-action="copy-url" data-noexpand="1" data-url="' + escapeHtml(lead.profile_url) + '" title="Copy URL" aria-label="Copy URL">' + COPY_ICON_SVG + '</button>'
-      : '';
-
+  // Part 6: collapsed-row cells in the new column order.
+  function renderLeadTopRowCellsHtml(lead){
     const noteText = lastNoteForLead(lead.id) || '';
-    const cellTs = timestampForLeadSort(lead);
-
-    return '<div class="outreach-td outreach-col-name">' +
-        '<div class="outreach-name-cell">' + nameHtml + copyHtml + '</div>' +
-      '</div>' +
-      '<div class="outreach-td outreach-col-status">' + renderStatusStackHtml(lead, { removable: !!opts.removableStatuses }) + '</div>' +
+    return renderUserCellHtml(lead) +
+      renderNameCellHtml(lead) +
+      '<div class="outreach-td outreach-col-status">' + renderStatusPillDropdownHtml(lead) + '</div>' +
       renderRatingCellHtml(lead) +
-      '<div class="outreach-td outreach-col-updated">' + escapeHtml(fmtTodayOrFull(cellTs)) + '</div>' +
       '<div class="outreach-td outreach-col-notes">' +
         (noteText
           ? '<span class="outreach-note-preview" title="' + escapeHtml(noteText) + '">' + escapeHtml(noteText) + '</span>'
           : '<span class="outreach-note-preview-empty">—</span>') +
-      '</div>';
+      '</div>' +
+      renderLoomCellHtml(lead);
   }
 
   function renderLeadHtml(lead){
@@ -5490,58 +5985,43 @@ document.querySelectorAll('.tab').forEach(btn => {
     '</div>';
   }
 
-  // Per change #2 (this round): the expanded row's top row is IDENTICAL to
-  // the collapsed row (same grid cells: name + copy · status · timestamp ·
-  // note). A second row below shows the full profile URL + small inline
-  // Edit/Delete pill buttons. The PROFILE/STATUS info block is gone — STATUS
-  // lives in the top row now.
+  // Part 8: expanded view — top row identical to collapsed; second row has
+  // IG/YT links, Loom (if present), Edit/Delete pills; then the new
+  // block-style activity section.
   function renderLeadExpandedHtml(lead){
-    const isEditing = editingLeadId === lead.id;
     const history = leadHistories.get(lead.id) || [];
 
-    if(isEditing){
-      return '<div class="outreach-row outreach-row-expanded" data-lead-id="' + lead.id + '">' +
-        renderLeadTopRowCellsHtml(lead, { removableStatuses: true }) +
-        '<div class="outreach-expanded-body">' +
-          '<div class="outreach-edit">' +
-            '<div class="supabase-input-group">' +
-              '<label class="supabase-input-label">Name</label>' +
-              '<input type="text" id="edit-name-' + lead.id + '" class="supabase-input" value="' + escapeHtml(lead.name) + '" />' +
-            '</div>' +
-            '<div class="supabase-input-group">' +
-              '<label class="supabase-input-label">Profile URL</label>' +
-              '<input type="text" id="edit-url-' + lead.id + '" class="supabase-input" value="' + escapeHtml(lead.profile_url || '') + '" />' +
-            '</div>' +
-            '<div class="outreach-form-actions">' +
-              '<button type="button" class="supabase-btn supabase-btn-secondary" data-action="cancel-edit">Cancel</button>' +
-              '<button type="button" class="supabase-btn" data-action="save-edit">Save</button>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
+    let linksHtml = '';
+    if(lead.instagram){
+      linksHtml += '<a href="' + escapeHtml(instagramUrl(lead.instagram)) + '" target="_blank" rel="noopener noreferrer" class="outreach-expanded-link outreach-expanded-ig" data-noexpand="1">' +
+        '<span class="outreach-expanded-link-tag">IG</span>' + escapeHtml(lead.instagram) +
+      '</a>';
     }
-
-    // Second row: URL (left) + Edit/Delete pill buttons (right).
-    let urlLinkHtml = '';
-    if(hrefValid(lead.profile_url)){
-      urlLinkHtml = '<a href="' + escapeHtml(lead.profile_url) + '" target="_blank" rel="noopener noreferrer" class="outreach-link outreach-expanded-url" data-noexpand="1">' + escapeHtml(lead.profile_url) + '</a>';
-    } else if(lead.profile_url){
-      urlLinkHtml = '<span class="outreach-expanded-url">' + escapeHtml(lead.profile_url) + '</span>';
-    } else {
-      urlLinkHtml = '<span class="outreach-expanded-url outreach-expanded-url-empty">No profile URL</span>';
+    if(lead.youtube){
+      linksHtml += '<a href="' + escapeHtml(youtubeUrl(lead.youtube)) + '" target="_blank" rel="noopener noreferrer" class="outreach-expanded-link outreach-expanded-yt" data-noexpand="1">' +
+        '<span class="outreach-expanded-link-tag">YT</span>' + escapeHtml(lead.youtube) +
+      '</a>';
+    }
+    if(lead.loom_url){
+      linksHtml += '<a href="' + escapeHtml(lead.loom_url) + '" target="_blank" rel="noopener noreferrer" class="outreach-expanded-link outreach-expanded-loom" data-noexpand="1">' +
+        '<span class="outreach-expanded-link-tag">Loom</span>Loom' +
+      '</a>';
+    }
+    if(!linksHtml){
+      linksHtml = '<span class="outreach-expanded-url outreach-expanded-url-empty">No links</span>';
     }
 
     const subRowHtml =
       '<div class="outreach-expanded-subrow">' +
-        urlLinkHtml +
+        '<div class="outreach-expanded-links">' + linksHtml + '</div>' +
         '<div class="outreach-expanded-actions" data-noexpand="1">' +
-          '<button type="button" class="outreach-pill-btn" data-action="edit">Edit</button>' +
+          '<button type="button" class="outreach-pill-btn" data-action="edit-lead-overlay">Edit</button>' +
           '<button type="button" class="outreach-pill-btn outreach-pill-btn-danger" data-action="delete">Delete</button>' +
         '</div>' +
       '</div>';
 
     return '<div class="outreach-row outreach-row-expanded" data-lead-id="' + lead.id + '">' +
-      renderLeadTopRowCellsHtml(lead, { removableStatuses: true }) +
+      renderLeadTopRowCellsHtml(lead) +
       '<div class="outreach-expanded-body">' +
         subRowHtml +
         renderActivityLogHtml(history, lead) +
@@ -5549,8 +6029,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     '</div>';
   }
 
-  // OVERLAY (centered modal — used for status-change confirmation and the
-  // note prompt; blocks all interaction with the rest of the app while open).
+  // OVERLAY routing.
   function renderOverlayHtml(){
     if(pendingNote){
       let inner = '';
@@ -5573,50 +6052,29 @@ document.querySelectorAll('.tab').forEach(btn => {
         '<div class="outreach-overlay-card">' + renderAddFormInnerHtml() + '</div>' +
       '</div>';
     }
+    if(editingLeadOverlayId){
+      // Edit-lead overlay (also serves the auto-migration flow). Migration
+      // mode skips the backdrop dismiss to keep the user focused on the task.
+      const isMigration = (migrationLeadId === editingLeadOverlayId);
+      const dismissAttr = isMigration ? '' : ' data-action="overlay-dismiss-edit"';
+      return '<div class="outreach-overlay outreach-overlay-dismissable" role="dialog" aria-modal="true"' + dismissAttr + '>' +
+        '<div class="outreach-overlay-card">' + renderEditLeadInnerHtml() + '</div>' +
+      '</div>';
+    }
     return '';
   }
   function renderConfirmInnerHtml(){
-    if(pendingNote.kind === 'note-edit'){
-      return '<div class="supabase-section-label">edit note?</div>' +
-        '<div class="outreach-overlay-sub">' + escapeHtml(pendingNote.leadName) + ' · status <strong>' + escapeHtml(pendingNote.statusLabel) + '</strong></div>' +
-        '<div class="outreach-form-actions">' +
-          '<button type="button" class="supabase-btn supabase-btn-secondary" id="confirm-cancel">Cancel</button>' +
-          '<button type="button" class="supabase-btn" id="confirm-yes">Confirm</button>' +
-        '</div>';
-    }
-    if(pendingNote.kind === 'add-status'){
-      const c = statusColor(pendingNote.addedStatus);
-      return '<div class="supabase-section-label">add status?</div>' +
-        '<div class="outreach-overlay-sub">' + escapeHtml(pendingNote.leadName) + '</div>' +
-        '<div class="outreach-confirm-flow">' +
-          '<span class="outreach-confirm-plus">+</span>' +
-          '<span class="outreach-status-badge" style="--badge-color: ' + escapeHtml(c) + '">' + escapeHtml(pendingNote.addedStatus) + '</span>' +
-        '</div>' +
-        '<div class="outreach-form-actions">' +
-          '<button type="button" class="supabase-btn supabase-btn-secondary" id="confirm-cancel">Cancel</button>' +
-          '<button type="button" class="supabase-btn" id="confirm-yes">Confirm</button>' +
-        '</div>';
-    }
-    if(pendingNote.kind === 'remove-status'){
-      const c = statusColor(pendingNote.removedStatus);
-      return '<div class="supabase-section-label">remove status?</div>' +
-        '<div class="outreach-overlay-sub">' + escapeHtml(pendingNote.leadName) + '</div>' +
-        '<div class="outreach-confirm-flow">' +
-          '<span class="outreach-confirm-minus">×</span>' +
-          '<span class="outreach-status-badge" style="--badge-color: ' + escapeHtml(c) + '">' + escapeHtml(pendingNote.removedStatus) + '</span>' +
-        '</div>' +
-        '<div class="outreach-form-actions">' +
-          '<button type="button" class="supabase-btn supabase-btn-secondary" id="confirm-cancel">Cancel</button>' +
-          '<button type="button" class="supabase-btn" id="confirm-yes">Confirm</button>' +
-        '</div>';
-    }
-    const oldColor = statusColor(pendingNote.oldStatus);
+    // Only the 'change' kind reaches this stage. Note edits + add-note skip
+    // straight to the note prompt (no confirm).
+    const oldColor = pendingNote.oldStatus ? statusColor(pendingNote.oldStatus) : '#9aa2af';
     const newColor = statusColor(pendingNote.newStatus);
     return '<div class="supabase-section-label">change status?</div>' +
       '<div class="outreach-overlay-sub">' + escapeHtml(pendingNote.leadName) + '</div>' +
       '<div class="outreach-confirm-flow">' +
-        '<span class="outreach-status-badge" style="--badge-color: ' + escapeHtml(oldColor) + '">' + escapeHtml(pendingNote.oldStatus) + '</span>' +
-        '<span class="outreach-confirm-arrow">→</span>' +
+        (pendingNote.oldStatus
+          ? '<span class="outreach-status-badge" style="--badge-color: ' + escapeHtml(oldColor) + '">' + escapeHtml(pendingNote.oldStatus) + '</span>' +
+            '<span class="outreach-confirm-arrow">→</span>'
+          : '') +
         '<span class="outreach-status-badge" style="--badge-color: ' + escapeHtml(newColor) + '">' + escapeHtml(pendingNote.newStatus) + '</span>' +
       '</div>' +
       '<div class="outreach-form-actions">' +
@@ -5625,38 +6083,31 @@ document.querySelectorAll('.tab').forEach(btn => {
       '</div>';
   }
   function renderNotePromptInnerHtml(){
-    // Per change #2 (this round): notes are required across the app.
-    //   - 'change' (status change): no Skip button, Save disabled until text
-    //   - 'note-edit': Cancel button stays, Save disabled until text
-    //   - 'create': no longer reached — initial note is now captured in the
-    //     Add Lead form itself
+    // Kinds at this stage:
+    //   - 'change'    — status change, post-confirm. Note required.
+    //   - 'note-edit' — editing an existing outreach_notes row. Pre-filled, Cancel allowed.
+    //   - 'add-note'  — adding a note to an existing block. Note required.
     let headerText;
-    if(pendingNote.kind === 'create') headerText = 'Add a note for the initial status';
-    else if(pendingNote.kind === 'note-edit') headerText = 'Edit note';
-    else if(pendingNote.kind === 'add-status') headerText = 'Add a note for the added status';
-    else if(pendingNote.kind === 'remove-status') headerText = 'Add a note for the removed status';
+    if(pendingNote.kind === 'note-edit') headerText = 'Edit note';
+    else if(pendingNote.kind === 'add-note') headerText = 'Add a note';
     else headerText = 'Add a note for the status change';
 
     let sub = pendingNote.leadName || '';
     if(pendingNote.kind === 'change'){
-      sub += ' · ' + pendingNote.oldStatus + ' → ' + pendingNote.newStatus;
+      sub += ' · ' + (pendingNote.oldStatus ? pendingNote.oldStatus + ' → ' : '') + pendingNote.newStatus;
     } else if(pendingNote.kind === 'note-edit'){
-      sub += ' · status ' + pendingNote.statusLabel;
-    } else if(pendingNote.kind === 'add-status'){
-      sub += ' · + ' + pendingNote.addedStatus;
-    } else if(pendingNote.kind === 'remove-status'){
-      sub += ' · − ' + pendingNote.removedStatus;
-    } else if(pendingNote.statusLabel){
-      sub += ' · ' + pendingNote.statusLabel;
+      sub += pendingNote.statusLabel ? ' · status ' + pendingNote.statusLabel : '';
+    } else if(pendingNote.kind === 'add-note'){
+      sub += pendingNote.statusLabel ? ' · status ' + pendingNote.statusLabel : '';
     }
 
     const isEdit = pendingNote.kind === 'note-edit';
     const initialValue = isEdit ? (pendingNote.currentNote || '') : '';
-    // Save starts enabled only if the note-edit textarea is pre-filled with
-    // non-whitespace text; otherwise it's disabled until the user types.
     const initiallyValid = /\S/.test(initialValue);
 
-    const cancelBtnHtml = isEdit
+    // 'change' has no escape route by design (the spec requires a note); the
+    // others get a Cancel button.
+    const cancelBtnHtml = pendingNote.kind !== 'change'
       ? '<button type="button" class="supabase-btn supabase-btn-secondary" id="note-prompt-skip">Cancel</button>'
       : '';
 
@@ -5669,86 +6120,79 @@ document.querySelectorAll('.tab').forEach(btn => {
       '</div>';
   }
 
-  // Per change #4 (this round): all activity-log timestamps use the
-  // today/full format — "9:14 AM" if today, else "Jun 11 · 9:14 AM".
-  function renderActivityRowHtml(h, opts){
+  // Part 8: rewrite the activity log as a series of blocks.
+  //   - Each history row is one block. Blocks oldest → newest, top → bottom.
+  //   - The first block shows "CREATED" + initial status pill.
+  //   - Subsequent blocks show [old status] → [new status].
+  //   - Each note inside a block is rendered chronologically.
+  //   - If a note has been edited, the latest edit shows the previous text
+  //     with strikethrough on the timestamp row and the new text indented
+  //     below it.
+  //   - ✏️ appears only on the most recent note row of the most recent block.
+  //   - + appears at the bottom of every block to add a new note to that
+  //     block's history row.
+  function renderNoteRowHtml(note, opts){
     opts = opts || {};
-    const t = fmtTodayOrFull(h.changed_at);
-    const isInitial = (h.old_status === null || h.old_status === undefined);
-    // old_status === new_status is the multi-status "removal" sentinel
-    // (see removeStatusFromLead). Treat all three cases distinctly.
-    const isRemoval = !isInitial && h.old_status === h.new_status;
-    let statusLine;
-    if(isInitial){
-      statusLine = '<span class="outreach-activity-text">Added status <strong>' + escapeHtml(h.new_status) + '</strong></span>';
-    } else if(isRemoval){
-      statusLine = '<span class="outreach-activity-text">Removed status <strong>' + escapeHtml(h.new_status) + '</strong></span>';
+    const edits = editsByNoteId.get(note.id) || [];
+    const lastEdit = edits.length ? edits[edits.length - 1] : null;
+    const editIcon = opts.showEditIcon
+      ? '<button type="button" class="outreach-activity-note-edit-icon" data-action="edit-note" data-note-id="' + note.id + '" title="Edit note" aria-label="Edit note">' +
+          '<svg viewBox="0 0 16 16" width="11" height="11" aria-hidden="true"><path fill="currentColor" d="M11.41 1.59a2 2 0 0 1 2.83 2.83l-8.7 8.7L1.5 14.5l1.38-4.04 8.53-8.87z"/></svg>' +
+        '</button>'
+      : '';
+    if(!lastEdit){
+      const ts = fmtTodayOrFull(note.created_at);
+      return '<div class="outreach-activity-note-row">' +
+        '<span class="outreach-activity-note-time">' + escapeHtml(ts) + '</span>' +
+        '<span class="outreach-activity-note-text">' + escapeHtml(note.note_text || '') + '</span>' +
+        editIcon +
+      '</div>';
+    }
+    const ts = fmtTodayOrFull(lastEdit.edited_at);
+    const prev = lastEdit.previous_text || '';
+    const next = lastEdit.new_text || (note.note_text || '');
+    return '<div class="outreach-activity-note-row outreach-activity-note-row-edited">' +
+      '<span class="outreach-activity-note-time">' + escapeHtml(ts) + '</span>' +
+      '<div class="outreach-activity-note-edit-stack">' +
+        '<span class="outreach-activity-note-text outreach-activity-note-strike">' + escapeHtml(prev) + '</span>' +
+        '<span class="outreach-activity-note-text outreach-activity-note-current">' + escapeHtml(next) + editIcon + '</span>' +
+      '</div>' +
+    '</div>';
+  }
+  function renderActivityBlockHtml(h, opts){
+    opts = opts || {};
+    const isCreated = (h.old_status === null || h.old_status === undefined);
+    const tagHtml = isCreated
+      ? '<span class="outreach-activity-block-tag">CREATED</span>'
+      : '';
+    const newColor = statusColor(h.new_status);
+    const newPill = '<span class="outreach-status-badge" style="--badge-color: ' + escapeHtml(newColor) + '">' + escapeHtml(h.new_status || '') + '</span>';
+    let headerInner;
+    if(isCreated){
+      headerInner = tagHtml + newPill;
     } else {
-      statusLine = '<span class="outreach-activity-text">Status: <strong>' + escapeHtml(h.old_status) + '</strong> → <strong>' + escapeHtml(h.new_status) + '</strong></span>';
+      const oldColor = statusColor(h.old_status);
+      const oldPill = '<span class="outreach-status-badge" style="--badge-color: ' + escapeHtml(oldColor) + '">' + escapeHtml(h.old_status || '') + '</span>';
+      headerInner = oldPill + '<span class="outreach-activity-block-arrow">→</span>' + newPill;
     }
-    const editGlyph = h.notes ? '✎' : '+';
-    const editTitle = h.notes ? 'Edit note' : 'Add note';
 
-    // If any edits exist for this row, the most-recent note is rendered via
-    // the most-recent note-edit event — don't duplicate it on the status row.
-    const showInlineNote = !!h.notes && !historyHasEdits(h.id);
+    const notes = (notesByHistoryId.get(h.id) || []).slice().sort(function(a,b){
+      return new Date(a.created_at) - new Date(b.created_at);
+    });
+    const lastNoteIdx = notes.length - 1;
+    const notesHtml = notes.map(function(n, i){
+      const showEditIcon = !!(opts.isLatestBlock && i === lastNoteIdx);
+      return renderNoteRowHtml(n, { showEditIcon: showEditIcon });
+    }).join('');
 
-    // Per change #3 (this round): only the top (most-recent) activity entry
-    // gets a small × delete button.
-    const deleteBtn = opts.allowDelete
-      ? '<button type="button" class="outreach-activity-delete" data-action="delete-activity" data-event-type="status" data-history-id="' + h.id + '" title="Delete this entry" aria-label="Delete this entry">×</button>'
-      : '';
-
-    return '<div class="outreach-activity-row">' +
-      '<div class="outreach-activity-main">' +
-        statusLine +
-        '<span class="outreach-activity-time">' + escapeHtml(t) + '</span>' +
-        '<button type="button" class="outreach-activity-edit" data-history-id="' + h.id + '" data-action="edit-note" title="' + editTitle + '">' + editGlyph + '</button>' +
-        deleteBtn +
-      '</div>' +
-      (showInlineNote ? '<div class="outreach-activity-note">' + escapeHtml(h.notes) + '</div>' : '') +
+    return '<div class="outreach-activity-block" data-history-id="' + h.id + '">' +
+      '<div class="outreach-activity-block-header">' + headerInner + '</div>' +
+      (notesHtml ? '<div class="outreach-activity-block-notes">' + notesHtml + '</div>' : '') +
+      '<button type="button" class="outreach-activity-block-add" data-action="add-note-to-block" data-history-id="' + h.id + '" aria-label="Add note">' +
+        '<span class="outreach-activity-block-add-glyph">＋</span>' +
+      '</button>' +
     '</div>';
   }
-
-  function renderNoteEditEventHtml(h, edit, opts){
-    opts = opts || {};
-    const oldNote = (edit.old_notes == null) ? '' : edit.old_notes;
-    const newNote = (edit.new_notes == null) ? '' : edit.new_notes;
-    const deleteBtn = opts.allowDelete
-      ? '<button type="button" class="outreach-activity-delete" data-action="delete-activity" data-event-type="note-edit" data-edit-id="' + edit.id + '" title="Delete this entry" aria-label="Delete this entry">×</button>'
-      : '';
-    return '<div class="outreach-activity-row outreach-activity-row-edit">' +
-      '<div class="outreach-activity-main">' +
-        '<span class="outreach-activity-text">Updated note for status <strong>' + escapeHtml(h.new_status) + '</strong></span>' +
-        '<span class="outreach-activity-time">' + escapeHtml(fmtTodayOrFull(edit.edited_at)) + '</span>' +
-        deleteBtn +
-      '</div>' +
-      '<div class="outreach-activity-note-diff">' +
-        '<div class="outreach-note-prev"><span class="outreach-note-prev-label">Previous:</span> ' + (oldNote ? '<span class="outreach-note-prev-text">' + escapeHtml(oldNote) + '</span>' : '<span class="outreach-note-empty">—</span>') + '</div>' +
-        '<div class="outreach-note-new"><span class="outreach-note-new-label">Updated:</span> ' + (newNote ? '<span>' + escapeHtml(newNote) + '</span>' : '<span class="outreach-note-empty">—</span>') + '</div>' +
-      '</div>' +
-    '</div>';
-  }
-
-  function historyHasEdits(historyId){
-    const edits = noteEditsByHistoryId.get(historyId);
-    return !!(edits && edits.length > 0);
-  }
-
-  function buildActivityEvents(history){
-    const events = [];
-    for(const h of history){
-      events.push({ type: 'status', ts: h.changed_at, h: h });
-      const edits = noteEditsByHistoryId.get(h.id) || [];
-      // Per change #6: emit one event per edit, never collapse.
-      for(const e of edits){
-        events.push({ type: 'note-edit', ts: e.edited_at, h: h, edit: e });
-      }
-    }
-    events.sort(function(a, b){ return new Date(b.ts) - new Date(a.ts); });
-    return events;
-  }
-
   function renderActivityLogHtml(history, lead){
     if(!history || history.length === 0){
       return '<div class="outreach-activity" data-noexpand="1">' +
@@ -5756,47 +6200,17 @@ document.querySelectorAll('.tab').forEach(btn => {
         '<div class="outreach-activity-empty">No activity yet</div>' +
       '</div>';
     }
-    const events = buildActivityEvents(history);
-    // Per change #3: only the top (most-recent) event gets a × delete button.
-    // Per this round: don't show × at all when it's the only entry — there
-    // must always be at least one activity entry left on a lead.
-    const renderEvent = function(ev, idx){
-      const opts = { allowDelete: idx === 0 && events.length > 1 };
-      if(ev.type === 'note-edit') return renderNoteEditEventHtml(ev.h, ev.edit, opts);
-      return renderActivityRowHtml(ev.h, opts);
-    };
-
-    // Per change #2 + #7: if every event fits in the collapsed view, render
-    // no fade/toggle at all and no height cap. Otherwise render the first
-    // N events with a fade gradient and a prominent Expand button.
-    if(events.length <= ACTIVITY_VISIBLE_COUNT){
-      return '<div class="outreach-activity" data-noexpand="1">' +
-        '<div class="outreach-detail-label">activity</div>' +
-        '<div class="outreach-activity-list">' + events.map(renderEvent).join('') + '</div>' +
-      '</div>';
-    }
-
-    if(activityExpanded){
-      return '<div class="outreach-activity" data-noexpand="1">' +
-        '<div class="outreach-detail-label">activity</div>' +
-        '<div class="outreach-activity-list">' + events.map(renderEvent).join('') + '</div>' +
-        '<div class="outreach-activity-toggle-wrap">' +
-          '<button type="button" class="outreach-activity-toggle-btn" data-action="toggle-activity">Collapse</button>' +
-        '</div>' +
-      '</div>';
-    }
-
-    const visibleHtml = events.slice(0, ACTIVITY_VISIBLE_COUNT).map(renderEvent).join('');
-    const hiddenCount = events.length - ACTIVITY_VISIBLE_COUNT;
+    // Sort oldest → newest by changed_at.
+    const ordered = history.slice().sort(function(a,b){
+      return new Date(a.changed_at) - new Date(b.changed_at);
+    });
+    const lastIdx = ordered.length - 1;
+    const blocksHtml = ordered.map(function(h, i){
+      return renderActivityBlockHtml(h, { isLatestBlock: i === lastIdx });
+    }).join('');
     return '<div class="outreach-activity" data-noexpand="1">' +
       '<div class="outreach-detail-label">activity</div>' +
-      '<div class="outreach-activity-list outreach-activity-list-collapsed">' +
-        visibleHtml +
-        '<div class="outreach-activity-fade"></div>' +
-      '</div>' +
-      '<div class="outreach-activity-toggle-wrap">' +
-        '<button type="button" class="outreach-activity-toggle-btn" data-action="toggle-activity">Expand · ' + hiddenCount + ' more</button>' +
-      '</div>' +
+      '<div class="outreach-activity-blocks">' + blocksHtml + '</div>' +
     '</div>';
   }
 
@@ -5838,32 +6252,21 @@ document.querySelectorAll('.tab').forEach(btn => {
     const pn = pendingNote;
     pendingNote = null;
     try {
-      if(pn.kind === 'create'){
-        if(noteValue){
-          await setHistoryNoteInitial(pn.historyId, noteValue);
-        }
-      } else if(pn.kind === 'change'){
+      if(pn.kind === 'change'){
         const lead = leads.find(function(l){ return l.id === pn.leadId; });
         if(!lead){ render(); return; }
         await changeStatusWithNote(lead, pn.newStatus, noteValue);
         await loadLeads();
-      } else if(pn.kind === 'add-status'){
-        const lead = leads.find(function(l){ return l.id === pn.leadId; });
-        if(!lead){ render(); return; }
-        await addStatusToLead(lead, pn.addedStatus, noteValue);
-        await loadLeads();
-      } else if(pn.kind === 'remove-status'){
-        const lead = leads.find(function(l){ return l.id === pn.leadId; });
-        if(!lead){ render(); return; }
-        await removeStatusFromLead(lead, pn.removedStatus, noteValue);
-        await loadLeads();
+        await loadAllHistories();
+        await loadAllNotes();
+      } else if(pn.kind === 'add-note'){
+        await createNoteRow(pn.historyId, noteValue);
+        await loadAllNotes();
       } else if(pn.kind === 'note-edit'){
-        // Per change #6: every edit logs a new outreach_note_edits row.
-        const oldNotes = pn.currentNote || '';
-        await createNoteEdit(pn.historyId, oldNotes, noteValue);
+        await updateNoteRow(pn.noteId, pn.currentNote || '', noteValue);
+        await loadAllNotes();
         await loadAllNoteEdits();
       }
-      await loadAllHistories();
       render();
     } catch(e){
       alert('Error: ' + errMsg(e));
@@ -5879,8 +6282,6 @@ document.querySelectorAll('.tab').forEach(btn => {
   }
 
   // ----- IN-PLACE DROPDOWN UPDATES (no full re-render) -----
-  // Build the menu HTML for a dropdown without rebuilding its trigger or
-  // surrounding DOM. Used when opening a dropdown in place.
   function buildMenuHtmlForDropdown(ddId){
     if(ddId === 'filter'){
       const allColor = '#9aa2af';
@@ -5892,6 +6293,38 @@ document.querySelectorAll('.tab').forEach(btn => {
           return '<button type="button" class="outreach-cdrop-option' + (selected ? ' selected' : '') + '" ' +
             'data-action="filter-select" data-value="' + escapeHtml(o.value) + '">' +
             dotSvg(o.color) + '<span class="outreach-cdrop-option-label">' + escapeHtml(o.label) + '</span>' +
+          '</button>';
+        }).join('') +
+      '</div>';
+    }
+    if(ddId === 'platform-filter'){
+      const opts = [
+        { value: 'all', label: 'All platforms' },
+        { value: 'instagram', label: 'IG primary' },
+        { value: 'youtube', label: 'YT primary' }
+      ];
+      return '<div class="outreach-cdrop-menu">' +
+        opts.map(function(o){
+          const selected = (currentPlatformFilter === o.value);
+          return '<button type="button" class="outreach-cdrop-option' + (selected ? ' selected' : '') + '" ' +
+            'data-action="platform-filter-select" data-value="' + escapeHtml(o.value) + '">' +
+            '<span class="outreach-cdrop-option-label">' + escapeHtml(o.label) + '</span>' +
+          '</button>';
+        }).join('') +
+      '</div>';
+    }
+    if(ddId === 'loom-filter'){
+      const opts = [
+        { value: 'all', label: 'All looms' },
+        { value: 'has', label: 'Has Loom' },
+        { value: 'none', label: 'No Loom' }
+      ];
+      return '<div class="outreach-cdrop-menu">' +
+        opts.map(function(o){
+          const selected = (currentLoomFilter === o.value);
+          return '<button type="button" class="outreach-cdrop-option' + (selected ? ' selected' : '') + '" ' +
+            'data-action="loom-filter-select" data-value="' + escapeHtml(o.value) + '">' +
+            '<span class="outreach-cdrop-option-label">' + escapeHtml(o.label) + '</span>' +
           '</button>';
         }).join('') +
       '</div>';
@@ -5924,14 +6357,13 @@ document.querySelectorAll('.tab').forEach(btn => {
       const leadId = ddId.slice(5);
       const lead = leads.find(function(l){ return l.id === leadId; });
       if(!lead) return '';
-      // Per multi-status change: dropdown now shows only statuses the lead
-      // does NOT already have. Selecting one appends rather than replaces.
-      const remaining = statuses.filter(function(s){ return !leadHasStatus(lead, s.label); });
-      if(remaining.length === 0) return '';
+      // Part 2 revert: replaces single status. All statuses shown, current
+      // one highlighted.
       return '<div class="outreach-cdrop-menu">' +
-        remaining.map(function(s){
+        statuses.map(function(s){
           const c = s.color || '#4D89FF';
-          return '<button type="button" class="outreach-cdrop-option" ' +
+          const isSel = s.label === lead.status;
+          return '<button type="button" class="outreach-cdrop-option' + (isSel ? ' selected' : '') + '" ' +
             'data-action="status-select" data-lead-id="' + lead.id + '" data-value="' + escapeHtml(s.label) + '">' +
             dotSvg(c) + '<span class="outreach-cdrop-option-label">' + escapeHtml(s.label) + '</span>' +
           '</button>';
@@ -5965,9 +6397,6 @@ document.querySelectorAll('.tab').forEach(btn => {
     });
   }
 
-  // Delegated click handler bound directly on dynamically-injected menus so
-  // their options work without relying on attachTrackerListeners (which only
-  // runs after a full render).
   function handleDynamicMenuClick(e){
     const opt = e.target.closest('[data-action]');
     if(!opt) return;
@@ -5978,29 +6407,35 @@ document.querySelectorAll('.tab').forEach(btn => {
       currentFilter = opt.dataset.value;
       openDropdownId = null;
       render();
+    } else if(action === 'platform-filter-select'){
+      currentPlatformFilter = opt.dataset.value;
+      openDropdownId = null;
+      render();
+    } else if(action === 'loom-filter-select'){
+      currentLoomFilter = opt.dataset.value;
+      openDropdownId = null;
+      render();
     } else if(action === 'sort-select'){
       currentSort = opt.dataset.value;
       openDropdownId = null;
       render();
     } else if(action === 'status-select'){
       const leadId = opt.dataset.leadId;
-      const addedStatus = opt.dataset.value;
+      const newStatus = opt.dataset.value;
       const lead = leads.find(function(l){ return l.id === leadId; });
       openDropdownId = null;
-      if(!lead || leadHasStatus(lead, addedStatus)){ applyDropdownStateInPlace(); return; }
-      // Per multi-status change: this is now an ADD, not a replace. Confirm
-      // + note prompt before appending.
+      if(!lead || newStatus === lead.status){ applyDropdownStateInPlace(); return; }
+      // Part 2 revert: status REPLACE (not append). Confirm + required note.
       pendingNote = {
-        kind: 'add-status',
+        kind: 'change',
         stage: 'confirm',
         leadId: lead.id,
-        leadName: lead.name,
-        addedStatus: addedStatus
+        leadName: lead.display_name || primaryUsernameOf(lead) || 'Lead',
+        oldStatus: lead.status,
+        newStatus: newStatus
       };
       render();
     } else if(action === 'new-lead-status-select'){
-      // Per change #2 (this round): update the trigger in place, then close
-      // the menu. The overlay must NOT be rebuilt — form fields stay intact.
       newLeadStatus = opt.dataset.value;
       openDropdownId = null;
       updateAddLeadTriggerInPlace();
@@ -6053,16 +6488,23 @@ document.querySelectorAll('.tab').forEach(btn => {
     const addBtn = document.getElementById('add-lead-btn');
     if(addBtn) addBtn.addEventListener('click', function(){
       showingAddForm = !showingAddForm;
-      // Reset the selected status to the first available whenever the overlay
-      // opens — so the dropdown always has a valid default. Rating starts
-      // unset so the user must explicitly pick one.
       if(showingAddForm){
         newLeadStatus = (statuses[0] && statuses[0].label) || null;
         newLeadRating = null;
+        newLeadPrimaryPlatform = 'instagram';
       } else {
         newLeadStatus = null;
         newLeadRating = null;
+        newLeadPrimaryPlatform = 'instagram';
       }
+      render();
+    });
+
+    // Part 5: persistent banner "Resume" button.
+    const resumeBtn = document.getElementById('migration-resume-btn');
+    if(resumeBtn) resumeBtn.addEventListener('click', function(){
+      migrationDismissed = false;
+      maybeStartIncompleteLeadMigration();
       render();
     });
 
@@ -6131,62 +6573,81 @@ document.querySelectorAll('.tab').forEach(btn => {
     // Add Lead status dropdown options are bound via the delegated
     // handleDynamicMenuClick handler (no static binding needed).
 
-    // Add Lead form — gather field values for validation + save.
+    // Part 4: Add Lead form — read + validate the new field set.
     function readAddLeadFields(){
-      const nameEl = document.getElementById('lead-name');
-      const urlEl  = document.getElementById('lead-url');
-      const noteEl = document.getElementById('lead-note');
+      const dn = document.getElementById('lead-display-name');
+      const ig = document.getElementById('lead-instagram');
+      const yt = document.getElementById('lead-youtube');
+      const lm = document.getElementById('lead-loom');
+      const nt = document.getElementById('lead-note');
       return {
-        name:   nameEl ? nameEl.value.trim() : '',
-        url:    urlEl  ? urlEl.value.trim()  : '',
-        status: newLeadStatus || '',
-        rating: newLeadRating,
-        note:   noteEl ? noteEl.value.trim() : ''
+        display_name: dn ? dn.value.trim() : '',
+        instagram:    ig ? ig.value.trim().replace(/^@+/, '') : '',
+        youtube:      yt ? yt.value.trim().replace(/^@+/, '') : '',
+        loom_url:     lm ? lm.value.trim() : '',
+        status:       newLeadStatus || '',
+        rating:       newLeadRating,
+        notes:        nt ? nt.value.trim() : '',
+        primary_platform: newLeadPrimaryPlatform
       };
     }
     function isAddLeadValid(){
       const f = readAddLeadFields();
-      return !!f.name && !!f.url && !!f.status &&
-             (f.rating === 1 || f.rating === 2 || f.rating === 3) &&
-             !!f.note;
+      const hasOnePlatform = !!f.instagram || !!f.youtube;
+      return hasOnePlatform && !!f.status &&
+        (f.rating === 1 || f.rating === 2 || f.rating === 3) &&
+        !!f.notes;
     }
     function updateAddLeadFormStateInPlace(){
-      // Toggle the Save button's disabled attribute in place.
       const btn = document.getElementById('form-save');
       if(btn) btn.disabled = !isAddLeadValid();
+      // Reveal the primary-platform toggle only when BOTH fields are filled.
+      const f = readAddLeadFields();
+      const toggle = document.getElementById('new-lead-primary-toggle');
+      if(toggle) toggle.hidden = !(f.instagram && f.youtube);
+      // Hide the platform-hint once at least one is filled.
+      const hint = document.getElementById('new-lead-platform-hint');
+      if(hint) hint.hidden = !!(f.instagram || f.youtube);
     }
     function markAddLeadInvalidFields(){
-      // Show inline indicators on whichever required fields are still empty.
       const f = readAddLeadFields();
-      const nameEl = document.getElementById('lead-name');
-      const urlEl  = document.getElementById('lead-url');
-      const noteEl = document.getElementById('lead-note');
-      const ratingWrap = document.getElementById('new-lead-rating');
-      if(nameEl) nameEl.classList.toggle('invalid', !f.name);
-      if(urlEl)  urlEl.classList.toggle('invalid',  !f.url);
-      if(noteEl) noteEl.classList.toggle('invalid', !f.note);
-      if(ratingWrap) ratingWrap.classList.toggle('invalid',
-        !(f.rating === 1 || f.rating === 2 || f.rating === 3));
+      const ig = document.getElementById('lead-instagram');
+      const yt = document.getElementById('lead-youtube');
+      const nt = document.getElementById('lead-note');
+      const rt = document.getElementById('new-lead-rating');
+      const hasOnePlatform = !!f.instagram || !!f.youtube;
+      if(ig) ig.classList.toggle('invalid', !hasOnePlatform);
+      if(yt) yt.classList.toggle('invalid', !hasOnePlatform);
+      if(nt) nt.classList.toggle('invalid', !f.notes);
+      if(rt) rt.classList.toggle('invalid', !(f.rating === 1 || f.rating === 2 || f.rating === 3));
     }
-
-    // Live disable Save while the user types / picks options.
-    ['lead-name', 'lead-url', 'lead-note'].forEach(function(id){
+    ['lead-display-name','lead-instagram','lead-youtube','lead-loom','lead-note'].forEach(function(id){
       const el = document.getElementById(id);
       if(!el) return;
       el.addEventListener('input', function(){
-        // Clear the invalid mark on this field as soon as it has content.
         if(el.value.trim()) el.classList.remove('invalid');
         updateAddLeadFormStateInPlace();
       });
     });
-
+    // Primary platform toggle inside the Add Lead form.
+    document.querySelectorAll('[data-action="new-lead-primary"]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault(); e.stopPropagation();
+        newLeadPrimaryPlatform = btn.dataset.value;
+        const wrap = document.getElementById('new-lead-primary-toggle');
+        if(wrap){
+          wrap.querySelectorAll('.outreach-primary-toggle-btn').forEach(function(b){
+            b.classList.toggle('active', b.dataset.value === newLeadPrimaryPlatform);
+          });
+        }
+      });
+    });
     // Star handler for the Add Lead form rating field.
     document.querySelectorAll('[data-action="rate-new-lead"]').forEach(function(starBtn){
       starBtn.addEventListener('click', function(e){
         e.stopPropagation();
         e.preventDefault();
         const clicked = parseInt(starBtn.dataset.rating, 10) || 0;
-        // Click the current highest filled star → clear (same UX as table).
         newLeadRating = (newLeadRating === clicked) ? null : clicked;
         const wrap = document.getElementById('new-lead-rating');
         if(wrap){
@@ -6200,32 +6661,41 @@ document.querySelectorAll('.tab').forEach(btn => {
         updateAddLeadFormStateInPlace();
       });
     });
+    // Sync the toggle/hint visibility on initial render.
+    if(showingAddForm) updateAddLeadFormStateInPlace();
 
     const saveBtn = document.getElementById('form-save');
     if(saveBtn) saveBtn.addEventListener('click', async function(){
-      // Defensive: button should already be disabled while invalid, but
-      // mark fields anyway if somehow reached without a valid form.
       if(!isAddLeadValid()){
         markAddLeadInvalidFields();
         return;
       }
       const f = readAddLeadFields();
+      // Resolve primary_platform: if both filled, use newLeadPrimaryPlatform;
+      // otherwise default to whichever is provided.
+      let primary;
+      if(f.instagram && f.youtube) primary = newLeadPrimaryPlatform || 'instagram';
+      else if(f.instagram) primary = 'instagram';
+      else primary = 'youtube';
       saveBtn.disabled = true;
       try {
         await createLead({
-          name: f.name,
-          profile_url: f.url,
-          status: f.status,
-          rating: f.rating,
-          notes: f.note
+          display_name: f.display_name,
+          instagram:    f.instagram || null,
+          youtube:      f.youtube || null,
+          loom_url:     f.loom_url || null,
+          primary_platform: primary,
+          status:       f.status,
+          rating:       f.rating,
+          notes:        f.notes
         });
         showingAddForm = false;
         newLeadStatus = null;
         newLeadRating = null;
+        newLeadPrimaryPlatform = 'instagram';
         await loadLeads();
         await loadAllHistories();
-        // Per change #1 (this round): no post-save note prompt — the note
-        // was already saved into the initial history row by createLead.
+        await loadAllNotes();
         render();
       } catch(e){
         alert('Error: ' + errMsg(e));
@@ -6237,8 +6707,117 @@ document.querySelectorAll('.tab').forEach(btn => {
       showingAddForm = false;
       newLeadStatus = null;
       newLeadRating = null;
+      newLeadPrimaryPlatform = 'instagram';
       render();
     });
+
+    // Part 9: Edit Lead overlay — wire close/save/cancel/primary-toggle.
+    function syncEditLeadInPlace(){
+      const ig = document.getElementById('edit-lead-instagram');
+      const yt = document.getElementById('edit-lead-youtube');
+      const toggle = document.getElementById('edit-lead-primary-toggle');
+      const hint = document.getElementById('edit-lead-platform-hint');
+      const igVal = ig ? ig.value.trim().replace(/^@+/, '') : '';
+      const ytVal = yt ? yt.value.trim().replace(/^@+/, '') : '';
+      if(toggle) toggle.hidden = !(igVal && ytVal);
+      if(hint) hint.hidden = !!(igVal || ytVal);
+    }
+    ['edit-lead-display-name','edit-lead-instagram','edit-lead-youtube','edit-lead-loom'].forEach(function(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.addEventListener('input', function(){
+        if(el.value.trim()) el.classList.remove('invalid');
+        syncEditLeadInPlace();
+      });
+    });
+    // Initial sync — show toggle if both pre-filled.
+    if(editingLeadOverlayId) syncEditLeadInPlace();
+    // Edit primary platform toggle — in-place class swap.
+    document.querySelectorAll('[data-action="edit-lead-primary"]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault(); e.stopPropagation();
+        const wrap = document.getElementById('edit-lead-primary-toggle');
+        if(wrap){
+          wrap.querySelectorAll('.outreach-primary-toggle-btn').forEach(function(b){
+            b.classList.toggle('active', b === btn);
+          });
+        }
+      });
+    });
+    const editLeadCloseBtn = document.getElementById('edit-lead-close');
+    if(editLeadCloseBtn) editLeadCloseBtn.addEventListener('click', closeEditLeadOverlay);
+    const editLeadCancelBtn = document.getElementById('edit-lead-cancel');
+    if(editLeadCancelBtn) editLeadCancelBtn.addEventListener('click', closeEditLeadOverlay);
+    document.querySelectorAll('[data-action="overlay-dismiss-edit"]').forEach(function(ov){
+      ov.addEventListener('click', function(e){
+        if(e.target !== ov) return;
+        closeEditLeadOverlay();
+      });
+    });
+    const editLeadSaveBtn = document.getElementById('edit-lead-save');
+    if(editLeadSaveBtn) editLeadSaveBtn.addEventListener('click', async function(){
+      const lead = leads.find(function(l){ return l.id === editingLeadOverlayId; });
+      if(!lead) return;
+      const dn = document.getElementById('edit-lead-display-name');
+      const ig = document.getElementById('edit-lead-instagram');
+      const yt = document.getElementById('edit-lead-youtube');
+      const lm = document.getElementById('edit-lead-loom');
+      const display_name = dn ? dn.value.trim() : '';
+      const instagram    = ig ? ig.value.trim().replace(/^@+/, '') : '';
+      const youtube      = yt ? yt.value.trim().replace(/^@+/, '') : '';
+      const loom_url     = lm ? lm.value.trim() : '';
+      if(!instagram && !youtube){
+        if(ig) ig.classList.add('invalid');
+        if(yt) yt.classList.add('invalid');
+        const hint = document.getElementById('edit-lead-platform-hint');
+        if(hint) hint.hidden = false;
+        return;
+      }
+      // Resolve primary: read which toggle is .active, default to existing
+      // primary or the only-provided platform.
+      let primary = lead.primary_platform || null;
+      if(instagram && youtube){
+        const wrap = document.getElementById('edit-lead-primary-toggle');
+        const active = wrap ? wrap.querySelector('.outreach-primary-toggle-btn.active') : null;
+        primary = (active && active.dataset.value) || primary || 'instagram';
+      } else if(instagram){
+        primary = 'instagram';
+      } else {
+        primary = 'youtube';
+      }
+      editLeadSaveBtn.disabled = true;
+      try {
+        await updateLeadFields(lead.id, {
+          display_name: display_name || null,
+          instagram: instagram || null,
+          youtube: youtube || null,
+          loom_url: loom_url || null,
+          primary_platform: primary
+        });
+        const wasMigration = (migrationLeadId === lead.id);
+        editingLeadOverlayId = null;
+        migrationLeadId = null;
+        await loadLeads();
+        // Continue the migration queue if still in auto-flow.
+        if(wasMigration && !migrationDismissed){
+          maybeStartIncompleteLeadMigration();
+        }
+        render();
+      } catch(e){
+        alert('Error: ' + errMsg(e));
+        editLeadSaveBtn.disabled = false;
+      }
+    });
+    function closeEditLeadOverlay(){
+      const wasMigration = (migrationLeadId === editingLeadOverlayId);
+      editingLeadOverlayId = null;
+      if(wasMigration){
+        // User dismissed mid-flow → stop auto-flow, show banner.
+        migrationDismissed = true;
+        migrationLeadId = null;
+      }
+      render();
+    }
 
     // Overlay — status-change confirmation step
     const confirmCancelBtn = document.getElementById('confirm-cancel');
@@ -6292,15 +6871,10 @@ document.querySelectorAll('.tab').forEach(btn => {
         if(e.target.closest('a')) return;
         if(e.target.closest('input, textarea, select, button')) return;
         if(row.classList.contains('outreach-row-expanded')){
-          // Dead-space click on an expanded row collapses it (change #4)
           expandedLeadId = null;
-          editingLeadId = null;
-          editingNoteHistoryId = null;
-          activityExpanded = false;
           render();
         } else {
           expandedLeadId = id;
-          activityExpanded = false;
           render();
         }
       });
@@ -6322,13 +6896,9 @@ document.querySelectorAll('.tab').forEach(btn => {
               }, 1200);
             } catch(_){}
           } else if(action === 'rate-lead'){
-            // Per spec: click a star to set rating; click the current highest
-            // filled star to clear. Update the model + DOM in place — no full
-            // re-render so the row doesn't flash.
             const clicked = parseInt(btn.dataset.rating, 10) || 0;
             const target = (lead.rating === clicked) ? null : clicked;
             lead.rating = target;
-            // Update the star buttons inside this row's rating cell.
             const ratingWrap = row.querySelector('.outreach-rating');
             if(ratingWrap){
               ratingWrap.querySelectorAll('.outreach-star').forEach(function(starBtn){
@@ -6341,109 +6911,73 @@ document.querySelectorAll('.tab').forEach(btn => {
               await updateLeadRating(lead.id, target);
             } catch(err){
               alert('Error: ' + errMsg(err));
-              // Reload to reconcile with whatever the cloud actually has.
               await loadLeads(); render();
             }
           } else if(action === 'collapse'){
-            expandedLeadId = null; editingLeadId = null; editingNoteHistoryId = null; activityExpanded = false; render();
-          } else if(action === 'edit'){
-            editingLeadId = id; render();
-          } else if(action === 'cancel-edit'){
-            editingLeadId = null; render();
-          } else if(action === 'save-edit'){
-            const name = document.getElementById('edit-name-' + id).value.trim();
-            const url = document.getElementById('edit-url-' + id).value.trim();
-            if(!name){ alert('Name is required'); return; }
-            try {
-              await updateLeadFields(id, {
-                name: name,
-                profile_url: url || null
-              });
-              editingLeadId = null;
-              await loadLeads();
-              render();
-            } catch(err){ alert('Error: ' + errMsg(err)); }
+            expandedLeadId = null; render();
+          } else if(action === 'edit-lead-overlay'){
+            // Part 9: open the standalone edit lead overlay.
+            editingLeadOverlayId = id;
+            render();
           } else if(action === 'delete'){
-            if(!confirm('Delete ' + lead.name + '? This cannot be undone.')) return;
+            const displayName = lead.display_name || primaryUsernameOf(lead) || 'this lead';
+            if(!confirm('Delete ' + displayName + '? This cannot be undone.')) return;
             try {
               await deleteLead(id);
               expandedLeadId = null;
               await loadLeads();
               await loadAllHistories();
+              await loadAllNotes();
+              await loadAllNoteEdits();
               render();
             } catch(err){ alert('Error: ' + errMsg(err)); }
-          } else if(action === 'edit-note'){
-            // Per change #6 (this round): skip the confirm overlay entirely
-            // and go straight to the note edit prompt with the existing note
-            // pre-filled. Save IS the confirmation.
+          } else if(action === 'add-note-to-block'){
+            // Part 8: + button on a block opens the note prompt; saving
+            // appends a note row to that history row's block.
             const histId = btn.dataset.historyId;
             const histList = leadHistories.get(id) || [];
             const histRow = histList.find(function(h){ return h.id === histId; });
-            if(!histRow) return;
-            // The "current note" is the most recent value — which lives in
-            // the last outreach_note_edits row if any exist, otherwise on the
-            // history row itself.
-            const edits = noteEditsByHistoryId.get(histId) || [];
+            pendingNote = {
+              kind: 'add-note',
+              stage: 'note',
+              leadId: id,
+              leadName: lead.display_name || primaryUsernameOf(lead) || 'Lead',
+              historyId: histId,
+              statusLabel: histRow ? histRow.new_status : ''
+            };
+            render();
+          } else if(action === 'edit-note'){
+            // Part 8: ✏️ on the most-recent note of the most-recent block.
+            const noteId = btn.dataset.noteId;
+            // Find the note + its parent history row for the prompt sub-line.
+            let foundNote = null;
+            let parentHist = null;
+            notesByHistoryId.forEach(function(arr, hId){
+              if(foundNote) return;
+              for(const n of arr){
+                if(n.id === noteId){
+                  foundNote = n;
+                  const hl = leadHistories.get(id) || [];
+                  parentHist = hl.find(function(h){ return h.id === hId; });
+                  break;
+                }
+              }
+            });
+            if(!foundNote) return;
+            const edits = editsByNoteId.get(noteId) || [];
             const currentNote = edits.length
-              ? (edits[edits.length - 1].new_notes || '')
-              : (histRow.notes || '');
+              ? (edits[edits.length - 1].new_text || '')
+              : (foundNote.note_text || '');
             pendingNote = {
               kind: 'note-edit',
               stage: 'note',
               leadId: id,
-              leadName: lead.name,
-              historyId: histId,
-              statusLabel: histRow.new_status,
+              leadName: lead.display_name || primaryUsernameOf(lead) || 'Lead',
+              noteId: noteId,
+              statusLabel: parentHist ? parentHist.new_status : '',
               currentNote: currentNote
             };
             render();
-          } else if(action === 'toggle-activity'){
-            activityExpanded = !activityExpanded;
-            render();
-          } else if(action === 'remove-status'){
-            // Per multi-status change: × on a pill in the expanded view
-            // removes that single status (after confirm + note). Blocked
-            // when it would leave the lead with zero statuses.
-            const removed = btn.dataset.value;
-            const arr = Array.isArray(lead.statuses) ? lead.statuses : [];
-            if(arr.length <= 1){
-              alert('A lead must have at least one status.');
-              return;
-            }
-            if(arr.indexOf(removed) === -1) return;
-            pendingNote = {
-              kind: 'remove-status',
-              stage: 'confirm',
-              leadId: lead.id,
-              leadName: lead.name,
-              removedStatus: removed
-            };
-            render();
-          } else if(action === 'delete-activity'){
-            // Per change #3: × on the most-recent activity entry deletes it.
-            // The × button isn't rendered at all when it would leave the lead
-            // with zero activity entries, so we no longer warn about that.
-            const evType = btn.dataset.eventType;
-            if(evType === 'status'){
-              if(!confirm('Delete this activity entry?')) return;
-              try {
-                await deleteHistoryRow(btn.dataset.historyId, id);
-                await loadLeads();
-                await loadAllHistories();
-                await loadAllNoteEdits();
-                render();
-              } catch(err){ alert('Error: ' + errMsg(err)); }
-            } else if(evType === 'note-edit'){
-              if(!confirm('Delete this note edit?')) return;
-              try {
-                await deleteNoteEditRow(btn.dataset.editId);
-                // Reload histories too — the parent row's `notes` was just
-                // reverted, and the activity log reads from leadHistories.
-                await loadAllHistories();
-                await loadAllNoteEdits();
-                render();
-              } catch(err){ alert('Error: ' + errMsg(err)); }
-            }
           }
         });
       });
@@ -6482,7 +7016,10 @@ document.querySelectorAll('.tab').forEach(btn => {
       clearCreds();
       supabaseClient = null;
       leads = []; statuses = []; leadHistories.clear();
-      expandedLeadId = null; editingLeadId = null; showingAddForm = false;
+      notesByHistoryId.clear(); editsByNoteId.clear();
+      expandedLeadId = null; editingLeadOverlayId = null;
+      showingAddForm = false; showingStatusManager = false;
+      migrationLeadId = null; migrationDismissed = false;
       phase = 'no-creds';
       render();
     });
