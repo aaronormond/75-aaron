@@ -2272,13 +2272,14 @@
   .outreach-table-header,
   .outreach-row {
     display: grid;
-    /* Part 6: 6 columns — USER · NAME · STATUS · RATING · NOTES · LOOM. */
+    /* 7 columns — USER · NAME · STATUS · RATING · TIME · NOTES · LOOM. */
     grid-template-columns:
-      minmax(200px, 1.6fr)
-      minmax(120px, 0.9fr)
-      minmax(130px, 0.85fr)
-      minmax(110px, 0.6fr)
-      minmax(180px, 2fr)
+      minmax(180px, 1.5fr)
+      minmax(110px, 0.85fr)
+      minmax(120px, 0.8fr)
+      minmax(100px, 0.55fr)
+      minmax(100px, 0.7fr)
+      minmax(170px, 1.85fr)
       minmax(70px, 0.45fr);
     gap: 14px;
     padding: 16px 22px;
@@ -2969,14 +2970,15 @@
   @media (max-width: 800px) {
     .outreach-table-header,
     .outreach-row {
-      /* Mobile: 6 columns, tighter. */
+      /* Mobile: 7 columns, tighter. */
       grid-template-columns:
-        minmax(140px, 1.4fr)
-        minmax(110px, 0.9fr)
-        minmax(120px, 0.9fr)
-        minmax(80px, 0.5fr)
-        minmax(140px, 1.4fr)
-        minmax(60px, 0.4fr);
+        minmax(130px, 1.4fr)
+        minmax(100px, 0.85fr)
+        minmax(110px, 0.85fr)
+        minmax(70px, 0.45fr)
+        minmax(90px, 0.6fr)
+        minmax(130px, 1.3fr)
+        minmax(58px, 0.4fr);
       gap: 10px;
       padding: 10px 12px;
     }
@@ -5632,13 +5634,12 @@ document.querySelectorAll('.tab').forEach(btn => {
     // neutral label so the time dropdown doesn't appear to be "selected".
     return 'Updated';
   }
-  // Per change #4: real custom dropdown in the table header (replaces the
-  // cycling button). Same dropdown style used elsewhere in the tracker.
+  // Time-column sort dropdown options — wording mirrors the spec.
   const HEADER_SORT_OPTIONS = [
-    { value: 'oldest-added',   label: 'Added ↑' },
-    { value: 'newest-added',   label: 'Added ↓' },
-    { value: 'least-updated',  label: 'Updated ↑' },
-    { value: 'recent-updated', label: 'Updated ↓' }
+    { value: 'recent-updated', label: 'Most Recently Updated' },
+    { value: 'least-updated',  label: 'Least Recently Updated' },
+    { value: 'newest-added',   label: 'Most Recently Added' },
+    { value: 'oldest-added',   label: 'Least Recently Added' }
   ];
   function renderHeaderSortDropdownHtml(){
     const isOpen = openDropdownId === 'header-sort';
@@ -5705,6 +5706,9 @@ document.querySelectorAll('.tab').forEach(btn => {
       '<div class="outreach-th outreach-col-name">Name</div>' +
       '<div class="outreach-th outreach-col-status">Status</div>' +
       renderRatingHeaderHtml() +
+      '<div class="outreach-th outreach-col-updated outreach-sort-th-wrap">' +
+        renderHeaderSortDropdownHtml() +
+      '</div>' +
       '<div class="outreach-th outreach-col-notes">Notes</div>' +
       '<div class="outreach-th outreach-col-loom">Loom</div>' +
     '</div>';
@@ -6029,13 +6033,15 @@ document.querySelectorAll('.tab').forEach(btn => {
     '</div>';
   }
 
-  // Part 6: collapsed-row cells in the new column order.
+  // Cell column order: USER · NAME · STATUS · RATING · TIME · NOTES · LOOM.
   function renderLeadTopRowCellsHtml(lead){
     const noteText = lastNoteForLead(lead.id) || '';
+    const cellTs = timestampForLeadSort(lead);
     return renderUserCellHtml(lead) +
       renderNameCellHtml(lead) +
       '<div class="outreach-td outreach-col-status">' + renderStatusPillDropdownHtml(lead) + '</div>' +
       renderRatingCellHtml(lead) +
+      '<div class="outreach-td outreach-col-updated">' + escapeHtml(fmtTodayOrFull(cellTs)) + '</div>' +
       '<div class="outreach-td outreach-col-notes">' +
         (noteText
           ? '<span class="outreach-note-preview" title="' + escapeHtml(noteText) + '">' + escapeHtml(noteText) + '</span>'
@@ -6180,10 +6186,10 @@ document.querySelectorAll('.tab').forEach(btn => {
     const initialValue = isEdit ? (pendingNote.currentNote || '') : '';
     const initiallyValid = /\S/.test(initialValue);
 
-    // 'change' has no escape route (spec); 'note-edit' and 'add-note' get Cancel.
-    const cancelBtnHtml = !isChange
-      ? '<button type="button" class="supabase-btn supabase-btn-secondary" id="note-prompt-skip">Cancel</button>'
-      : '';
+    // All three kinds now have a Cancel button. For 'change', clicking it
+    // dismisses without saving; the lead's status was never mutated so the
+    // dropdown naturally returns to its previous value on re-render.
+    const cancelBtnHtml = '<button type="button" class="supabase-btn supabase-btn-secondary" id="note-prompt-skip">Cancel</button>';
 
     const saveLabel = isChange ? 'Update Status' : 'Save Note';
     const placeholder = isChange ? 'note about this status change…' : 'note…';
