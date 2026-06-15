@@ -3594,8 +3594,10 @@ function anyWorkForce(data){
 }
 function workCategoryComplete(data, dayIdx){
   if(dayIdx >= 24){
-    // Day 25+: all four work habits must be individually complete
-    for(const id of WORK_HABIT_IDS_DAY25){
+    // Day 25+: all work habits applicable to THIS day index must be complete.
+    // workHabitIds() handles the Day-27+ swap (reel_1 → tof_reel + hacking_reel)
+    // so the bug where Day 28 still checked reel_1 is gone.
+    for(const id of workHabitIds(dayIdx)){
       if(!habitComplete(HABITS[id], data)) return false;
     }
     return true;
@@ -3605,7 +3607,7 @@ function workCategoryComplete(data, dayIdx){
 }
 function workCategoryPerfect(data, dayIdx){
   if(dayIdx >= 24){
-    for(const id of WORK_HABIT_IDS_DAY25){
+    for(const id of workHabitIds(dayIdx)){
       if(!habitPerfect(HABITS[id], data)) return false;
     }
     return true;
@@ -3710,7 +3712,8 @@ function dayStatus(i){
   if(workCategoryPerfect(data, i)) perfect++;
   if(workMinutes(data) > 0 || anyWorkForce(data)) marked = true;
   if(i >= 24){
-    for(const id of WORK_HABIT_IDS_DAY25){
+    // Use the day-correct habit list (Day 27+ swap is handled by workHabitIds).
+    for(const id of workHabitIds(i)){
       if(anyMark(HABITS[id], data)) { marked = true; break; }
     }
   }
@@ -7548,7 +7551,10 @@ document.querySelectorAll('.tab').forEach(btn => {
       try {
         await createStatus({ label: label, color: color });
         await loadStatuses();
-        render();
+        // The new status only affects the status manager overlay's list and
+        // the filter dropdowns (which read from `statuses` lazily on open) —
+        // no need for a full render. Update overlay in place.
+        updateOverlayInPlace();
       } catch(e){ alert('Error: ' + errMsg(e)); }
     });
 
@@ -7565,7 +7571,10 @@ document.querySelectorAll('.tab').forEach(btn => {
           onConfirm: async function(){
             await deleteStatusById(id);
             await loadStatuses();
-            render();
+            // Status manager is still open underneath — keep the table frozen
+            // and let updateOverlayInPlace swap from confirm overlay back to
+            // the (refreshed) status manager in one frame.
+            requestAnimationFrame(updateOverlayInPlace);
           }
         };
         // Open the confirm overlay without rebuilding the tracker.
