@@ -5666,21 +5666,16 @@ document.querySelectorAll('.tab').forEach(btn => {
       '</button>' +
     '</div>';
 
-    // Stable wrapper so overlay updates can swap only this subtree without
-    // rebuilding the whole tracker (avoids flashes — Change 2 this round).
-    html += '<div id="outreach-overlay-root">' + renderOverlayHtml() + '</div>';
+    // Persistent overlay scaffold — the backdrop + card live here for the
+    // lifetime of the tracker. Subsequent state changes only swap the card's
+    // inner content, never the wrapping elements (no backdrop flicker).
+    html += '<div id="outreach-overlay-root" hidden>' + renderOverlayHtml() + '</div>';
 
     root.innerHTML = html;
     attachTrackerListeners();
-
-    if(pendingNote && pendingNote.stage === 'note'){
-      const promptInput = document.getElementById('note-prompt-input');
-      if(promptInput){
-        promptInput.focus();
-        const len = promptInput.value.length;
-        promptInput.setSelectionRange(len, len);
-      }
-    }
+    // Populate the persistent overlay scaffold with whatever state is active
+    // (this also handles initial-mount cases like the migration overlay).
+    updateOverlayInPlace();
   }
   // Part 7: Platform filter dropdown ("All / IG / YT primary").
   function renderPlatformFilterDropdownHtml(){
@@ -6276,44 +6271,76 @@ document.querySelectorAll('.tab').forEach(btn => {
     '</div>';
   }
 
-  // OVERLAY routing. pendingConfirm wins so a delete confirmation can stack
-  // over any other open overlay.
-  function renderOverlayHtml(){
+  // OVERLAY routing. The backdrop + card live permanently in the DOM under
+  // #outreach-overlay-root — they're never removed or recreated. Only the
+  // card's inner content and the backdrop's dismissable/width classes are
+  // swapped when transitioning between overlays. This eliminates the
+  // backdrop flicker that came from destroying and recreating the wrapping
+  // elements on every state change.
+  function activeOverlayMeta(){
     if(pendingConfirm){
-      return '<div class="outreach-overlay outreach-overlay-dismissable" role="dialog" aria-modal="true" data-action="overlay-dismiss-confirm">' +
-        '<div class="outreach-overlay-card">' + renderConfirmDeleteInnerHtml() + '</div>' +
-      '</div>';
+      return { kind: 'confirm', dismissable: true, wide: false, dismiss: function(){ pendingConfirm = null; } };
     }
     if(pendingNote){
-      return '<div class="outreach-overlay" role="dialog" aria-modal="true">' +
-        '<div class="outreach-overlay-card">' + renderNotePromptInnerHtml() + '</div>' +
-      '</div>';
+      // The status-change note prompt is not backdrop-dismissable (the spec
+      // says Cancel is the only escape route). Other note kinds also stay
+      // non-dismissable so accidental backdrop clicks don't lose typing.
+      return { kind: 'note', dismissable: false, wide: false, dismiss: null };
     }
     if(showingStatusManager){
-      return '<div class="outreach-overlay outreach-overlay-dismissable" role="dialog" aria-modal="true" data-action="overlay-dismiss-status">' +
-        '<div class="outreach-overlay-card outreach-overlay-card-wide">' + renderStatusManagerInnerHtml() + '</div>' +
-      '</div>';
+      return {
+        kind: 'status-manager', dismissable: true, wide: true,
+        dismiss: function(){ showingStatusManager = false; editingStatusId = null; }
+      };
     }
     if(showingDatabasePanel){
-      return '<div class="outreach-overlay outreach-overlay-dismissable" role="dialog" aria-modal="true" data-action="overlay-dismiss-database">' +
-        '<div class="outreach-overlay-card">' + renderDatabasePanelInnerHtml() + '</div>' +
-      '</div>';
+      return {
+        kind: 'database', dismissable: true, wide: false,
+        dismiss: function(){ showingDatabasePanel = false; }
+      };
     }
     if(showingAddForm){
-      return '<div class="outreach-overlay outreach-overlay-dismissable" role="dialog" aria-modal="true" data-action="overlay-dismiss-add">' +
-        '<div class="outreach-overlay-card">' + renderAddFormInnerHtml() + '</div>' +
-      '</div>';
+      return {
+        kind: 'add-lead', dismissable: true, wide: false,
+        dismiss: function(){
+          showingAddForm = false; newLeadStatus = null; newLeadRating = null;
+          newLeadPrimaryPlatform = 'instagram';
+        }
+      };
     }
     if(editingLeadOverlayId){
-      // Edit-lead overlay (also serves the auto-migration flow). Migration
-      // mode skips the backdrop dismiss to keep the user focused on the task.
       const isMigration = (migrationLeadId === editingLeadOverlayId);
-      const dismissAttr = isMigration ? '' : ' data-action="overlay-dismiss-edit"';
-      return '<div class="outreach-overlay outreach-overlay-dismissable" role="dialog" aria-modal="true"' + dismissAttr + '>' +
-        '<div class="outreach-overlay-card">' + renderEditLeadInnerHtml() + '</div>' +
-      '</div>';
+      return {
+        kind: 'edit-lead', dismissable: !isMigration, wide: false,
+        dismiss: function(){
+          const wasMigration = (migrationLeadId === editingLeadOverlayId);
+          editingLeadOverlayId = null;
+          if(wasMigration){
+            migrationDismissed = true;
+            migrationLeadId = null;
+          }
+        },
+        // Migration close needs a full render to surface the banner.
+        needsFullRenderOnDismiss: isMigration
+      };
     }
+    return null;
+  }
+  function renderOverlayInnerHtml(){
+    if(pendingConfirm)      return renderConfirmDeleteInnerHtml();
+    if(pendingNote)         return renderNotePromptInnerHtml();
+    if(showingStatusManager)return renderStatusManagerInnerHtml();
+    if(showingDatabasePanel)return renderDatabasePanelInnerHtml();
+    if(showingAddForm)      return renderAddFormInnerHtml();
+    if(editingLeadOverlayId)return renderEditLeadInnerHtml();
     return '';
+  }
+  // Persistent wrapper — emitted ONCE by renderTracker. Subsequent overlay
+  // updates only swap the card's inner content + a few classes/attributes.
+  function renderOverlayHtml(){
+    return '<div class="outreach-overlay" id="outreach-overlay-backdrop" role="dialog" aria-modal="true">' +
+      '<div class="outreach-overlay-card" id="outreach-overlay-card"></div>' +
+    '</div>';
   }
   // Custom delete-confirmation overlay (Part 5/6).
   function renderConfirmDeleteInnerHtml(){
@@ -6720,13 +6747,32 @@ document.querySelectorAll('.tab').forEach(btn => {
     el[k] = 1;
     el.addEventListener(type, fn);
   }
-  // Replace the overlay's HTML in place — no flash — then re-bind listeners.
-  // attachTrackerListeners is idempotent via the `_bind` marker, so calling
-  // it again only binds the freshly-rendered overlay elements.
+  // Swap ONLY the card's inner content. Backdrop + card stay in the DOM
+  // permanently — they never get destroyed/recreated, so there's no flicker
+  // when transitioning between overlays (e.g. status manager → confirm).
   function updateOverlayInPlace(){
     const overlayRoot = document.getElementById('outreach-overlay-root');
-    if(!overlayRoot){ render(); return; }
-    overlayRoot.innerHTML = renderOverlayHtml();
+    const backdrop   = document.getElementById('outreach-overlay-backdrop');
+    const card       = document.getElementById('outreach-overlay-card');
+    if(!overlayRoot || !backdrop || !card){ render(); return; }
+    const meta = activeOverlayMeta();
+    if(!meta){
+      // No overlay active → hide the root. Backdrop + card remain in the DOM,
+      // ready for the next show without any creation flicker.
+      overlayRoot.hidden = true;
+      card.innerHTML = '';
+      card.classList.remove('outreach-overlay-card-wide');
+      backdrop.classList.remove('outreach-overlay-dismissable');
+      delete backdrop.dataset.overlayKind;
+      return;
+    }
+    // Update the backdrop's dismissable affordance + card width based on
+    // which overlay is now active — no HTML rebuild.
+    backdrop.classList.toggle('outreach-overlay-dismissable', !!meta.dismissable);
+    card.classList.toggle('outreach-overlay-card-wide', !!meta.wide);
+    backdrop.dataset.overlayKind = meta.kind;
+    card.innerHTML = renderOverlayInnerHtml();
+    overlayRoot.hidden = false;
     attachTrackerListeners();
     // Restore focus on the note-prompt textarea if active.
     if(pendingNote && pendingNote.stage === 'note'){
@@ -6874,6 +6920,20 @@ document.querySelectorAll('.tab').forEach(btn => {
       migrationDismissed = false;
       maybeStartIncompleteLeadMigration();
       render();
+    });
+
+    // Unified backdrop click handler — bound ONCE on the persistent backdrop.
+    // Dispatches via activeOverlayMeta() so a single element handles all
+    // overlay kinds without re-binding per state change.
+    const overlayBackdrop = document.getElementById('outreach-overlay-backdrop');
+    if(overlayBackdrop) _bind(overlayBackdrop, 'click', function(e){
+      if(e.target !== overlayBackdrop) return; // ignore clicks on the card
+      if(!overlayBackdrop.classList.contains('outreach-overlay-dismissable')) return;
+      const meta = activeOverlayMeta();
+      if(!meta || typeof meta.dismiss !== 'function') return;
+      meta.dismiss();
+      if(meta.needsFullRenderOnDismiss) render();
+      else updateOverlayInPlace();
     });
 
     const toggleStatusBtn = document.getElementById('toggle-status-manager');
