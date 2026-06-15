@@ -9,17 +9,8 @@
       document.documentElement.classList.remove('locked');
     }
   } catch(e) {}
-  // User-uploaded favicon (saved as a data URL in localStorage).
-  try {
-    const fav = localStorage.getItem('75aaron_favicon');
-    if (fav) {
-      const link = document.createElement('link');
-      link.rel = 'icon';
-      link.href = fav;
-      document.head.appendChild(link);
-    }
-  } catch(e) {}
 </script>
+<link rel="icon" type="image/jpeg" id="favicon-link" href="data:image/jpeg;base64,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" />
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 <meta name="color-scheme" content="dark" />
@@ -30,45 +21,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  /* ===== FAVICON BANNER ===== */
-  .favicon-banner {
-    position: fixed;
-    top: 12px; right: 12px;
-    z-index: 60;
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.05);
-    -webkit-backdrop-filter: blur(12px) saturate(140%);
-    backdrop-filter: blur(12px) saturate(140%);
-    border: 1px solid rgba(255, 255, 255, 0.10);
-    border-radius: 999px;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 11.5px;
-    color: rgba(255, 255, 255, 0.72);
-  }
-  .favicon-banner[hidden] { display: none; }
-  .favicon-banner-text {
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.48);
-  }
-  .favicon-banner-btn {
-    cursor: pointer;
-    background: rgba(77, 137, 255, 0.16);
-    border: 1px solid rgba(77, 137, 255, 0.36);
-    color: #7fa9ff;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 4px 12px;
-    border-radius: 999px;
-    transition: background 140ms ease, color 140ms ease;
-  }
-  .favicon-banner-btn:hover {
-    background: rgba(77, 137, 255, 0.28);
-    color: #b5cdff;
-  }
-
   /* ===== PASSWORD GATE ===== */
   /* Hide the app shell until unlocked so nothing flashes before the gate
      check runs. The inline gate script removes this class on unlock. */
@@ -1396,25 +1348,25 @@
     display: flex; align-items: center; gap: 8px;
     min-width: 0;
   }
-  /* Change 3: small colored square — no text label inside. */
+  /* Platform indicator — slim vertical bar flush-left of the username,
+     muted (purple for IG, red for YT). Spans the row content height. */
   .outreach-platform-dot {
     display: inline-block;
     flex: 0 0 auto;
-    width: 14px; height: 14px;
-    border-radius: 3px;
+    width: 3px; height: 22px;
+    border-radius: 1.5px;
+    align-self: center;
   }
   .outreach-platform-dot.outreach-platform-ig {
-    background: rgba(139, 92, 246, 0.85);
-    box-shadow: 0 0 6px rgba(139, 92, 246, 0.45);
+    background: rgba(139, 92, 246, 0.65);
   }
   .outreach-platform-dot.outreach-platform-yt {
-    background: rgba(255, 64, 64, 0.85);
-    box-shadow: 0 0 6px rgba(255, 64, 64, 0.45);
+    background: rgba(255, 64, 64, 0.65);
   }
   .outreach-platform-dot.outreach-platform-none {
     background: rgba(255, 255, 255, 0.10);
-    border: 1px solid rgba(255, 255, 255, 0.16);
   }
+  .outreach-user-cell { gap: 10px; }
   /* Legacy IG/YT text pills retained for the EXPANDED links sub-row. */
   .outreach-platform-pill {
     display: inline-flex; align-items: center; justify-content: center;
@@ -3210,39 +3162,6 @@
           input.value = '';
           input.focus();
         }
-      });
-    })();
-  </script>
-  <div class="favicon-banner" id="favicon-banner" hidden>
-    <span class="favicon-banner-text">Add a favicon</span>
-    <label class="favicon-banner-btn" for="favicon-upload">Upload PNG or ICO</label>
-    <input type="file" id="favicon-upload" accept="image/png,image/x-icon,image/vnd.microsoft.icon,.ico" hidden />
-  </div>
-  <script>
-    (function(){
-      const banner = document.getElementById('favicon-banner');
-      const input  = document.getElementById('favicon-upload');
-      if(!banner || !input) return;
-      let hasFavicon = false;
-      try { hasFavicon = !!localStorage.getItem('75aaron_favicon'); } catch(_){}
-      banner.hidden = hasFavicon;
-      input.addEventListener('change', function(){
-        const file = input.files && input.files[0];
-        if(!file) return;
-        const reader = new FileReader();
-        reader.onload = function(){
-          const dataUrl = reader.result;
-          if(typeof dataUrl !== 'string' || !dataUrl) return;
-          try { localStorage.setItem('75aaron_favicon', dataUrl); } catch(_){}
-          // Remove any existing favicon link, then inject the new one.
-          document.querySelectorAll('link[rel="icon"]').forEach(function(l){ l.remove(); });
-          const link = document.createElement('link');
-          link.rel = 'icon';
-          link.href = dataUrl;
-          document.head.appendChild(link);
-          banner.hidden = true;
-        };
-        reader.readAsDataURL(file);
       });
     })();
   </script>
@@ -5744,7 +5663,9 @@ document.querySelectorAll('.tab').forEach(btn => {
       '</button>' +
     '</div>';
 
-    html += renderOverlayHtml();
+    // Stable wrapper so overlay updates can swap only this subtree without
+    // rebuilding the whole tracker (avoids flashes — Change 2 this round).
+    html += '<div id="outreach-overlay-root">' + renderOverlayHtml() + '</div>';
 
     root.innerHTML = html;
     attachTrackerListeners();
@@ -6785,6 +6706,36 @@ document.querySelectorAll('.tab').forEach(btn => {
     return '';
   }
 
+  // Bind-once helper: marks the element so subsequent attachTrackerListeners()
+  // calls (e.g. after an overlay-only re-render) don't double-bind elements
+  // whose DOM was NOT replaced (toolbar, row). New elements created by an
+  // overlay swap have no marker and get bound normally.
+  function _bind(el, type, fn){
+    if(!el) return;
+    const k = '_b_' + type;
+    if(el[k]) return;
+    el[k] = 1;
+    el.addEventListener(type, fn);
+  }
+  // Replace the overlay's HTML in place — no flash — then re-bind listeners.
+  // attachTrackerListeners is idempotent via the `_bind` marker, so calling
+  // it again only binds the freshly-rendered overlay elements.
+  function updateOverlayInPlace(){
+    const overlayRoot = document.getElementById('outreach-overlay-root');
+    if(!overlayRoot){ render(); return; }
+    overlayRoot.innerHTML = renderOverlayHtml();
+    attachTrackerListeners();
+    // Restore focus on the note-prompt textarea if active.
+    if(pendingNote && pendingNote.stage === 'note'){
+      const promptInput = document.getElementById('note-prompt-input');
+      if(promptInput){
+        promptInput.focus();
+        const len = promptInput.value.length;
+        try { promptInput.setSelectionRange(len, len); } catch(_){}
+      }
+    }
+  }
+
   // Sync every `.outreach-cdrop` in the DOM with `openDropdownId`. Only the
   // affected dropdown's children are touched — the surrounding row / overlay /
   // tracker frame is left untouched, so no flash.
@@ -6837,9 +6788,6 @@ document.querySelectorAll('.tab').forEach(btn => {
       const lead = leads.find(function(l){ return l.id === leadId; });
       openDropdownId = null;
       if(!lead || newStatus === lead.status){ applyDropdownStateInPlace(); return; }
-      // Part 2 (this round): single combined overlay — go straight to the
-      // note prompt (which renders the [old → new] pill flow + textarea +
-      // Update Status button).
       pendingNote = {
         kind: 'change',
         stage: 'note',
@@ -6848,7 +6796,10 @@ document.querySelectorAll('.tab').forEach(btn => {
         oldStatus: lead.status,
         newStatus: newStatus
       };
-      render();
+      // Combined overlay — open in place so the table doesn't flash and the
+      // dropdown's close animation lands without re-painting the row.
+      applyDropdownStateInPlace();
+      updateOverlayInPlace();
     } else if(action === 'new-lead-status-select'){
       newLeadStatus = opt.dataset.value;
       openDropdownId = null;
@@ -6873,7 +6824,7 @@ document.querySelectorAll('.tab').forEach(btn => {
   function attachTrackerListeners(){
     // Custom dropdown — toggle open / close in place (no full re-render).
     document.querySelectorAll('[data-action="dropdown-toggle"]').forEach(function(trig){
-      trig.addEventListener('click', function(e){
+      _bind(trig, 'click', function(e){
         e.stopPropagation();
         const id = trig.dataset.dropdownId;
         openDropdownId = (openDropdownId === id) ? null : id;
@@ -6884,13 +6835,13 @@ document.querySelectorAll('.tab').forEach(btn => {
     // (i.e. dropdowns rendered with isOpen=true via the existing renderers).
     // Dynamically-injected menus bind the same handler in applyDropdownStateInPlace.
     document.querySelectorAll('.outreach-cdrop-menu').forEach(function(menu){
-      menu.addEventListener('click', handleDynamicMenuClick);
+      _bind(menu, 'click', handleDynamicMenuClick);
     });
 
     // Rating column header — click toggles between rating-desc and rating-asc.
     // If currently on another sort, first click goes to rating-desc.
     document.querySelectorAll('[data-action="cycle-rating-sort"]').forEach(function(btn){
-      btn.addEventListener('click', function(e){
+      _bind(btn, 'click', function(e){
         e.stopPropagation();
         if(currentSort === 'rating-desc') currentSort = 'rating-asc';
         else if(currentSort === 'rating-asc') currentSort = 'rating-desc';
@@ -6900,7 +6851,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     });
 
     const addBtn = document.getElementById('add-lead-btn');
-    if(addBtn) addBtn.addEventListener('click', function(){
+    if(addBtn) _bind(addBtn, 'click', function(){
       showingAddForm = !showingAddForm;
       if(showingAddForm){
         newLeadStatus = (statuses[0] && statuses[0].label) || null;
@@ -6916,34 +6867,34 @@ document.querySelectorAll('.tab').forEach(btn => {
 
     // Part 5: persistent banner "Resume" button.
     const resumeBtn = document.getElementById('migration-resume-btn');
-    if(resumeBtn) resumeBtn.addEventListener('click', function(){
+    if(resumeBtn) _bind(resumeBtn, 'click', function(){
       migrationDismissed = false;
       maybeStartIncompleteLeadMigration();
       render();
     });
 
     const toggleStatusBtn = document.getElementById('toggle-status-manager');
-    if(toggleStatusBtn) toggleStatusBtn.addEventListener('click', function(){
+    if(toggleStatusBtn) _bind(toggleStatusBtn, 'click', function(){
       showingStatusManager = true;
       editingStatusId = null;
-      render();
+      updateOverlayInPlace();
     });
-    // Part 8 (this round): Database button opens its own overlay.
+    // Part 8: Database button opens its own overlay (no flash).
     const toggleDatabaseBtn = document.getElementById('toggle-database-panel');
-    if(toggleDatabaseBtn) toggleDatabaseBtn.addEventListener('click', function(){
+    if(toggleDatabaseBtn) _bind(toggleDatabaseBtn, 'click', function(){
       showingDatabasePanel = true;
-      render();
+      updateOverlayInPlace();
     });
     const databaseOverlayClose = document.getElementById('database-overlay-close');
-    if(databaseOverlayClose) databaseOverlayClose.addEventListener('click', function(){
+    if(databaseOverlayClose) _bind(databaseOverlayClose, 'click', function(){
       showingDatabasePanel = false;
-      render();
+      updateOverlayInPlace();
     });
     document.querySelectorAll('[data-action="overlay-dismiss-database"]').forEach(function(ov){
-      ov.addEventListener('click', function(e){
+      _bind(ov, 'click', function(e){
         if(e.target !== ov) return;
         showingDatabasePanel = false;
-        render();
+        updateOverlayInPlace();
       });
     });
 
@@ -6951,7 +6902,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     // position across the re-render that follows each keystroke.
     const searchInput = document.getElementById('outreach-search-input');
     if(searchInput){
-      searchInput.addEventListener('input', function(){
+      _bind(searchInput, 'input', function(){
         searchQuery = searchInput.value;
         const selStart = searchInput.selectionStart;
         const selEnd   = searchInput.selectionEnd;
@@ -6964,48 +6915,48 @@ document.querySelectorAll('.tab').forEach(btn => {
       });
     }
     const searchClearBtn = document.getElementById('outreach-search-clear');
-    if(searchClearBtn) searchClearBtn.addEventListener('click', function(){
+    if(searchClearBtn) _bind(searchClearBtn, 'click', function(){
       searchQuery = '';
       render();
       const newInput = document.getElementById('outreach-search-input');
       if(newInput) newInput.focus();
     });
 
-    // Manage Statuses overlay — close via × button or backdrop click
+    // Manage Statuses overlay — close via × button or backdrop click (no flash).
     const statusOverlayClose = document.getElementById('status-overlay-close');
-    if(statusOverlayClose) statusOverlayClose.addEventListener('click', function(){
+    if(statusOverlayClose) _bind(statusOverlayClose, 'click', function(){
       showingStatusManager = false;
       editingStatusId = null;
-      render();
+      updateOverlayInPlace();
     });
     document.querySelectorAll('[data-action="overlay-dismiss-status"]').forEach(function(ov){
-      ov.addEventListener('click', function(e){
+      _bind(ov, 'click', function(e){
         if(e.target !== ov) return;
         showingStatusManager = false;
         editingStatusId = null;
-        render();
+        updateOverlayInPlace();
       });
     });
     // Part 7 — status rename: pencil starts edit, ✓ commits, × cancels.
+    // Start/cancel just toggle overlay-local state — use in-place update.
     document.querySelectorAll('[data-action="status-rename-start"]').forEach(function(btn){
-      btn.addEventListener('click', function(e){
+      _bind(btn, 'click', function(e){
         e.stopPropagation();
         editingStatusId = btn.dataset.statusId;
-        render();
-        // Focus + select the freshly-rendered input.
+        updateOverlayInPlace();
         const inp = document.querySelector('input[data-action="status-rename-input"][data-status-id="' + editingStatusId + '"]');
         if(inp){ inp.focus(); inp.select(); }
       });
     });
     document.querySelectorAll('[data-action="status-rename-cancel"]').forEach(function(btn){
-      btn.addEventListener('click', function(e){
+      _bind(btn, 'click', function(e){
         e.stopPropagation();
         editingStatusId = null;
-        render();
+        updateOverlayInPlace();
       });
     });
     document.querySelectorAll('[data-action="status-rename-save"]').forEach(function(btn){
-      btn.addEventListener('click', async function(e){
+      _bind(btn, 'click', async function(e){
         e.stopPropagation();
         const id = btn.dataset.statusId;
         const inp = document.querySelector('input[data-action="status-rename-input"][data-status-id="' + id + '"]');
@@ -7023,7 +6974,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     });
     // Enter commits, Esc cancels inside the rename input.
     document.querySelectorAll('input[data-action="status-rename-input"]').forEach(function(inp){
-      inp.addEventListener('keydown', function(e){
+      _bind(inp, 'keydown', function(e){
         if(e.key === 'Enter'){
           e.preventDefault();
           const id = inp.dataset.statusId;
@@ -7032,26 +6983,26 @@ document.querySelectorAll('.tab').forEach(btn => {
         } else if(e.key === 'Escape'){
           e.preventDefault();
           editingStatusId = null;
-          render();
+          updateOverlayInPlace();
         }
       });
     });
 
-    // Add Lead overlay — close via × button or backdrop click
+    // Add Lead overlay — close via × button or backdrop click (no flash).
     const addLeadClose = document.getElementById('add-lead-close');
-    if(addLeadClose) addLeadClose.addEventListener('click', function(){
+    if(addLeadClose) _bind(addLeadClose, 'click', function(){
       showingAddForm = false;
       newLeadStatus = null;
       newLeadRating = null;
-      render();
+      updateOverlayInPlace();
     });
     document.querySelectorAll('[data-action="overlay-dismiss-add"]').forEach(function(ov){
-      ov.addEventListener('click', function(e){
+      _bind(ov, 'click', function(e){
         if(e.target !== ov) return;
         showingAddForm = false;
         newLeadStatus = null;
         newLeadRating = null;
-        render();
+        updateOverlayInPlace();
       });
     });
 
@@ -7109,13 +7060,13 @@ document.querySelectorAll('.tab').forEach(btn => {
     ['lead-display-name','lead-instagram','lead-youtube','lead-loom','lead-note'].forEach(function(id){
       const el = document.getElementById(id);
       if(!el) return;
-      el.addEventListener('input', function(){
+      _bind(el, 'input', function(){
         if(el.value.trim()) el.classList.remove('invalid');
         updateAddLeadFormStateInPlace();
       });
       // Part 3: Enter (no Shift) submits the form. Shift+Enter inserts a
       // newline in the notes textarea; on single-line inputs Enter just submits.
-      el.addEventListener('keydown', function(e){
+      _bind(el, 'keydown', function(e){
         if(e.key !== 'Enter') return;
         if(e.shiftKey) return; // allow newline in textarea
         e.preventDefault();
@@ -7125,7 +7076,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     });
     // Primary platform toggle inside the Add Lead form.
     document.querySelectorAll('[data-action="new-lead-primary"]').forEach(function(btn){
-      btn.addEventListener('click', function(e){
+      _bind(btn, 'click', function(e){
         e.preventDefault(); e.stopPropagation();
         newLeadPrimaryPlatform = btn.dataset.value;
         const wrap = document.getElementById('new-lead-primary-toggle');
@@ -7138,7 +7089,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     });
     // Star handler for the Add Lead form rating field.
     document.querySelectorAll('[data-action="rate-new-lead"]').forEach(function(starBtn){
-      starBtn.addEventListener('click', function(e){
+      _bind(starBtn, 'click', function(e){
         e.stopPropagation();
         e.preventDefault();
         const clicked = parseInt(starBtn.dataset.rating, 10) || 0;
@@ -7159,7 +7110,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     if(showingAddForm) updateAddLeadFormStateInPlace();
 
     const saveBtn = document.getElementById('form-save');
-    if(saveBtn) saveBtn.addEventListener('click', async function(){
+    if(saveBtn) _bind(saveBtn, 'click', async function(){
       if(!isAddLeadValid()){
         markAddLeadInvalidFields();
         return;
@@ -7197,12 +7148,12 @@ document.querySelectorAll('.tab').forEach(btn => {
       }
     });
     const cancelBtn = document.getElementById('form-cancel');
-    if(cancelBtn) cancelBtn.addEventListener('click', function(){
+    if(cancelBtn) _bind(cancelBtn, 'click', function(){
       showingAddForm = false;
       newLeadStatus = null;
       newLeadRating = null;
       newLeadPrimaryPlatform = 'instagram';
-      render();
+      updateOverlayInPlace();
     });
 
     // Part 9: Edit Lead overlay — wire close/save/cancel/primary-toggle.
@@ -7219,7 +7170,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     ['edit-lead-display-name','edit-lead-instagram','edit-lead-youtube','edit-lead-loom'].forEach(function(id){
       const el = document.getElementById(id);
       if(!el) return;
-      el.addEventListener('input', function(){
+      _bind(el, 'input', function(){
         if(el.value.trim()) el.classList.remove('invalid');
         syncEditLeadInPlace();
       });
@@ -7228,7 +7179,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     if(editingLeadOverlayId) syncEditLeadInPlace();
     // Edit primary platform toggle — in-place class swap.
     document.querySelectorAll('[data-action="edit-lead-primary"]').forEach(function(btn){
-      btn.addEventListener('click', function(e){
+      _bind(btn, 'click', function(e){
         e.preventDefault(); e.stopPropagation();
         const wrap = document.getElementById('edit-lead-primary-toggle');
         if(wrap){
@@ -7239,17 +7190,17 @@ document.querySelectorAll('.tab').forEach(btn => {
       });
     });
     const editLeadCloseBtn = document.getElementById('edit-lead-close');
-    if(editLeadCloseBtn) editLeadCloseBtn.addEventListener('click', closeEditLeadOverlay);
+    if(editLeadCloseBtn) _bind(editLeadCloseBtn, 'click', closeEditLeadOverlay);
     const editLeadCancelBtn = document.getElementById('edit-lead-cancel');
-    if(editLeadCancelBtn) editLeadCancelBtn.addEventListener('click', closeEditLeadOverlay);
+    if(editLeadCancelBtn) _bind(editLeadCancelBtn, 'click', closeEditLeadOverlay);
     document.querySelectorAll('[data-action="overlay-dismiss-edit"]').forEach(function(ov){
-      ov.addEventListener('click', function(e){
+      _bind(ov, 'click', function(e){
         if(e.target !== ov) return;
         closeEditLeadOverlay();
       });
     });
     const editLeadSaveBtn = document.getElementById('edit-lead-save');
-    if(editLeadSaveBtn) editLeadSaveBtn.addEventListener('click', async function(){
+    if(editLeadSaveBtn) _bind(editLeadSaveBtn, 'click', async function(){
       const lead = leads.find(function(l){ return l.id === editingLeadOverlayId; });
       if(!lead) return;
       const dn = document.getElementById('edit-lead-display-name');
@@ -7306,11 +7257,14 @@ document.querySelectorAll('.tab').forEach(btn => {
       const wasMigration = (migrationLeadId === editingLeadOverlayId);
       editingLeadOverlayId = null;
       if(wasMigration){
-        // User dismissed mid-flow → stop auto-flow, show banner.
+        // User dismissed mid-flow → stop auto-flow, show banner. The banner
+        // sits in the tracker frame so a full render is needed to show it.
         migrationDismissed = true;
         migrationLeadId = null;
+        render();
+      } else {
+        updateOverlayInPlace();
       }
-      render();
     }
 
     // Overlay — note prompt Save (always required) + Cancel (note-edit/
@@ -7324,15 +7278,15 @@ document.querySelectorAll('.tab').forEach(btn => {
         noteSaveBtn.disabled = !valid;
         if(valid) noteInput.classList.remove('invalid');
       };
-      noteInput.addEventListener('input', sync);
-      noteInput.addEventListener('keydown', function(e){
+      _bind(noteInput, 'input', sync);
+      _bind(noteInput, 'keydown', function(e){
         if(e.key === 'Enter' && !e.shiftKey){
           e.preventDefault();
           if(!noteSaveBtn.disabled) noteSaveBtn.click();
         }
       });
     }
-    if(noteSaveBtn) noteSaveBtn.addEventListener('click', async function(){
+    if(noteSaveBtn) _bind(noteSaveBtn, 'click', async function(){
       const input = document.getElementById('note-prompt-input');
       const note = input ? input.value.trim() : '';
       if(!note){
@@ -7341,30 +7295,33 @@ document.querySelectorAll('.tab').forEach(btn => {
       }
       await commitPendingNote(note);
     });
-    // Cancel is only rendered for note-edit / add-note kinds.
+    // Cancel is only rendered for note-edit / add-note / change kinds (no flash).
     const noteSkipBtn = document.getElementById('note-prompt-skip');
-    if(noteSkipBtn) noteSkipBtn.addEventListener('click', function(){
-      cancelPendingNote();
+    if(noteSkipBtn) _bind(noteSkipBtn, 'click', function(){
+      pendingNote = null;
+      updateOverlayInPlace();
     });
 
-    // Part 5/6: custom delete-confirmation overlay handlers.
+    // Part 5/6: custom delete-confirmation overlay handlers (no flash on cancel).
     const confirmDeleteCancelBtn = document.getElementById('confirm-delete-cancel');
-    if(confirmDeleteCancelBtn) confirmDeleteCancelBtn.addEventListener('click', function(){
+    if(confirmDeleteCancelBtn) _bind(confirmDeleteCancelBtn, 'click', function(){
       pendingConfirm = null;
-      render();
+      updateOverlayInPlace();
     });
     document.querySelectorAll('[data-action="overlay-dismiss-confirm"]').forEach(function(ov){
-      ov.addEventListener('click', function(e){
+      _bind(ov, 'click', function(e){
         if(e.target !== ov) return;
         pendingConfirm = null;
-        render();
+        updateOverlayInPlace();
       });
     });
     const confirmDeleteYesBtn = document.getElementById('confirm-delete-yes');
-    if(confirmDeleteYesBtn) confirmDeleteYesBtn.addEventListener('click', async function(){
+    if(confirmDeleteYesBtn) _bind(confirmDeleteYesBtn, 'click', async function(){
       const pc = pendingConfirm;
       pendingConfirm = null;
-      render();
+      // Close the confirm overlay in place; onConfirm will trigger a full
+      // render itself once data changes land.
+      updateOverlayInPlace();
       if(pc && typeof pc.onConfirm === 'function'){
         try { await pc.onConfirm(); }
         catch(err){ alert('Error: ' + errMsg(err)); }
@@ -7376,7 +7333,7 @@ document.querySelectorAll('.tab').forEach(btn => {
       const lead = leads.find(function(l){ return l.id === id; });
       if(!lead) return;
 
-      row.addEventListener('click', function(e){
+      _bind(row, 'click', function(e){
         if(e.target.closest('[data-action]')) return;
         if(e.target.closest('[data-noexpand]')) return;
         if(e.target.closest('a')) return;
@@ -7391,7 +7348,7 @@ document.querySelectorAll('.tab').forEach(btn => {
       });
 
       row.querySelectorAll('[data-action]').forEach(function(btn){
-        btn.addEventListener('click', async function(e){
+        _bind(btn, 'click', async function(e){
           e.stopPropagation();
           const action = btn.dataset.action;
           if(action === 'copy-url'){
@@ -7427,11 +7384,11 @@ document.querySelectorAll('.tab').forEach(btn => {
           } else if(action === 'collapse'){
             expandedLeadId = null; render();
           } else if(action === 'edit-lead-overlay'){
-            // Part 9: open the standalone edit lead overlay.
+            // Part 9: open the standalone edit lead overlay (no flash).
             editingLeadOverlayId = id;
-            render();
+            updateOverlayInPlace();
           } else if(action === 'delete'){
-            // Part 6: custom delete confirmation (no browser confirm).
+            // Part 6: custom delete confirmation (no flash on open).
             const displayName = lead.display_name || primaryUsernameOf(lead) || 'this lead';
             pendingConfirm = {
               title: 'delete lead?',
@@ -7447,7 +7404,7 @@ document.querySelectorAll('.tab').forEach(btn => {
                 render();
               }
             };
-            render();
+            updateOverlayInPlace();
           } else if(action === 'delete-note'){
             // Part 4: × on a note row — silently remove. No activity log entry.
             const noteId = btn.dataset.noteId;
@@ -7463,7 +7420,7 @@ document.querySelectorAll('.tab').forEach(btn => {
                 render();
               }
             };
-            render();
+            updateOverlayInPlace();
           } else if(action === 'delete-note-edit'){
             // Part 4: × on a note edit — revert text to previous_text, delete edit row.
             const editId = btn.dataset.editId;
@@ -7491,7 +7448,7 @@ document.querySelectorAll('.tab').forEach(btn => {
                 render();
               }
             };
-            render();
+            updateOverlayInPlace();
           } else if(action === 'delete-block'){
             // Part 4: × on the latest status block — silently remove the
             // history row + cascaded notes/edits. Block if it's the only one.
@@ -7530,10 +7487,10 @@ document.querySelectorAll('.tab').forEach(btn => {
                 render();
               }
             };
-            render();
+            updateOverlayInPlace();
           } else if(action === 'add-note-to-block'){
             // Part 8: + button on a block opens the note prompt; saving
-            // appends a note row to that history row's block.
+            // appends a note row to that history row's block (no flash).
             const histId = btn.dataset.historyId;
             const histList = leadHistories.get(id) || [];
             const histRow = histList.find(function(h){ return h.id === histId; });
@@ -7545,7 +7502,7 @@ document.querySelectorAll('.tab').forEach(btn => {
               historyId: histId,
               statusLabel: histRow ? histRow.new_status : ''
             };
-            render();
+            updateOverlayInPlace();
           } else if(action === 'edit-note'){
             // Part 8: ✏️ on the most-recent note of the most-recent block.
             const noteId = btn.dataset.noteId;
@@ -7577,14 +7534,14 @@ document.querySelectorAll('.tab').forEach(btn => {
               statusLabel: parentHist ? parentHist.new_status : '',
               currentNote: currentNote
             };
-            render();
+            updateOverlayInPlace();
           }
         });
       });
     });
 
     const addStatusBtn = document.getElementById('add-status-btn');
-    if(addStatusBtn) addStatusBtn.addEventListener('click', async function(){
+    if(addStatusBtn) _bind(addStatusBtn, 'click', async function(){
       const label = document.getElementById('new-status-label').value.trim();
       const color = document.getElementById('new-status-color').value;
       if(!label) return;
@@ -7596,7 +7553,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     });
 
     document.querySelectorAll('.outreach-status-delete').forEach(function(btn){
-      btn.addEventListener('click', function(){
+      _bind(btn, 'click', function(){
         if(btn.disabled) return;
         const id = btn.dataset.statusId;
         const status = statuses.find(function(s){ return s.id === id; });
@@ -7611,12 +7568,13 @@ document.querySelectorAll('.tab').forEach(btn => {
             render();
           }
         };
-        render();
+        // Open the confirm overlay without rebuilding the tracker.
+        updateOverlayInPlace();
       });
     });
 
     const disconnectBtn = document.getElementById('disconnect-btn');
-    if(disconnectBtn) disconnectBtn.addEventListener('click', function(){
+    if(disconnectBtn) _bind(disconnectBtn, 'click', function(){
       pendingConfirm = {
         title: 'disconnect?',
         sub: 'Disconnect from Supabase? You can reconnect anytime.',
@@ -7634,7 +7592,8 @@ document.querySelectorAll('.tab').forEach(btn => {
           render();
         }
       };
-      render();
+      // Open the confirm overlay without rebuilding the tracker.
+      updateOverlayInPlace();
     });
   }
 
