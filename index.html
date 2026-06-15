@@ -2380,15 +2380,15 @@
   .outreach-table-header,
   .outreach-row {
     display: grid;
-    /* 6 columns — USER · STATUS · RATING · TIME · NOTES · LOOM. USER is
-       narrower so STATUS sits visually centered between its neighbors;
-       TIME is just wide enough for "Jun 14" / "9:18 AM" with the header
-       chevron; LOOM is sized to the play icon + a touch of padding. */
+    /* 6 columns — USER · STATUS · RATING · TIME · NOTES · LOOM. TIME track
+       is sized close to RATING so the trailing whitespace inside each is
+       similar — that's what makes the gap between RATING↔TIME and TIME↔NOTES
+       feel visually equal. LOOM is just the play icon + a touch of padding. */
     grid-template-columns:
       minmax(150px, 1.1fr)
       minmax(130px, 1fr)
       minmax(110px, 0.7fr)
-      minmax(70px, 0.35fr)
+      minmax(110px, 0.65fr)
       minmax(190px, 2fr)
       32px;
     gap: 14px;
@@ -2926,10 +2926,10 @@
     box-shadow: inset 0 0 0 1px rgba(77, 137, 255, 0.5);
     color: var(--text);
   }
-  /* When sorting by time the chevron is omitted — reclaim the padding-right
-     that previously reserved space for it. */
+  /* When sorting by time the chevron is omitted — keep enough right padding
+     so the label has visible breathing room from the NOTES header. */
   .outreach-csort-header .outreach-csort-header-trigger.is-time-mode {
-    padding-right: 4px;
+    padding-right: 14px;
   }
   .outreach-csort-header .outreach-cdrop-chevron {
     right: 7px;
@@ -3091,12 +3091,13 @@
   @media (max-width: 800px) {
     .outreach-table-header,
     .outreach-row {
-      /* Mobile: 6 columns — narrower USER + TIME, fixed-width LOOM (icon only). */
+      /* Mobile: 6 columns — TIME sized near RATING so the gaps on either
+         side feel balanced; fixed-width LOOM (icon only). */
       grid-template-columns:
         minmax(110px, 1fr)
         minmax(110px, 0.95fr)
         minmax(60px, 0.45fr)
-        minmax(60px, 0.35fr)
+        minmax(80px, 0.45fr)
         minmax(140px, 1.4fr)
         28px;
       gap: 10px;
