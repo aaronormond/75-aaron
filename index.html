@@ -9,6 +9,16 @@
       document.documentElement.classList.remove('locked');
     }
   } catch(e) {}
+  // User-uploaded favicon (saved as a data URL in localStorage).
+  try {
+    const fav = localStorage.getItem('75aaron_favicon');
+    if (fav) {
+      const link = document.createElement('link');
+      link.rel = 'icon';
+      link.href = fav;
+      document.head.appendChild(link);
+    }
+  } catch(e) {}
 </script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -20,6 +30,45 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+  /* ===== FAVICON BANNER ===== */
+  .favicon-banner {
+    position: fixed;
+    top: 12px; right: 12px;
+    z-index: 60;
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    backdrop-filter: blur(12px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 999px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 11.5px;
+    color: rgba(255, 255, 255, 0.72);
+  }
+  .favicon-banner[hidden] { display: none; }
+  .favicon-banner-text {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.48);
+  }
+  .favicon-banner-btn {
+    cursor: pointer;
+    background: rgba(77, 137, 255, 0.16);
+    border: 1px solid rgba(77, 137, 255, 0.36);
+    color: #7fa9ff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    transition: background 140ms ease, color 140ms ease;
+  }
+  .favicon-banner-btn:hover {
+    background: rgba(77, 137, 255, 0.28);
+    color: #b5cdff;
+  }
+
   /* ===== PASSWORD GATE ===== */
   /* Hide the app shell until unlocked so nothing flashes before the gate
      check runs. The inline gate script removes this class on unlock. */
@@ -1347,6 +1396,26 @@
     display: flex; align-items: center; gap: 8px;
     min-width: 0;
   }
+  /* Change 3: small colored square — no text label inside. */
+  .outreach-platform-dot {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 14px; height: 14px;
+    border-radius: 3px;
+  }
+  .outreach-platform-dot.outreach-platform-ig {
+    background: rgba(139, 92, 246, 0.85);
+    box-shadow: 0 0 6px rgba(139, 92, 246, 0.45);
+  }
+  .outreach-platform-dot.outreach-platform-yt {
+    background: rgba(255, 64, 64, 0.85);
+    box-shadow: 0 0 6px rgba(255, 64, 64, 0.45);
+  }
+  .outreach-platform-dot.outreach-platform-none {
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+  }
+  /* Legacy IG/YT text pills retained for the EXPANDED links sub-row. */
   .outreach-platform-pill {
     display: inline-flex; align-items: center; justify-content: center;
     flex: 0 0 auto;
@@ -1356,17 +1425,17 @@
     font-weight: 700;
     letter-spacing: 0.06em;
   }
-  .outreach-platform-ig {
+  .outreach-platform-pill.outreach-platform-ig {
     background: rgba(139, 92, 246, 0.16);
     color: #c4b1ff;
     border: 1px solid rgba(139, 92, 246, 0.45);
   }
-  .outreach-platform-yt {
+  .outreach-platform-pill.outreach-platform-yt {
     background: rgba(255, 64, 64, 0.14);
     color: #ff8a8a;
     border: 1px solid rgba(255, 64, 64, 0.40);
   }
-  .outreach-platform-none {
+  .outreach-platform-pill.outreach-platform-none {
     background: rgba(255, 255, 255, 0.05);
     color: var(--text-4);
     border: 1px solid rgba(255, 255, 255, 0.10);
@@ -1399,25 +1468,110 @@
 
   /* ===== LOOM CELL ===== */
   .outreach-col-loom { display: flex; align-items: center; }
-  .outreach-loom-pill {
+  /* Change 4: Loom icon-only — same footprint as the platform dot. */
+  .outreach-loom-icon {
     display: inline-flex; align-items: center; justify-content: center;
-    padding: 3px 10px;
-    border-radius: 999px;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    background: rgba(77, 137, 255, 0.14);
+    width: 16px; height: 16px;
+    border-radius: 3px;
+    background: rgba(77, 137, 255, 0.18);
     color: #7fa9ff;
-    border: 1px solid rgba(77, 137, 255, 0.40);
     text-decoration: none;
     transition: background 140ms var(--ease), color 140ms var(--ease);
   }
-  .outreach-loom-pill:hover {
-    background: rgba(77, 137, 255, 0.24);
-    color: #a9c4ff;
+  .outreach-loom-icon:hover {
+    background: rgba(77, 137, 255, 0.32);
+    color: #b5cdff;
   }
+  .outreach-loom-icon svg { display: block; }
   .outreach-loom-empty { display: inline-block; }
+  /* Old text-pill class kept defined in case it's still referenced. */
+  .outreach-loom-pill { display: none; }
+
+  /* Expanded view name heading (Change 2). */
+  .outreach-expanded-name {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    color: var(--text);
+    padding: 8px 0 4px;
+  }
+
+  /* ===== SETTINGS FOOTER (Changes 6 + 8) ===== */
+  .outreach-settings-footer {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin: 28px auto 0;
+    padding: 12px 0 0;
+    color: var(--text-4);
+    font-size: 11px;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    max-width: 100%;
+  }
+  .outreach-settings-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: transparent;
+    border: none;
+    padding: 6px 8px;
+    cursor: pointer;
+    color: var(--text-4);
+    font: inherit;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    border-radius: 6px;
+    transition: color 140ms var(--ease), background 140ms var(--ease);
+  }
+  .outreach-settings-link:hover {
+    color: var(--text-2);
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .outreach-settings-link svg { opacity: 0.8; }
+  .outreach-settings-sep { color: rgba(255, 255, 255, 0.10); }
+
+  /* ===== STATUS RENAME (Part 7) ===== */
+  .outreach-status-action-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--text-4);
+    cursor: pointer;
+    width: 22px; height: 22px;
+    border-radius: 5px;
+    line-height: 1;
+    padding: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: color 140ms var(--ease), border-color 140ms var(--ease), background 140ms var(--ease);
+    font-size: 12px;
+  }
+  .outreach-status-action-btn:hover {
+    color: var(--text);
+    border-color: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .outreach-status-rename-save {
+    color: #06FFA5;
+    border-color: rgba(6, 255, 165, 0.35);
+  }
+  .outreach-status-rename-save:hover {
+    color: #06FFA5;
+    background: rgba(6, 255, 165, 0.10);
+    border-color: rgba(6, 255, 165, 0.55);
+  }
+  .outreach-status-edit-input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid color-mix(in oklab, var(--badge-color, #4D89FF) 45%, transparent);
+    border-radius: 999px;
+    padding: 3px 10px;
+    color: var(--badge-color, #4D89FF);
+    font: inherit;
+    font-size: 9.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    min-width: 100px;
+    outline: none;
+  }
+  .outreach-status-edit-input:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: color-mix(in oklab, var(--badge-color, #4D89FF) 75%, transparent);
+  }
 
   /* ===== EXPANDED SUBROW LINKS (Part 8) ===== */
   .outreach-expanded-links {
@@ -2272,15 +2426,14 @@
   .outreach-table-header,
   .outreach-row {
     display: grid;
-    /* 7 columns — USER · NAME · STATUS · RATING · TIME · NOTES · LOOM. */
+    /* 6 columns — USER · STATUS · RATING · TIME · NOTES · LOOM. */
     grid-template-columns:
-      minmax(180px, 1.5fr)
-      minmax(110px, 0.85fr)
-      minmax(120px, 0.8fr)
-      minmax(100px, 0.55fr)
+      minmax(190px, 1.5fr)
+      minmax(130px, 0.9fr)
+      minmax(110px, 0.6fr)
       minmax(100px, 0.7fr)
-      minmax(170px, 1.85fr)
-      minmax(70px, 0.45fr);
+      minmax(190px, 2fr)
+      minmax(60px, 0.4fr);
     gap: 14px;
     padding: 16px 22px;
     align-items: center;
@@ -2970,15 +3123,14 @@
   @media (max-width: 800px) {
     .outreach-table-header,
     .outreach-row {
-      /* Mobile: 7 columns, tighter. */
+      /* Mobile: 6 columns, tighter. */
       grid-template-columns:
         minmax(130px, 1.4fr)
-        minmax(100px, 0.85fr)
         minmax(110px, 0.85fr)
         minmax(70px, 0.45fr)
         minmax(90px, 0.6fr)
-        minmax(130px, 1.3fr)
-        minmax(58px, 0.4fr);
+        minmax(140px, 1.4fr)
+        minmax(50px, 0.35fr);
       gap: 10px;
       padding: 10px 12px;
     }
@@ -3058,6 +3210,39 @@
           input.value = '';
           input.focus();
         }
+      });
+    })();
+  </script>
+  <div class="favicon-banner" id="favicon-banner" hidden>
+    <span class="favicon-banner-text">Add a favicon</span>
+    <label class="favicon-banner-btn" for="favicon-upload">Upload PNG or ICO</label>
+    <input type="file" id="favicon-upload" accept="image/png,image/x-icon,image/vnd.microsoft.icon,.ico" hidden />
+  </div>
+  <script>
+    (function(){
+      const banner = document.getElementById('favicon-banner');
+      const input  = document.getElementById('favicon-upload');
+      if(!banner || !input) return;
+      let hasFavicon = false;
+      try { hasFavicon = !!localStorage.getItem('75aaron_favicon'); } catch(_){}
+      banner.hidden = hasFavicon;
+      input.addEventListener('change', function(){
+        const file = input.files && input.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = function(){
+          const dataUrl = reader.result;
+          if(typeof dataUrl !== 'string' || !dataUrl) return;
+          try { localStorage.setItem('75aaron_favicon', dataUrl); } catch(_){}
+          // Remove any existing favicon link, then inject the new one.
+          document.querySelectorAll('link[rel="icon"]').forEach(function(l){ l.remove(); });
+          const link = document.createElement('link');
+          link.rel = 'icon';
+          link.href = dataUrl;
+          document.head.appendChild(link);
+          banner.hidden = true;
+        };
+        reader.readAsDataURL(file);
       });
     })();
   </script>
@@ -4750,6 +4935,10 @@ document.querySelectorAll('.tab').forEach(btn => {
   let editingLeadId = null;                 // dead — kept so legacy refs don't throw
   let showingAddForm = false;
   let showingStatusManager = false;
+  // Part 8 (this round): separate database management overlay.
+  let showingDatabasePanel = false;
+  // Part 7: id of the status being inline-renamed, or null.
+  let editingStatusId = null;
   // Status-change prompt overlay: { kind, stage, leadId, leadName, oldStatus?, newStatus? }
   let pendingNote = null;
   // Custom delete-confirmation overlay state (Part 5).
@@ -5250,6 +5439,27 @@ document.querySelectorAll('.tab').forEach(btn => {
     const r = await supabaseClient.from('outreach_statuses').delete().eq('id', id);
     if(r.error) throw r.error;
   }
+  // Part 7 (this round): rename a status label. Updates outreach_statuses,
+  // then cascades through outreach_leads.status and outreach_status_history
+  // (old_status / new_status) so existing rows + the activity log keep
+  // referencing the same label.
+  async function renameStatusById(id, newLabel){
+    const status = statuses.find(function(s){ return s.id === id; });
+    if(!status) return;
+    const oldLabel = status.label;
+    if(newLabel === oldLabel) return;
+    // 1) Rename the status itself.
+    const r1 = await supabaseClient.from('outreach_statuses').update({ label: newLabel }).eq('id', id);
+    if(r1.error) throw r1.error;
+    // 2) Cascade to outreach_leads.status.
+    const r2 = await supabaseClient.from('outreach_leads').update({ status: newLabel }).eq('status', oldLabel);
+    if(r2.error) throw r2.error;
+    // 3) Cascade to outreach_status_history (both directions of the change).
+    const r3 = await supabaseClient.from('outreach_status_history').update({ old_status: newLabel }).eq('old_status', oldLabel);
+    if(r3.error) throw r3.error;
+    const r4 = await supabaseClient.from('outreach_status_history').update({ new_status: newLabel }).eq('new_status', oldLabel);
+    if(r4.error) throw r4.error;
+  }
 
   // INIT FLOW
   async function init(){
@@ -5501,12 +5711,6 @@ document.querySelectorAll('.tab').forEach(btn => {
     }
     html += '<div class="outreach-toolbar">' +
               '<div class="outreach-toolbar-left">' +
-                renderFilterDropdownHtml() +
-                renderPlatformFilterDropdownHtml() +
-                renderLoomFilterDropdownHtml() +
-                '<span class="outreach-count">' + filtered.length + ' lead' + (filtered.length === 1 ? '' : 's') + '</span>' +
-              '</div>' +
-              '<div class="outreach-toolbar-center">' +
                 '<div class="outreach-search">' +
                   '<svg class="outreach-search-icon" width="13" height="13" viewBox="0 0 16 16" aria-hidden="true">' +
                     '<circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="1.6"/>' +
@@ -5515,13 +5719,30 @@ document.querySelectorAll('.tab').forEach(btn => {
                   '<input type="text" id="outreach-search-input" class="outreach-search-input" placeholder="Search leads, notes…" autocomplete="off" value="' + escapeHtml(searchQuery) + '" />' +
                   clearBtnHtml +
                 '</div>' +
+                '<span class="outreach-count">' + filtered.length + ' lead' + (filtered.length === 1 ? '' : 's') + '</span>' +
               '</div>' +
               '<div class="outreach-toolbar-right">' +
-                '<button type="button" class="supabase-btn supabase-btn-secondary" id="toggle-status-manager">Manage statuses</button>' +
+                renderFilterDropdownHtml() +
+                renderPlatformFilterDropdownHtml() +
+                renderLoomFilterDropdownHtml() +
                 '<button type="button" class="supabase-btn" id="add-lead-btn">' + (showingAddForm ? 'Close' : '+ Add Lead') + '</button>' +
               '</div>' +
             '</div>';
     html += renderTableHtml(filtered);
+
+    // Settings footer — Manage Statuses + Database links sit unobtrusively
+    // below the table (Changes 6 + 8). Subtle text-link aesthetic.
+    html += '<div class="outreach-settings-footer">' +
+      '<button type="button" class="outreach-settings-link" id="toggle-status-manager">' +
+        '<svg width="11" height="11" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="2.4"/><path d="M8 1.5v2.2M8 12.3v2.2M14.5 8h-2.2M3.7 8H1.5M12.6 3.4l-1.5 1.5M4.9 11.1l-1.5 1.5M12.6 12.6l-1.5-1.5M4.9 4.9L3.4 3.4"/></svg>' +
+        '<span>Manage statuses</span>' +
+      '</button>' +
+      '<span class="outreach-settings-sep">·</span>' +
+      '<button type="button" class="outreach-settings-link" id="toggle-database-panel">' +
+        '<svg width="11" height="11" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4"><ellipse cx="8" cy="3.5" rx="5.5" ry="1.8"/><path d="M2.5 3.5v9c0 1 2.5 1.8 5.5 1.8s5.5-.8 5.5-1.8v-9"/><path d="M2.5 8c0 1 2.5 1.8 5.5 1.8s5.5-.8 5.5-1.8"/></svg>' +
+        '<span>Database</span>' +
+      '</button>' +
+    '</div>';
 
     html += renderOverlayHtml();
 
@@ -5697,13 +5918,31 @@ document.querySelectorAll('.tab').forEach(btn => {
     if(sameDay) return time;
     return MONTHS_FULL[d.getMonth()] + ' ' + d.getDate() + ' · ' + time;
   }
+  // Collapsed table cell format: today → time only, else → date only ("Jun 12").
+  function fmtTodayOrDateOnly(iso){
+    if(!iso) return '';
+    const d = new Date(iso);
+    if(isNaN(d.getTime())) return '';
+    const now = new Date();
+    const sameDay =
+      d.getFullYear() === now.getFullYear() &&
+      d.getMonth() === now.getMonth() &&
+      d.getDate() === now.getDate();
+    if(sameDay){
+      let h = d.getHours();
+      const m = d.getMinutes();
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12 || 12;
+      return h + ':' + String(m).padStart(2, '0') + ' ' + ampm;
+    }
+    return MONTHS_FULL[d.getMonth()] + ' ' + d.getDate();
+  }
 
   // Part 6: new column order — USER · NAME · STATUS · RATING · NOTES · LOOM.
   function renderTableHtml(filtered){
     let html = '<div class="outreach-table">';
     html += '<div class="outreach-table-header">' +
       '<div class="outreach-th outreach-col-user">User</div>' +
-      '<div class="outreach-th outreach-col-name">Name</div>' +
       '<div class="outreach-th outreach-col-status">Status</div>' +
       renderRatingHeaderHtml() +
       '<div class="outreach-th outreach-col-updated outreach-sort-th-wrap">' +
@@ -5725,13 +5964,11 @@ document.querySelectorAll('.tab').forEach(btn => {
     const platform = primaryPlatformOf(lead);
     const username = primaryUsernameOf(lead);
     const url = primaryProfileUrlOf(lead);
-    const pillClass = platform === 'youtube' ? 'outreach-platform-pill outreach-platform-yt'
-      : platform === 'instagram' ? 'outreach-platform-pill outreach-platform-ig'
-      : 'outreach-platform-pill outreach-platform-none';
-    const pillLabel = platform === 'youtube' ? 'YT'
-      : platform === 'instagram' ? 'IG'
-      : '—';
-    const pillHtml = '<span class="' + pillClass + '">' + pillLabel + '</span>';
+    // Change 3: just the small colored square — no text label.
+    const pillClass = platform === 'youtube' ? 'outreach-platform-dot outreach-platform-yt'
+      : platform === 'instagram' ? 'outreach-platform-dot outreach-platform-ig'
+      : 'outreach-platform-dot outreach-platform-none';
+    const pillHtml = '<span class="' + pillClass + '" aria-hidden="true"></span>';
     let userHtml;
     if(username && url){
       userHtml = '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer" class="outreach-user-link" data-noexpand="1">' + escapeHtml(username) + '</a>';
@@ -5740,11 +5977,9 @@ document.querySelectorAll('.tab').forEach(btn => {
     } else {
       userHtml = '<span class="outreach-user-empty">—</span>';
     }
-    const copyHtml = url
-      ? '<button type="button" class="outreach-copy-btn" data-action="copy-url" data-noexpand="1" data-url="' + escapeHtml(url) + '" title="Copy URL" aria-label="Copy URL">' + COPY_ICON_SVG + '</button>'
-      : '';
+    // Change 1: copy button removed.
     return '<div class="outreach-td outreach-col-user">' +
-      '<div class="outreach-user-cell">' + pillHtml + userHtml + copyHtml + '</div>' +
+      '<div class="outreach-user-cell">' + pillHtml + userHtml + '</div>' +
     '</div>';
   }
   // Part 6: NAME cell — display_name or em dash.
@@ -5761,8 +5996,14 @@ document.querySelectorAll('.tab').forEach(btn => {
     if(!lead.loom_url){
       return '<div class="outreach-td outreach-col-loom"><span class="outreach-loom-empty"></span></div>';
     }
+    // Change 4: Loom logo icon (play-triangle in a square) — same size as
+    // the platform dot. Clicking still opens the URL in a new tab.
     return '<div class="outreach-td outreach-col-loom">' +
-      '<a href="' + escapeHtml(lead.loom_url) + '" target="_blank" rel="noopener noreferrer" class="outreach-loom-pill" data-noexpand="1">Loom</a>' +
+      '<a href="' + escapeHtml(lead.loom_url) + '" target="_blank" rel="noopener noreferrer" class="outreach-loom-icon" data-noexpand="1" title="Open Loom" aria-label="Open Loom">' +
+        '<svg viewBox="0 0 16 16" width="11" height="11" aria-hidden="true">' +
+          '<path fill="currentColor" d="M5.3 3.5v9l7.4-4.5z"/>' +
+        '</svg>' +
+      '</a>' +
     '</div>';
   }
   // Single-status pill dropdown — selecting a status replaces (Part 2 revert).
@@ -6033,15 +6274,17 @@ document.querySelectorAll('.tab').forEach(btn => {
     '</div>';
   }
 
-  // Cell column order: USER · NAME · STATUS · RATING · TIME · NOTES · LOOM.
+  // Cell column order (Change 2): USER · STATUS · RATING · TIME · NOTES · LOOM
+  // (NAME column dropped from the collapsed view; it appears in the expanded
+  // body instead). Change 5: timestamp uses date-only / time-only compact
+  // format in the collapsed cell.
   function renderLeadTopRowCellsHtml(lead){
     const noteText = lastNoteForLead(lead.id) || '';
     const cellTs = timestampForLeadSort(lead);
     return renderUserCellHtml(lead) +
-      renderNameCellHtml(lead) +
       '<div class="outreach-td outreach-col-status">' + renderStatusPillDropdownHtml(lead) + '</div>' +
       renderRatingCellHtml(lead) +
-      '<div class="outreach-td outreach-col-updated">' + escapeHtml(fmtTodayOrFull(cellTs)) + '</div>' +
+      '<div class="outreach-td outreach-col-updated">' + escapeHtml(fmtTodayOrDateOnly(cellTs)) + '</div>' +
       '<div class="outreach-td outreach-col-notes">' +
         (noteText
           ? '<span class="outreach-note-preview" title="' + escapeHtml(noteText) + '">' + escapeHtml(noteText) + '</span>'
@@ -6092,9 +6335,17 @@ document.querySelectorAll('.tab').forEach(btn => {
         '</div>' +
       '</div>';
 
+    // Change 2: NAME is removed from the collapsed row — surface it as a
+    // heading inside the expanded body so it's only visible when expanded.
+    const expandedName = (lead.display_name && lead.display_name.trim()) || '';
+    const nameHeadingHtml = expandedName
+      ? '<div class="outreach-expanded-name">' + escapeHtml(expandedName) + '</div>'
+      : '';
+
     return '<div class="outreach-row outreach-row-expanded" data-lead-id="' + lead.id + '">' +
       renderLeadTopRowCellsHtml(lead) +
       '<div class="outreach-expanded-body">' +
+        nameHeadingHtml +
         subRowHtml +
         renderActivityLogHtml(history, lead) +
       '</div>' +
@@ -6117,6 +6368,11 @@ document.querySelectorAll('.tab').forEach(btn => {
     if(showingStatusManager){
       return '<div class="outreach-overlay outreach-overlay-dismissable" role="dialog" aria-modal="true" data-action="overlay-dismiss-status">' +
         '<div class="outreach-overlay-card outreach-overlay-card-wide">' + renderStatusManagerInnerHtml() + '</div>' +
+      '</div>';
+    }
+    if(showingDatabasePanel){
+      return '<div class="outreach-overlay outreach-overlay-dismissable" role="dialog" aria-modal="true" data-action="overlay-dismiss-database">' +
+        '<div class="outreach-overlay-card">' + renderDatabasePanelInnerHtml() + '</div>' +
       '</div>';
     }
     if(showingAddForm){
@@ -6351,17 +6607,24 @@ document.querySelectorAll('.tab').forEach(btn => {
   }
 
   function renderStatusManagerInnerHtml(){
-    const creds = loadCreds();
-    let host = creds ? creds.url : '';
-    try { if(creds) host = new URL(creds.url).host; } catch(e){}
-
     const items = statuses.map(function(s){
       const used = leads.filter(function(l){ return l.status === s.label; }).length;
       const canDelete = used === 0;
+      const isEditing = editingStatusId === s.id;
+      const badgeHtml = isEditing
+        ? '<input type="text" class="outreach-status-edit-input" data-action="status-rename-input" data-status-id="' + s.id + '" value="' + escapeHtml(s.label) + '" style="--badge-color: ' + escapeHtml(s.color || '#4D89FF') + '" autocomplete="off" />'
+        : '<span class="outreach-status-badge" style="--badge-color: ' + escapeHtml(s.color || '#4D89FF') + '">' + escapeHtml(s.label) + '</span>';
+      const actionsHtml = isEditing
+        ? '<button type="button" class="outreach-status-action-btn outreach-status-rename-save" data-action="status-rename-save" data-status-id="' + s.id + '" title="Save" aria-label="Save">✓</button>' +
+          '<button type="button" class="outreach-status-action-btn outreach-status-rename-cancel" data-action="status-rename-cancel" data-status-id="' + s.id + '" title="Cancel" aria-label="Cancel">×</button>'
+        : '<button type="button" class="outreach-status-action-btn outreach-status-edit-btn" data-action="status-rename-start" data-status-id="' + s.id + '" title="Edit name" aria-label="Edit name">' +
+            '<svg viewBox="0 0 16 16" width="11" height="11" aria-hidden="true"><path fill="currentColor" d="M11.41 1.59a2 2 0 0 1 2.83 2.83l-8.7 8.7L1.5 14.5l1.38-4.04 8.53-8.87z"/></svg>' +
+          '</button>' +
+          '<button type="button" class="outreach-status-delete" data-status-id="' + s.id + '"' + (canDelete ? '' : ' disabled title="In use — cannot delete"') + '>×</button>';
       return '<div class="outreach-status-item">' +
-        '<span class="outreach-status-badge" style="--badge-color: ' + escapeHtml(s.color || '#4D89FF') + '">' + escapeHtml(s.label) + '</span>' +
+        badgeHtml +
         '<span class="outreach-status-meta">' + used + ' lead' + (used === 1 ? '' : 's') + '</span>' +
-        '<button type="button" class="outreach-status-delete" data-status-id="' + s.id + '"' + (canDelete ? '' : ' disabled title="In use — cannot delete"') + '>×</button>' +
+        actionsHtml +
       '</div>';
     }).join('');
 
@@ -6374,11 +6637,24 @@ document.querySelectorAll('.tab').forEach(btn => {
         '<input type="text" id="new-status-label" class="supabase-input" placeholder="status name" autocomplete="off" />' +
         '<input type="color" id="new-status-color" class="outreach-color-input" value="#4D89FF" />' +
         '<button type="button" class="supabase-btn" id="add-status-btn">Add</button>' +
+      '</div>';
+  }
+  // Part 8: standalone Database overlay — connection info + disconnect.
+  function renderDatabasePanelInnerHtml(){
+    const creds = loadCreds();
+    let host = creds ? creds.url : '';
+    try { if(creds) host = new URL(creds.url).host; } catch(e){}
+    return '<div class="outreach-overlay-header">' +
+        '<div class="supabase-section-label">database</div>' +
+        '<button type="button" class="outreach-collapse-btn" id="database-overlay-close" aria-label="Close">✕</button>' +
       '</div>' +
+      '<div class="outreach-help-text">Connected to your Supabase project.</div>' +
       '<div class="outreach-creds-line">' +
-        '<span class="outreach-detail-label">supabase</span>' +
-        '<span>' + escapeHtml(host) + '</span>' +
-        '<button type="button" class="outreach-link-button" id="disconnect-btn" style="margin-left:auto">Disconnect</button>' +
+        '<span class="outreach-detail-label">project</span>' +
+        '<span>' + escapeHtml(host || '—') + '</span>' +
+      '</div>' +
+      '<div class="outreach-form-actions">' +
+        '<button type="button" class="supabase-btn outreach-btn-danger" id="disconnect-btn">Disconnect</button>' +
       '</div>';
   }
 
@@ -6649,7 +6925,26 @@ document.querySelectorAll('.tab').forEach(btn => {
     const toggleStatusBtn = document.getElementById('toggle-status-manager');
     if(toggleStatusBtn) toggleStatusBtn.addEventListener('click', function(){
       showingStatusManager = true;
+      editingStatusId = null;
       render();
+    });
+    // Part 8 (this round): Database button opens its own overlay.
+    const toggleDatabaseBtn = document.getElementById('toggle-database-panel');
+    if(toggleDatabaseBtn) toggleDatabaseBtn.addEventListener('click', function(){
+      showingDatabasePanel = true;
+      render();
+    });
+    const databaseOverlayClose = document.getElementById('database-overlay-close');
+    if(databaseOverlayClose) databaseOverlayClose.addEventListener('click', function(){
+      showingDatabasePanel = false;
+      render();
+    });
+    document.querySelectorAll('[data-action="overlay-dismiss-database"]').forEach(function(ov){
+      ov.addEventListener('click', function(e){
+        if(e.target !== ov) return;
+        showingDatabasePanel = false;
+        render();
+      });
     });
 
     // Toolbar search — filters in real time, preserves input focus + caret
@@ -6680,13 +6975,65 @@ document.querySelectorAll('.tab').forEach(btn => {
     const statusOverlayClose = document.getElementById('status-overlay-close');
     if(statusOverlayClose) statusOverlayClose.addEventListener('click', function(){
       showingStatusManager = false;
+      editingStatusId = null;
       render();
     });
     document.querySelectorAll('[data-action="overlay-dismiss-status"]').forEach(function(ov){
       ov.addEventListener('click', function(e){
         if(e.target !== ov) return;
         showingStatusManager = false;
+        editingStatusId = null;
         render();
+      });
+    });
+    // Part 7 — status rename: pencil starts edit, ✓ commits, × cancels.
+    document.querySelectorAll('[data-action="status-rename-start"]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        editingStatusId = btn.dataset.statusId;
+        render();
+        // Focus + select the freshly-rendered input.
+        const inp = document.querySelector('input[data-action="status-rename-input"][data-status-id="' + editingStatusId + '"]');
+        if(inp){ inp.focus(); inp.select(); }
+      });
+    });
+    document.querySelectorAll('[data-action="status-rename-cancel"]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        editingStatusId = null;
+        render();
+      });
+    });
+    document.querySelectorAll('[data-action="status-rename-save"]').forEach(function(btn){
+      btn.addEventListener('click', async function(e){
+        e.stopPropagation();
+        const id = btn.dataset.statusId;
+        const inp = document.querySelector('input[data-action="status-rename-input"][data-status-id="' + id + '"]');
+        const newLabel = inp ? inp.value.trim() : '';
+        if(!newLabel) return;
+        try {
+          await renameStatusById(id, newLabel);
+          editingStatusId = null;
+          await loadStatuses();
+          await loadLeads();
+          await loadAllHistories();
+          render();
+        } catch(err){ alert('Error: ' + errMsg(err)); }
+      });
+    });
+    // Enter commits, Esc cancels inside the rename input.
+    document.querySelectorAll('input[data-action="status-rename-input"]').forEach(function(inp){
+      inp.addEventListener('keydown', function(e){
+        if(e.key === 'Enter'){
+          e.preventDefault();
+          const id = inp.dataset.statusId;
+          const sv = document.querySelector('button[data-action="status-rename-save"][data-status-id="' + id + '"]');
+          if(sv) sv.click();
+        } else if(e.key === 'Escape'){
+          e.preventDefault();
+          editingStatusId = null;
+          render();
+        }
       });
     });
 
@@ -7249,31 +7596,44 @@ document.querySelectorAll('.tab').forEach(btn => {
     });
 
     document.querySelectorAll('.outreach-status-delete').forEach(function(btn){
-      btn.addEventListener('click', async function(){
+      btn.addEventListener('click', function(){
         if(btn.disabled) return;
         const id = btn.dataset.statusId;
         const status = statuses.find(function(s){ return s.id === id; });
         if(!status) return;
-        if(!confirm('Delete status "' + status.label + '"?')) return;
-        try {
-          await deleteStatusById(id);
-          await loadStatuses();
-          render();
-        } catch(e){ alert('Error: ' + errMsg(e)); }
+        pendingConfirm = {
+          title: 'delete status?',
+          sub: 'Delete status "' + status.label + '"?',
+          confirmLabel: 'Delete',
+          onConfirm: async function(){
+            await deleteStatusById(id);
+            await loadStatuses();
+            render();
+          }
+        };
+        render();
       });
     });
 
     const disconnectBtn = document.getElementById('disconnect-btn');
     if(disconnectBtn) disconnectBtn.addEventListener('click', function(){
-      if(!confirm('Disconnect from Supabase?')) return;
-      clearCreds();
-      supabaseClient = null;
-      leads = []; statuses = []; leadHistories.clear();
-      notesByHistoryId.clear(); editsByNoteId.clear();
-      expandedLeadId = null; editingLeadOverlayId = null;
-      showingAddForm = false; showingStatusManager = false;
-      migrationLeadId = null; migrationDismissed = false;
-      phase = 'no-creds';
+      pendingConfirm = {
+        title: 'disconnect?',
+        sub: 'Disconnect from Supabase? You can reconnect anytime.',
+        confirmLabel: 'Disconnect',
+        onConfirm: async function(){
+          clearCreds();
+          supabaseClient = null;
+          leads = []; statuses = []; leadHistories.clear();
+          notesByHistoryId.clear(); editsByNoteId.clear();
+          expandedLeadId = null; editingLeadOverlayId = null;
+          showingAddForm = false; showingStatusManager = false;
+          showingDatabasePanel = false; editingStatusId = null;
+          migrationLeadId = null; migrationDismissed = false;
+          phase = 'no-creds';
+          render();
+        }
+      };
       render();
     });
   }
