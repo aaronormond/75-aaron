@@ -2213,7 +2213,8 @@
     color: var(--text-2);
   }
   .welcome-steps li strong { color: var(--text); font-weight: 600; }
-  .welcome-steps li .welcome-step-num {
+  .welcome-steps li .welcome-step-num,
+  .welcome-instr li .welcome-step-num {
     position: absolute;
     left: 0;
     top: 0;
@@ -2288,9 +2289,181 @@
   .welcome-page { display: none; }
   .welcome-page.active { display: block; animation: welcome-page-in 300ms var(--ease-out); }
   @keyframes welcome-page-in {
-    from { opacity: 0; transform: translateX(8px); }
+    from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: none; }
   }
+  /* Long pages (SQL, feature walk-through) can exceed the viewport — let the
+     card scroll instead of clipping. */
+  .welcome-card { max-height: calc(100vh - 40px); overflow-y: auto; }
+  /* Staggered entrance so each page feels alive, not like a dumped wall. */
+  .welcome-page.active > * { opacity: 0; animation: welcome-item-in 460ms var(--ease-out) forwards; }
+  .welcome-page.active > *:nth-child(1) { animation-delay: 40ms; }
+  .welcome-page.active > *:nth-child(2) { animation-delay: 110ms; }
+  .welcome-page.active > *:nth-child(3) { animation-delay: 180ms; }
+  .welcome-page.active > *:nth-child(4) { animation-delay: 250ms; }
+  .welcome-page.active > *:nth-child(5) { animation-delay: 320ms; }
+  .welcome-page.active > *:nth-child(n+6) { animation-delay: 380ms; }
+  @keyframes welcome-item-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .welcome-lede {
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--text-2);
+  }
+  .welcome-lede + .welcome-lede { margin-top: 10px; }
+  /* Numbered instruction list (Connect / Tables pages) */
+  .welcome-instr {
+    list-style: none;
+    margin: 18px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .welcome-instr li {
+    position: relative;
+    padding-left: 30px;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--text-2);
+  }
+  .welcome-instr li strong { color: var(--text); font-weight: 600; }
+  .welcome-instr code {
+    font-family: "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+    font-size: 11.5px;
+    background: var(--bg-3);
+    border: 1px solid var(--border-2);
+    border-radius: var(--radius-xs);
+    padding: 1px 5px;
+    color: var(--text);
+  }
+  /* Bulleted feature list (How it works / Customize) */
+  .welcome-feats {
+    list-style: none;
+    margin: 16px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .welcome-feats li {
+    position: relative;
+    padding-left: 16px;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--text-2);
+  }
+  .welcome-feats li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-mid);
+  }
+  .welcome-feats li strong { color: var(--text); font-weight: 600; }
+  /* Credential inputs on the Connect page */
+  .welcome-field { margin-top: 14px; }
+  .welcome-field label {
+    display: block;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    color: var(--text-3);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .welcome-input {
+    width: 100%;
+    background: var(--bg-2);
+    border: 1px solid var(--border-2);
+    border-radius: var(--radius-sm);
+    padding: 11px 13px;
+    font-size: 13px;
+    color: var(--text);
+    transition: border-color 160ms var(--ease), background 160ms var(--ease);
+  }
+  .welcome-input::placeholder { color: var(--text-4); }
+  .welcome-input:focus { border-color: var(--accent-dim); background: var(--bg-3); }
+  .welcome-note { font-size: 12.5px; line-height: 1.6; color: var(--text-2); margin-top: 14px; }
+  /* Inline status / error messages */
+  .welcome-msg {
+    display: none;
+    margin-top: 14px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+  }
+  .welcome-msg.show { display: block; }
+  .welcome-msg.err {
+    background: rgba(255, 107, 107, 0.10);
+    border: 1px solid rgba(255, 107, 107, 0.30);
+    color: #ffb4b4;
+  }
+  .welcome-msg.ok {
+    background: var(--success-soft);
+    border: 1px solid rgba(6, 255, 165, 0.30);
+    color: var(--success);
+  }
+  .welcome-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 14px;
+    color: var(--accent);
+    font-size: 12.5px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .welcome-link:hover { color: var(--accent-2); }
+  /* SQL block + copy */
+  .welcome-sql-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .welcome-sql-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    color: var(--text-3);
+    font-weight: 600;
+  }
+  .welcome-copy {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-2);
+    background: var(--bg-3);
+    border: 1px solid var(--border-2);
+    border-radius: var(--radius-xs);
+    padding: 5px 11px;
+    transition: background 160ms var(--ease), color 160ms var(--ease);
+  }
+  .welcome-copy:hover { background: var(--bg-4); color: var(--text); }
+  .welcome-sql {
+    margin: 8px 0 0;
+    background: rgba(0, 0, 0, 0.32);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 13px;
+    font-family: "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+    font-size: 11px;
+    line-height: 1.55;
+    color: var(--text-2);
+    white-space: pre;
+    overflow: auto;
+    max-height: 200px;
+  }
+  .welcome-btn:disabled { opacity: 0.55; cursor: default; }
+  .welcome-btn:disabled:hover { transform: none; }
   @media (max-width: 540px) {
     .welcome-card { padding: 24px 20px 18px; }
     .welcome-title { font-size: 27px; }
@@ -2313,55 +2486,131 @@
 
       <!-- Page 1 — Welcome -->
       <div class="welcome-page active" data-page="0">
-        <h2 class="welcome-title" id="welcome-heading">You're already here,<br>so you've <em>deployed</em>. Good.</h2>
-        <p class="welcome-body">This is your outreach tracker — a single, private table of every lead you're working. Usernames, statuses, ratings, notes, and Loom links, all in one place.</p>
-        <p class="welcome-body">Everything lives in <strong>your own Supabase database</strong>, so it's yours and it syncs across devices. Let's get you connected — it takes about two minutes.</p>
+        <h2 class="welcome-title" id="welcome-heading">Welcome to <em>Outreach</em>.</h2>
+        <p class="welcome-lede">A lead tracker built for people doing real outreach.</p>
+        <p class="welcome-lede">Let's get you set up.</p>
       </div>
 
-      <!-- Page 2 — Connect your database -->
+      <!-- Page 2 — Connect Supabase -->
       <div class="welcome-page" data-page="1">
-        <h2 class="welcome-title">Connect your <em>database</em></h2>
-        <p class="welcome-body">The tracker stores its data in a free Supabase project. Grab two credentials:</p>
-        <ol class="welcome-steps">
-          <li><span class="welcome-step-num">1</span>Go to <strong>supabase.com</strong> and create a free project (any name, any region).</li>
-          <li><span class="welcome-step-num">2</span>Open <strong>Settings → API</strong> in the project dashboard.</li>
-          <li><span class="welcome-step-num">3</span>Copy the <span class="welcome-pill">Project URL</span> and the <span class="welcome-pill">anon</span> public key.</li>
+        <h2 class="welcome-title">Connect <em>Supabase</em>.</h2>
+        <ol class="welcome-instr">
+          <li><span class="welcome-step-num">1</span>Go to <strong>supabase.com</strong> and create a free account and project.</li>
+          <li><span class="welcome-step-num">2</span>To get your API URL: <strong>Project Settings &rarr; Data API</strong>, copy the API URL. It should end in <code>supabase.co/</code>. If it ends in something like <code>supabase.co/rest/v1/</code>, remove the <code>/rest/v1/</code> part.</li>
+          <li><span class="welcome-step-num">3</span>To get your anon key: <strong>Project Settings &rarr; API Keys &rarr; Legacy API keys</strong>, copy the <strong>anon</strong> key.</li>
         </ol>
-        <p class="welcome-body" style="margin-top:14px;">Keep them handy — you'll paste them on the next screen.</p>
+        <div class="welcome-field">
+          <label for="welcome-url">Project URL</label>
+          <input type="text" id="welcome-url" class="welcome-input" placeholder="https://xxxxx.supabase.co" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="welcome-field">
+          <label for="welcome-key">Anon Key</label>
+          <input type="text" id="welcome-key" class="welcome-input" placeholder="eyJhbGciOi…" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="welcome-msg" id="welcome-conn-msg" role="alert"></div>
       </div>
 
       <!-- Page 3 — Create your tables -->
       <div class="welcome-page" data-page="2">
-        <h2 class="welcome-title">Create your <em>tables</em></h2>
-        <p class="welcome-body">Right after you enter your credentials, the app shows the SQL it needs. One-time setup:</p>
-        <ol class="welcome-steps">
-          <li><span class="welcome-step-num">1</span>Click <strong>Copy SQL</strong> on that screen.</li>
-          <li><span class="welcome-step-num">2</span>Open the <strong>SQL editor</strong> link (it jumps straight to your project).</li>
-          <li><span class="welcome-step-num">3</span>Paste the SQL and hit <strong>Run</strong>.</li>
-          <li><span class="welcome-step-num">4</span>Come back and click <strong>Recheck</strong> — you're in.</li>
-        </ol>
+        <h2 class="welcome-title">Create your <em>tables</em>.</h2>
+        <p class="welcome-lede">Run this SQL in your Supabase SQL editor to create the tables the app needs.</p>
+        <a href="#" id="welcome-sql-link" class="welcome-link" target="_blank" rel="noopener">Open the SQL editor &rarr;</a>
+        <div class="welcome-sql-head">
+          <span class="welcome-sql-label">setup sql</span>
+          <button type="button" class="welcome-copy" id="welcome-copy">Copy</button>
+        </div>
+        <pre class="welcome-sql" id="welcome-sql">-- Outreach tracker. Run this once.
+
+create table if not exists outreach_leads (
+  id uuid default gen_random_uuid() primary key,
+  name text not null,
+  display_name text,
+  instagram text,
+  youtube text,
+  primary_platform text check (primary_platform in ('instagram', 'youtube')),
+  loom_url text,
+  status text not null,
+  statuses text[],
+  rating integer,
+  profile_url text,
+  created_at timestamptz default now()
+);
+
+create table if not exists outreach_statuses (
+  id uuid default gen_random_uuid() primary key,
+  label text not null,
+  color text,
+  sort_order int default 0
+);
+
+create table if not exists outreach_status_history (
+  id uuid default gen_random_uuid() primary key,
+  lead_id uuid references outreach_leads(id) on delete cascade,
+  old_status text,
+  new_status text,
+  notes text,
+  notes_updated_at timestamptz,
+  changed_at timestamptz default now()
+);
+
+create table if not exists outreach_notes (
+  id uuid default gen_random_uuid() primary key,
+  history_id uuid references outreach_status_history(id) on delete cascade,
+  note_text text not null,
+  created_at timestamptz default now()
+);
+
+create table if not exists outreach_note_edits (
+  id uuid default gen_random_uuid() primary key,
+  note_id uuid references outreach_notes(id) on delete cascade,
+  previous_text text not null,
+  new_text text not null,
+  edited_at timestamptz default now()
+);
+
+alter table outreach_leads disable row level security;
+alter table outreach_statuses disable row level security;
+alter table outreach_status_history disable row level security;
+alter table outreach_notes disable row level security;
+alter table outreach_note_edits disable row level security;
+
+insert into outreach_statuses (label, color, sort_order) values
+  ('New', '#4D89FF', 0),
+  ('Contacted', '#F59E0B', 1),
+  ('Replied', '#8B5CF6', 2),
+  ('Call Booked', '#06FFA5', 3),
+  ('Closed', '#1D9E75', 4),
+  ('Not Interested', '#6B7280', 5)
+on conflict do nothing;</pre>
+        <p class="welcome-note">Once you've run it, click the button below to verify.</p>
+        <div class="welcome-msg" id="welcome-verify-msg" role="alert"></div>
       </div>
 
-      <!-- Page 4 — How to use -->
+      <!-- Page 4 — How it works -->
       <div class="welcome-page" data-page="3">
-        <h2 class="welcome-title">How to <em>use</em> it</h2>
-        <ol class="welcome-steps">
-          <li><span class="welcome-step-num">1</span><strong>Add a lead</strong> with their Instagram and/or YouTube username — the platform bar shows where they live.</li>
-          <li><span class="welcome-step-num">2</span><strong>Update the status</strong> from the colored pill. Each change can carry a note, so you build an activity log over time.</li>
-          <li><span class="welcome-step-num">3</span><strong>Rate</strong> each lead 1–3 stars and drop in a <strong>Loom URL</strong> for quick playback.</li>
-          <li><span class="welcome-step-num">4</span><strong>Filter and search</strong> by status, platform, Loom, or text to find anyone fast.</li>
-        </ol>
+        <h2 class="welcome-title">How it <em>works</em>.</h2>
+        <ul class="welcome-feats">
+          <li><strong>Adding a lead:</strong> fill in their Instagram or YouTube username, or both. You have to fill at least one. If you fill both, pick which one is primary.</li>
+          <li><strong>Profiles:</strong> click their username in the table to open their profile directly. Instagram or YouTube, built from the username you entered.</li>
+          <li><strong>Platform bar:</strong> the colored bar on the left of each row shows their platform. Purple for IG, red for YT.</li>
+          <li><strong>Status:</strong> pick from your custom statuses. Change it anytime from the table without opening the lead.</li>
+          <li><strong>Rating:</strong> 1 to 3 stars. Use it however you want.</li>
+          <li><strong>Notes:</strong> every status change has its own notes. Add notes, edit them, and see the full history when you open a lead.</li>
+          <li><strong>Loom:</strong> paste a Loom URL when adding or editing a lead. A play icon shows in the table. Click it to open.</li>
+          <li><strong>Search:</strong> searches their username, name, and all their notes.</li>
+          <li><strong>Filters:</strong> filter by status, platform (IG or YT), and whether they have a Loom.</li>
+          <li><strong>Sort:</strong> click the UPDATED column header to sort by most or least recently updated, or most or least recently added.</li>
+        </ul>
       </div>
 
-      <!-- Page 5 — Customization -->
+      <!-- Page 5 — Customize -->
       <div class="welcome-page" data-page="4">
-        <h2 class="welcome-title">Make it <em>yours</em></h2>
-        <p class="welcome-body">Two controls live at the bottom of the tracker:</p>
-        <ol class="welcome-steps">
-          <li><span class="welcome-step-num">1</span><strong>Manage Statuses</strong> — add, rename, or delete statuses and give each one a custom color.</li>
-          <li><span class="welcome-step-num">2</span><strong>Database</strong> — review your connection or disconnect to switch projects.</li>
-        </ol>
-        <p class="welcome-body" style="margin-top:14px;">That's it. Time to start tracking.</p>
+        <h2 class="welcome-title">Make it <em>yours</em>.</h2>
+        <ul class="welcome-feats">
+          <li><strong>Manage Statuses</strong> sits in the settings area at the bottom. Add statuses, pick colors, rename them, and delete ones with no leads attached.</li>
+          <li>The <strong>Database</strong> button shows your connection info. Disconnect and reconnect to a different Supabase project anytime.</li>
+        </ul>
+        <p class="welcome-note">Everything saves to your own Supabase database. Nobody else has access.</p>
       </div>
 
       <div class="welcome-footer">
@@ -5314,14 +5563,19 @@
   </script>
 
 <script>
-// FIRST-TIME SETUP GUIDE — paginated welcome shown once, before the Supabase
-// credentials prompt. Dismissed permanently once credentials are saved (or the
-// user finishes the guide with "Get started").
+// FIRST-TIME SETUP GUIDE — paginated walkthrough shown once. Pages 2 and 3
+// do the real work: connect to Supabase and verify the tables exist. The user
+// can't move past a page until that step succeeds. Once finished, the guide is
+// dismissed for good and the app reloads straight into the tracker.
 (function(){
   'use strict';
 
   const WELCOME_KEY = 'outreach_welcome_done';
   const CREDS_KEY = 'outreach_supabase_creds';
+
+  // Per-page primary-button labels. Pages 1 (Connect) and 2 (Verify) gate on a
+  // successful Supabase call before advancing.
+  const LABELS = ['Next &rarr;', 'Connect', 'Verify tables', 'Next &rarr;', "Let's go &rarr;"];
 
   function hasCreds(){
     try {
@@ -5337,12 +5591,69 @@
   function markDone(){
     try { localStorage.setItem(WELCOME_KEY, '1'); } catch(e){}
   }
+  function saveCreds(url, key){
+    try { localStorage.setItem(CREDS_KEY, JSON.stringify({ url: url, key: key })); } catch(e){}
+  }
+
+  // Strip a trailing /rest/v1 (and stray slashes) so createClient gets the base
+  // project URL, matching the instruction on the Connect page.
+  function normalizeUrl(u){
+    u = (u || '').trim();
+    u = u.replace(/\/+$/, '');
+    u = u.replace(/\/rest\/v1$/i, '');
+    u = u.replace(/\/+$/, '');
+    return u;
+  }
+  function sqlEditorUrl(url){
+    try {
+      const host = new URL(url).host;
+      const m = host.match(/^([^.]+)\.supabase\.co$/);
+      return m ? ('https://supabase.com/dashboard/project/' + m[1] + '/sql/new') : 'https://supabase.com/dashboard';
+    } catch(e){ return 'https://supabase.com/dashboard'; }
+  }
+  function friendlyError(e){
+    if(!e) return 'Something went wrong. Try again.';
+    if(typeof e === 'string') return e;
+    return e.message || 'Something went wrong. Try again.';
+  }
+
+  // Reachable + valid key. A missing-table error still means we connected fine.
+  async function testConnection(client){
+    let r;
+    try { r = await client.from('outreach_statuses').select('id').limit(1); }
+    catch(e){ return { ok: false, error: 'Could not reach Supabase. Check your Project URL.' }; }
+    if(!r.error) return { ok: true };
+    const msg = (r.error.message || '') + ' ' + (r.error.code || '');
+    if(/does not exist|relation .* does not exist|PGRST205|42P01|404/i.test(msg)) return { ok: true };
+    // supabase-js returns network failures in r.error rather than throwing.
+    if(/failed to fetch|networkerror|load failed|fetch/i.test(msg)) return { ok: false, error: 'Could not reach Supabase. Check your Project URL.' };
+    if(/invalid api key|jwt|apikey|401/i.test(msg)) return { ok: false, error: 'That anon key was rejected. Copy it again from Project Settings.' };
+    return { ok: false, error: r.error.message || 'Could not connect. Check your URL and anon key.' };
+  }
+
+  // Every table and column the app needs before it can boot into the tracker.
+  async function verifyTables(client){
+    const checks = [
+      ['outreach_statuses', 'id'],
+      ['outreach_status_history', 'id, notes, notes_updated_at'],
+      ['outreach_leads', 'id, rating, instagram, youtube, loom_url, primary_platform, display_name'],
+      ['outreach_notes', 'id'],
+      ['outreach_note_edits', 'id, note_id, previous_text, new_text']
+    ];
+    for(let i = 0; i < checks.length; i++){
+      let r;
+      try { r = await client.from(checks[i][0]).select(checks[i][1]).limit(1); }
+      catch(e){ return { ok: false, error: 'Could not reach Supabase. Try again in a moment.' }; }
+      if(r.error) return { ok: false };
+    }
+    return { ok: true };
+  }
 
   function init(){
     const overlay = document.getElementById('welcome-overlay');
     if(!overlay) return;
 
-    // Already connected, or already seen the guide → never show it.
+    // Already connected, or already finished the guide → never show it.
     if(hasCreds()){ markDone(); return; }
     if(welcomeDone()) return;
 
@@ -5350,8 +5661,17 @@
     const dotsWrap = document.getElementById('welcome-dots');
     const backBtn = document.getElementById('welcome-back');
     const nextBtn = document.getElementById('welcome-next');
+    const urlInput = document.getElementById('welcome-url');
+    const keyInput = document.getElementById('welcome-key');
+    const connMsg = document.getElementById('welcome-conn-msg');
+    const verifyMsg = document.getElementById('welcome-verify-msg');
+    const sqlLink = document.getElementById('welcome-sql-link');
+    const sqlBlock = document.getElementById('welcome-sql');
+    const copyBtn = document.getElementById('welcome-copy');
     const total = pages.length;
     let idx = 0;
+    let busy = false;
+    let client = null;   // set once page 2 connects successfully
 
     // Build the page dots.
     dotsWrap.innerHTML = '';
@@ -5362,32 +5682,117 @@
       return d;
     });
 
+    function setMsg(el, text, kind){
+      if(!el) return;
+      if(!text){ el.className = 'welcome-msg'; el.textContent = ''; return; }
+      el.className = 'welcome-msg show ' + (kind || 'err');
+      el.textContent = text;
+    }
+
+    function updateButtons(){
+      backBtn.hidden = idx === 0;
+      backBtn.disabled = busy;
+      nextBtn.disabled = busy;
+      nextBtn.innerHTML = busy ? 'Working…' : LABELS[idx];
+    }
+
+    function setBusy(state, label){
+      busy = state;
+      backBtn.disabled = busy;
+      nextBtn.disabled = busy;
+      nextBtn.innerHTML = busy ? (label || 'Working…') : LABELS[idx];
+    }
+
     function show(n){
       idx = Math.max(0, Math.min(total - 1, n));
-      pages.forEach(function(p, i){ p.classList.toggle('active', i === idx); });
+      pages.forEach(function(p, i){
+        const on = i === idx;
+        p.classList.toggle('active', on);
+        // Re-trigger the staggered entrance each time a page is shown.
+        if(on){ void p.offsetWidth; }
+      });
       dots.forEach(function(d, i){ d.classList.toggle('active', i === idx); });
-      backBtn.hidden = idx === 0;
-      const last = idx === total - 1;
-      nextBtn.innerHTML = last ? 'Get started &rarr;' : 'Next &rarr;';
+      updateButtons();
+      if(idx === 1) setTimeout(function(){ try { urlInput.focus(); } catch(e){} }, 60);
+    }
+
+    async function doConnect(){
+      setMsg(connMsg, '');
+      const rawUrl = urlInput.value.trim();
+      const key = keyInput.value.trim();
+      if(!rawUrl || !key){ setMsg(connMsg, 'Fill in both fields to continue.'); return; }
+      if(typeof window.supabase === 'undefined' || !window.supabase.createClient){
+        setMsg(connMsg, 'Supabase library did not load. Check your connection and refresh.');
+        return;
+      }
+      const url = normalizeUrl(rawUrl);
+      setBusy(true, 'Connecting…');
+      let c;
+      try { c = window.supabase.createClient(url, key); }
+      catch(e){ setBusy(false); setMsg(connMsg, 'Could not create the connection. Check your URL.'); return; }
+      const res = await testConnection(c);
+      setBusy(false);
+      if(!res.ok){ setMsg(connMsg, res.error || 'Connection failed.'); return; }
+      client = c;
+      saveCreds(url, key);
+      if(sqlLink) sqlLink.href = sqlEditorUrl(url);
+      show(idx + 1);
+    }
+
+    async function doVerify(){
+      setMsg(verifyMsg, '');
+      if(!client){ setMsg(verifyMsg, 'Go back a step and connect first.'); return; }
+      setBusy(true, 'Checking…');
+      const res = await verifyTables(client);
+      setBusy(false);
+      if(!res.ok){
+        setMsg(verifyMsg, res.error || "Tables not found yet. Run the SQL above, then try again.");
+        return;
+      }
+      show(idx + 1);
     }
 
     function close(){
       markDone();
       overlay.hidden = true;
-      // Surface the credentials field if it's there.
-      const urlInput = document.getElementById('creds-url');
-      if(urlInput) try { urlInput.focus(); } catch(e){}
+      // Credentials are saved and the schema is verified — reload so the app
+      // boots straight into the tracker with no separate credentials prompt.
+      try { window.location.reload(); } catch(e){}
     }
 
-    backBtn.addEventListener('click', function(){ show(idx - 1); });
+    backBtn.addEventListener('click', function(){ if(!busy) show(idx - 1); });
     nextBtn.addEventListener('click', function(){
-      if(idx === total - 1) close();
-      else show(idx + 1);
+      if(busy) return;
+      if(idx === 1){ doConnect(); return; }
+      if(idx === 2){ doVerify(); return; }
+      if(idx === total - 1){ close(); return; }
+      show(idx + 1);
     });
+
+    if(copyBtn && sqlBlock){
+      copyBtn.addEventListener('click', async function(){
+        try {
+          await navigator.clipboard.writeText(sqlBlock.textContent);
+          const orig = copyBtn.textContent;
+          copyBtn.textContent = 'Copied';
+          setTimeout(function(){ copyBtn.textContent = orig; }, 1500);
+        } catch(e){}
+      });
+    }
+
+    // Submitting either credential field triggers Connect.
+    [urlInput, keyInput].forEach(function(el){
+      if(!el) return;
+      el.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' && idx === 1 && !busy){ e.preventDefault(); doConnect(); }
+      });
+    });
+
     document.addEventListener('keydown', function(e){
-      if(overlay.hidden) return;
-      if(e.key === 'ArrowRight'){ if(idx < total - 1) show(idx + 1); }
-      else if(e.key === 'ArrowLeft'){ show(idx - 1); }
+      if(overlay.hidden || busy) return;
+      // Only the non-gated pages advance with the arrow key.
+      if(e.key === 'ArrowRight' && (idx === 0 || idx === 3)) show(idx + 1);
+      else if(e.key === 'ArrowLeft' && idx > 0) show(idx - 1);
     });
 
     show(0);
