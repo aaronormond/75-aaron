@@ -1419,7 +1419,9 @@
   .outreach-name-empty { color: var(--text-4); font-size: 13px; }
 
   /* ===== LOOM CELL ===== */
-  .outreach-col-loom { display: flex; align-items: center; }
+  /* Narrow indicator column — center the play icon so it sits close to the
+     right edge of the table without floating into the NOTES column. */
+  .outreach-col-loom { display: flex; align-items: center; justify-content: center; padding: 0; min-width: 0; }
   /* Change 4: Loom icon-only — same footprint as the platform dot. */
   .outreach-loom-icon {
     display: inline-flex; align-items: center; justify-content: center;
@@ -2378,14 +2380,16 @@
   .outreach-table-header,
   .outreach-row {
     display: grid;
-    /* 6 columns — USER · STATUS · RATING · TIME · NOTES · LOOM. */
+    /* 6 columns — USER · STATUS · RATING · TIME · NOTES · LOOM. USER is
+       narrower so STATUS sits visually centered between its neighbors;
+       LOOM is sized to just the play icon + a touch of padding. */
     grid-template-columns:
-      minmax(190px, 1.5fr)
-      minmax(130px, 0.9fr)
-      minmax(110px, 0.6fr)
+      minmax(150px, 1.1fr)
+      minmax(130px, 1fr)
+      minmax(110px, 0.7fr)
       minmax(100px, 0.7fr)
       minmax(190px, 2fr)
-      minmax(60px, 0.4fr);
+      32px;
     gap: 14px;
     padding: 16px 22px;
     align-items: center;
@@ -3075,14 +3079,14 @@
   @media (max-width: 800px) {
     .outreach-table-header,
     .outreach-row {
-      /* Mobile: 6 columns, tighter. */
+      /* Mobile: 6 columns, narrower USER + fixed-width LOOM (icon only). */
       grid-template-columns:
-        minmax(130px, 1.4fr)
-        minmax(110px, 0.85fr)
-        minmax(70px, 0.45fr)
-        minmax(90px, 0.6fr)
+        minmax(110px, 1fr)
+        minmax(110px, 0.95fr)
+        minmax(60px, 0.45fr)
+        minmax(80px, 0.6fr)
         minmax(140px, 1.4fr)
-        minmax(50px, 0.35fr);
+        28px;
       gap: 10px;
       padding: 10px 12px;
     }
