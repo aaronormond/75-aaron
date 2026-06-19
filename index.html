@@ -3548,14 +3548,18 @@ function getDay(key){
 //   Day 30+ (index ≥ 29): fast → no_late_food, drop 5 Trial Reels, rename outreach_looms → Looms (outreach_looms_v2)
 // Days before each cutoff keep the originals so existing logged data renders intact.
 function resolveHabitId(id, dayIdx){
+  // Walk each tier; the resolved id from one tier flows into the next, so a
+  // body habit can be re-mapped twice (e.g. protein → fast → no_late_food on
+  // Day 30+). Earlier code early-returned which skipped the second mapping.
+  let resolved = id;
   if(dayIdx >= 10){
-    if(id === 'walk')    return 'steps';
-    if(id === 'protein') return 'fast';
+    if(resolved === 'walk')    resolved = 'steps';
+    if(resolved === 'protein') resolved = 'fast';
   }
   if(dayIdx >= 29){
-    if(id === 'fast') return 'no_late_food';
+    if(resolved === 'fast') resolved = 'no_late_food';
   }
-  return id;
+  return resolved;
 }
 
 const WORK_HABIT_IDS_DAY25 = ['hours_worked','outreach_looms','reel_1','trial_reels_5'];
