@@ -3325,6 +3325,8 @@ const HABITS = {
   // Day 25+ work habits
   hours_worked:   { id:'hours_worked',   label:'Hours Worked', cat:'work', kind:'timed', full:480, fullLabel:'8h' },
   outreach_looms: { id:'outreach_looms', label:'Funnel Hacks', cat:'work', kind:'count', target:3 },
+  // Day 30+ rename of outreach_looms (same counter behavior, target 3).
+  outreach_looms_v2: { id:'outreach_looms_v2', label:'Looms', cat:'work', kind:'count', target:3 },
   reel_1:         { id:'reel_1',         label:'1 Reel', cat:'work', kind:'binary' },
   trial_reels_5:  { id:'trial_reels_5',  label:'5 Trial Reels', cat:'work', kind:'binary' },
   tof_reel:       { id:'tof_reel',       label:'TOF Reel', cat:'work', kind:'binary' },
@@ -3332,7 +3334,9 @@ const HABITS = {
   walk:     { id:'walk',     label:'20 min walk', cat:'body', kind:'binary' },          // days 1–10 only
   steps:    { id:'steps',    label:'7500 steps', cat:'body', kind:'binary' },           // day 11+
   protein:  { id:'protein',  label:'180g protein', cat:'body', kind:'protein', target:180 }, // days 1–10 only
-  fast:     { id:'fast',     label:'Fast until noon', cat:'body', kind:'binary' },      // day 11+
+  fast:     { id:'fast',     label:'Fast until noon', cat:'body', kind:'binary' },      // day 11–29
+  // Day 30+ replacement for `fast` — same binary toggle, different prompt.
+  no_late_food: { id:'no_late_food', label:'No food after 10pm', cat:'body', kind:'binary' },
   lift:     { id:'lift',     label:'Lift', cat:'body', kind:'binary', liftOnly:true },
   weight:   { id:'weight',   label:'Log Weight', cat:'body', kind:'weight', todayOnward:true }, // today + future days only
   sleep:    { id:'sleep',    label:'Wake up at 8am', cat:'discipline', kind:'sleep' },
@@ -3518,7 +3522,7 @@ function getDay(key){
   if(!state.days[key]) state.days[key] = { floorMode:false, habits:{} };
   const d = state.days[key];
   if(!d.habits) d.habits = {};
-  for(const id of ['outreach','study','creator','protein','hours_worked','outreach_looms']){
+  for(const id of ['outreach','study','creator','protein','hours_worked','outreach_looms','outreach_looms_v2']){
     if(!d.habits[id] || typeof d.habits[id] !== 'object') d.habits[id] = { logs:[], forceComplete:false };
     if(!Array.isArray(d.habits[id].logs)) d.habits[id].logs = [];
   }
@@ -3541,19 +3545,25 @@ function getDay(key){
 //   Day 11+ (index ≥ 10): walk→steps, protein→fast
 //   Day 25+ (index ≥ 24): work category fully replaced — outreach/study/creator → hours_worked + outreach_looms + 1 Reel + 5 Trial Reels
 //   Day 27+ (index ≥ 26): 1 Reel → TOF Reel + Hacking Reel (two binary toggles)
+//   Day 30+ (index ≥ 29): fast → no_late_food, drop 5 Trial Reels, rename outreach_looms → Looms (outreach_looms_v2)
 // Days before each cutoff keep the originals so existing logged data renders intact.
 function resolveHabitId(id, dayIdx){
   if(dayIdx >= 10){
     if(id === 'walk')    return 'steps';
     if(id === 'protein') return 'fast';
   }
+  if(dayIdx >= 29){
+    if(id === 'fast') return 'no_late_food';
+  }
   return id;
 }
 
 const WORK_HABIT_IDS_DAY25 = ['hours_worked','outreach_looms','reel_1','trial_reels_5'];
 const WORK_HABIT_IDS_DAY27 = ['hours_worked','outreach_looms','tof_reel','hacking_reel','trial_reels_5'];
+const WORK_HABIT_IDS_DAY30 = ['hours_worked','outreach_looms_v2','tof_reel','hacking_reel'];
 
 function workHabitIds(dayIdx){
+  if(dayIdx >= 29) return WORK_HABIT_IDS_DAY30;
   if(dayIdx >= 26) return WORK_HABIT_IDS_DAY27;
   if(dayIdx >= 24) return WORK_HABIT_IDS_DAY25;
   return ORDER.work;
@@ -3713,7 +3723,7 @@ function dayStatus(i){
   const date = dateForDayIndex(i);
   const key = ymd(date);
   const data = state.days[key] || { floorMode:false, habits:{} };
-  for(const id of ['outreach','study','creator','protein','hours_worked','outreach_looms']){
+  for(const id of ['outreach','study','creator','protein','hours_worked','outreach_looms','outreach_looms_v2']){
     if(!data.habits[id] || typeof data.habits[id] !== 'object') data.habits[id] = { logs:[], forceComplete:false };
   }
   const dayHabits = habitsForDay(i);
